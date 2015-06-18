@@ -1,0 +1,11 @@
+anki/**
+test.py
+ruimport.py
+forvocate/**
+media/**
+input/**
+output/**
+**.db
+forvocateimport.py
+**.csv
+useful.js
