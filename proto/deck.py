@@ -39,24 +39,24 @@ defaultStudyConf = {
     }
 
 class Deck:
-	name = "Default"
-	subdecks = []
-	cardType = None
-	csvname = 'default'
-	languageCode = None
-	conf = defaultStudyConf
-	perDay = None
+    name = "Default"
+    subdecks = []
+    cardType = None
+    csvname = 'default'
+    languageCode = None
+    conf = defaultStudyConf
+    perDay = None
 
-	# Generates a card for all the card types in the deck, but not sub decks.
-	def makeCard(self,word):
-		if not self.cardType:
-			raise Exception('Deck has no card type.')
-		return self.cardType.generate(word)
+    # Generates a card for all the card types in the deck, but not sub decks.
+    def makeCard(self,word):
+        if not self.cardType:
+            raise Exception('Deck has no card type.')
+        return self.cardType.generate(word)
 
-	def subDeckByName(self,name):
-		for deck in self.subdecks:
-			if deck.name == name:
-				return deck
+    def subDeckByName(self,name):
+        for deck in self.subdecks:
+            if deck.name == name:
+                return deck
 
-	def shortName(self):
-		return string.replace(self.name.lower(),' ','-')
+    def shortName(self):
+        return string.replace(self.name.lower(),' ','-')

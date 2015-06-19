@@ -1,7 +1,7 @@
 from proto.butils import *
 from proto.builder import *
 
-from proto.languages.german import GermanDeck
+from proto.languages.de import GermanDeck
 from proto.exporters import CSVExporter, APKGExporter
 
 from pattern.de import parse, split

@@ -1,8 +1,8 @@
 from proto.butils import *
 from proto.builder import *
 
-from proto.languages.russian import *
-from proto.languages.russian.wikiinfo import WikiInfo
+from proto.languages.ru import *
+from proto.languages.ru.wikiinfo import WikiInfo
 from proto.exporters import CSVExporter, APKGExporter
 from proto.importers import CSVImporter
 
@@ -12,14 +12,14 @@ ph = PathHelper('ruru')
 rd = RussianDeck(oi.db,oi.ifile('rus_eng_full2.dct'))
 rd.name = "RussianRu"
 
-CSVImporter.importIntoDeck(rd.subDeckByName('Nouns'),oi.ofile('russian-nouns.csv'))
-CSVImporter.importIntoDeck(rd.subDeckByName('Verbs'),oi.ofile('russian-verbs.csv'))
-CSVImporter.importIntoDeck(rd.subDeckByName('Adjectives'),oi.ofile('russian-adjectives.csv'))
+CSVImporter.importIntoDeck(rd.subDeckByName('Nouns'),oi.ofile('ru-nouns.csv'))
+CSVImporter.importIntoDeck(rd.subDeckByName('Verbs'),oi.ofile('ru-verbs.csv'))
+CSVImporter.importIntoDeck(rd.subDeckByName('Adjectives'),oi.ofile('ru-adjectives.csv'))
 
 types = [
-	# ('Nouns','russian-nouns.csv'),
-	# ('Verbs','russian-verbs.csv'),
-	# ('Adjectives','russian-adjectives.csv')
+	# ('Nouns','ru-nouns.csv'),
+	# ('Verbs','ru-verbs.csv'),
+	# ('Adjectives','ru-adjectives.csv')
 ]
 
 for t,csvname in types:

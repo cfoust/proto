@@ -2,130 +2,130 @@ from fields import *
 import copy, string
 
 class BasicCardType:
-	# Card type as it shows up in Anki
-	name = "Default Card Type"
-	
-	# CSS for this card
-	_css = ""
+    # Card type as it shows up in Anki
+    name = "Default Card Type"
 
-	# JS for this card
-	_js = ""
+    # CSS for this card
+    _css = ""
 
-	# Front HTML Header
-	_fheader = ""
-	# Front HTML Footer
-	_ffooter = ""
+    # JS for this card
+    _js = ""
 
-	# Back HTML Header
-	_bheader = ""
-	# Back HTML Footer
-	_bfooter = ""
+    # Front HTML Header
+    _fheader = ""
+    # Front HTML Footer
+    _ffooter = ""
 
-	# Fields for this card type
-	fields = []
+    # Back HTML Header
+    _bheader = ""
+    # Back HTML Footer
+    _bfooter = ""
 
-	# Holds the generated cards
-	cards = []
+    # Fields for this card type
+    fields = []
 
-	# For apkg generation
-	mid = 0
+    # Holds the generated cards
+    cards = []
 
-	def __init__(self):
-		# The default card front that shows the word
-		front = FieldType(True)
-		front.name = "FrontSide"
-		self.fields += front
+    # For apkg generation
+    mid = 0
 
-		self.cards = []
+    def __init__(self):
+        # The default card front that shows the word
+        front = FieldType(True)
+        front.name = "FrontSide"
+        self.fields += front
 
-	def generate(self,word):
-		card = []
-		for field in self.fields:
-			result = field.pull(word)
-			card.append(result)
-		if not None in card:
-			self.cards.append(card)
-		return card
+        self.cards = []
 
-	def fillIn(self,word,card):
-		if not len(card) == len(self.fields):
-			raise Exception('Invalid number of fields.')
+    def generate(self,word):
+        card = []
+        for field in self.fields:
+            result = field.pull(word)
+            card.append(result)
+        if not None in card:
+            self.cards.append(card)
+        return card
 
-		for i,field in enumerate(card):
-			if not field:
-				card[i] = self.fields[i].pull(word)
+    def fillIn(self,word,card):
+        if not len(card) == len(self.fields):
+            raise Exception('Invalid number of fields.')
 
-		if not None in card:
-			self.cards.append(card)
-		return card
+        for i,field in enumerate(card):
+            if not field:
+                card[i] = self.fields[i].pull(word)
 
-	def _sortFields(self):
+        if not None in card:
+            self.cards.append(card)
+        return card
 
-		numericFields = sorted([f for f in self.fields if f.order != -1], key=lambda f: f.order)
-		normalFields = [f for f in self.fields if f.order == -1]
-		return numericFields + normalFields
+    def _sortFields(self):
 
-	def front(self):
+        numericFields = sorted([f for f in self.fields if f.order != -1], key=lambda f: f.order)
+        normalFields = [f for f in self.fields if f.order == -1]
+        return numericFields + normalFields
 
-		front = "<script>%s</script>" % self.js()
+    def front(self):
 
-		front += self._fheader
+        front = "<script>%s</script>" % self.js()
 
-		for field in self._sortFields():
-			fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
-			if field.front:
-				front += fieldHtml
+        front += self._fheader
 
-		front += self._ffooter
+        for field in self._sortFields():
+            fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
+            if field.front:
+                front += fieldHtml
 
-		return front
+        front += self._ffooter
 
-	def back(self):
-		back = "<script>%s</script>" % self.js()
+        return front
 
-		wordField = self.fields[0]
-		wordHtml = wordField.html.replace('%s','{{%s}}' % wordField.anki_name)
-		back += wordHtml
+    def back(self):
+        back = "<script>%s</script>" % self.js()
 
-		back += self._bheader
+        wordField = self.fields[0]
+        wordHtml = wordField.html.replace('%s','{{%s}}' % wordField.anki_name)
+        back += wordHtml
 
-		for i,field in enumerate(self._sortFields()):
-			fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
-			if not field.front:
-				back += fieldHtml
+        back += self._bheader
 
-		back += self._bfooter
+        for i,field in enumerate(self._sortFields()):
+            fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
+            if not field.front:
+                back += fieldHtml
 
-		return back
+        back += self._bfooter
 
-	def css(self):
-		return self._css + '\n'.join([field.css for field in self.fields])
+        return back
 
-	def js(self):
-		return self._js + '\n'.join([field.js for field in self.fields])
+    def css(self):
+        return self._css + '\n'.join([field.css for field in self.fields])
 
-	def shortName(self):
-		return string.replace(self.name.lower(),' ','-')
+    def js(self):
+        return self._js + '\n'.join([field.js for field in self.fields])
+
+    def shortName(self):
+        return string.replace(self.name.lower(),' ','-')
 
 class DefaultWikiSoundCard(BasicCardType):
-	name = "Sound and Wiktionary"
+    name = "Sound and Wiktionary"
 
-	mid = 1376518451077
+    mid = 1376518451077
 
-	def __init__(self,pathToDb,languageFullName,languageCode):
-		front = FieldType(True)
-		front.anki_name = "Front"
+    def __init__(self,pathToDb,languageFullName,languageCode):
+        front = FieldType(True)
+        front.anki_name = "Front"
 
-		back = WiktionaryField(pathToDb,languageFullName,languageCode)
-		back.anki_name = "Back"
-		back.html = """<div class="content"\>%s</div>"""
+        back = WiktionaryField(pathToDb,languageFullName,languageCode)
+        back.anki_name = "Back"
+        back.html = """<div class="content"\>%s</div>"""
 
-		sound = ForvoField(pathToDb,languageCode)
-		sound.anki_name = "Audio"
+        sound = ForvoField(pathToDb,languageCode)
+        sound.anki_name = "Audio"
 
-		# This field has no purpose (i.e won't be displayed but here for legacy)
-		type = FieldType()
-		type.anki_name = "Type"
-		type.html = """<div class="content" style="display: none;">%s</div>"""
+        # This field has no purpose (i.e won't be displayed but here for legacy)
+        type = FieldType()
+        type.anki_name = "Type"
+        type.html = """<div class="content" style="display: none;">%s</div>"""
 
-		self.fields = [front,back,sound,type]
+        self.fields = [front,back,sound,type]

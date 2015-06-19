@@ -9,3 +9,5 @@ output/**
 forvocateimport.py
 **.csv
 useful.js
+**.pyc
+.idea/**
