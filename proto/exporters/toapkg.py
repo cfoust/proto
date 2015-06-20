@@ -66,20 +66,20 @@ class APKGExporter:
             d = tcol.decks.get(did)
             tcol.decks.select(did)
 
-            confId = tcol.decks.confId(parent + deck.name,cloneFrom = deck.conf)
+            confId = tcol.decks.confId(parent + deck.name, cloneFrom=deck.conf)
 
-            if deck.cardType == None:
+            if not deck.cardType:
                 conf = tcol.decks.getConf(confId)
                 conf['new']['perDay'] = 999
                 tcol.decks.updateConf(conf)
-            elif deck.perDay != None:
+            elif deck.perDay:
                 conf = tcol.decks.getConf(confId)
                 conf['new']['perDay'] = deck.perDay
                 tcol.decks.updateConf(conf)
 
             tcol.decks.setConf(d,confId)
 
-            if deck.cardType != None:
+            if deck.cardType:
                 ct = deck.cardType
 
                 if not tcol.models.byName(ct.name):
@@ -108,7 +108,6 @@ class APKGExporter:
                 else:
                     m = tcol.models.byName(ct.name)
 
-
                 # So that we can reuse already-present models
                 # if m['id'] != ct.mid:
                 # 	m = tcol.models.get(m['id'])
@@ -128,7 +127,6 @@ class APKGExporter:
 
                 ti.run()
                 tcol.save()
-
 
             for sd in deck.subdecks:
                 makeDeck(deck.name + '::',name + '-', sd)

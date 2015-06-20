@@ -1,7 +1,5 @@
-import requests, os, urllib, urllib2, string, base64, hashlib, random, re
-from peewee import *
+import requests
 from bs4 import BeautifulSoup as soup
-import bs4
 from ...fields import CacheableFieldType, Cacher
 
 def get_data_from_url(url_in):
@@ -16,17 +14,17 @@ class GermanVerbixField(CacheableFieldType):
     db_name = 'de-verbix'
     anki_name = 'Meaning'
 
-    def __init__(self,pathToDb):
-        CacheableFieldType.__init__(self,pathToDb)
-        self.verbixCache = Cacher(pathToDb,'de-verbix-pagestore')
+    def __init__(self, pathToDb):
+        CacheableFieldType.__init__(self, pathToDb)
+        self.verbixCache = Cacher(pathToDb, 'de-verbix-pagestore')
 
-    def generate(self,word):
+    def generate(self, word):
         if self.verbixCache.exists(word):
             text = self.verbixCache.retrieve(word)
         else:
             url = 'http://www.verbix.com/webverbix/German/%s.html' % (word)
             text = requests.get(url).text
-            self.verbixCache.store(word,text.encode('utf-8'))
+            self.verbixCache.store(word, text.encode('utf-8'))
 
         downloads_list = []
 
