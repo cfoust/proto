@@ -33,13 +33,14 @@ class PathHelper:
         """Takes in a ISO-639-1 language code and creates the directory structure."""
 
         self.output = 'output/%s/' % code
-        os.makedirs(self.output)
 
         self.input = 'input/%s/' % code
-        os.makedirs(self.input)
 
         self.media = 'media/%s/' % code
-        os.makedirs(self.input)
+
+        for folder in [self.media, self.input, self.output]:
+            if not os.path.exists(folder):
+                os.makedirs(folder)
 
         self.code = code
 

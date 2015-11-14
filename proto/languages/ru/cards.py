@@ -3,6 +3,35 @@ from ...cards import *
 from fields import *
 from wikiinfo import WikiInfo
 
+dualMeaningHTML = """
+<button id="left-button" class="content-button left-button" onclick="selectLeft()">ru</button>
+<button id="right-button"  class="content-button right-button" onclick="selectRight()">en</button>
+<div class="top-cut content" id='toggle-content'>none</div>
+<script>selectLeft()</script>
+"""
+
+dualMeaningJS = """
+var selectLeft = function() {
+    var text = "{{Ru_Meaning}}";
+    var leftClasses = "content-button left-button content-button-selected";
+    var rightClasses = "content-button right-button";
+
+    document.getElementById('toggle-content').innerHTML = text;
+    document.getElementById('left-button').className = leftClasses;
+    document.getElementById('right-button').className = rightClasses;
+}
+
+var selectRight = function() {
+    var text = "{{En_Meaning}}";
+    var rightClasses = "content-button right-button content-button-selected";
+    var leftClasses = "content-button left-button";
+
+    document.getElementById('toggle-content').innerHTML = text;
+    document.getElementById('left-button').className = leftClasses;
+    document.getElementById('right-button').className = rightClasses;
+}
+"""
+
 class RussianVerbCard(BasicCardType):
     name = "Russian Verb"
 
@@ -18,14 +47,17 @@ class RussianVerbCard(BasicCardType):
         perfective.anki_name = "Perfective"
         perfective.order = 1
 
-        meaning = PriorityFieldType([
+        enmeaning = PriorityFieldType([
             SDictField(pathToSdict),
-            WiktionaryField(pathToDb,'Russian','ru'),
-            RuktionaryField(pathToDb)
+            WiktionaryField(pathToDb,'Russian','ru')
         ]) # A priority setup
-        meaning.anki_name = "Meaning"
-        meaning.order = 4
-        meaning.html = "<div class='content'>%s</div>"
+        enmeaning.anki_name = "En_Meaning"
+        enmeaning.order = 4
+        enmeaning.html = "<div class='content'>%s</div>"
+
+        rumeaning = RuktionaryField(pathToDb)
+        rumeaning.anki_name = "Ru_Meaning"
+        rumeaning.html = "<div class='content' style='display: none'>%s</div>"
 
         audio = ForvoField(pathToDb,'ru')
         audio.anki_name = "Audio"
@@ -59,7 +91,8 @@ class RussianVerbCard(BasicCardType):
         self.fields = [
             imperfective,
             perfective,
-            meaning,
+            enmeaning,
+            rumeaning,
             audio,
             imperfectiveConj,
             perfectiveConj,
@@ -143,13 +176,16 @@ class RussianSoundCard(DefaultWikiSoundCard):
         front = FieldType(True)
         front.anki_name = "Front"
 
-        meaning = PriorityFieldType([
+        enmeaning = PriorityFieldType([
             SDictField(pathToSdict),
-            WiktionaryField(pathToDb,'Russian','ru'),
-            RuktionaryField(pathToDb)
+            WiktionaryField(pathToDb,'Russian','ru')
         ]) # A priority setup
-        meaning.anki_name = "Meaning"
-        meaning.html = "<div class='content'>%s</div>"
+        enmeaning.anki_name = "En_Meaning"
+        enmeaning.html = "<div class='content'>%s</div>"
+
+        rumeaning = RuktionaryField(pathToDb)
+        rumeaning.anki_name = "Ru_Meaning"
+        rumeaning.html = "<div class='content'>%s</div>"
 
         sound = ForvoField(pathToDb,'ru')
         sound.anki_name = "Audio"
@@ -159,6 +195,6 @@ class RussianSoundCard(DefaultWikiSoundCard):
         type.anki_name = "Type"
         type.html = """<div class="content" style="display: none;">%s</div>"""
 
-        self.fields = [front,meaning,sound,type]
+        self.fields = [front,enmeaning,rumeaning,sound,type]
 
         self.cards = []
