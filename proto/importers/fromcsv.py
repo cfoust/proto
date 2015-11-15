@@ -2,6 +2,9 @@ import csv, os
 
 
 class CSVImporter:
+    """Useful for importing pre-generated data from another version of Proto
+       or even older methods. A little bit janky, as it cannot recover the input
+       word used to generate the data."""
     @staticmethod
     def importIntoDeck(deck,file,delimiter = '\t'):
         if not os.path.exists(file):

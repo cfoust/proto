@@ -5,7 +5,8 @@ from progressbar import Bar, ProgressBar, Percentage, ETA
 
 
 def Progress(data):
-    """Iterates over a dataset normally, but prints a progress bar to the command line with an ETA."""
+    """Iterates over a dataset normally, but prints a progress bar to the 
+        command line with an ETA."""
 
     pbar = ProgressBar(widgets=[Percentage(), Bar(), ETA()], maxval=len(data)).start()
 
@@ -17,20 +18,22 @@ def Progress(data):
 
 
 class PathHelper:
-    """Decides on a directory structure and database location for you automatically. Convenience class that handles
-    pathing for you and lets you build .apkg files from a Deck.
+    """Decides on a directory structure and database location for you 
+        automatically. Convenience class that handles pathing for you and lets 
+        you build .apkg files from a Deck.
 
-    Stores proto's SQLite database in 'proto.db'.
-    Stores media in 'media/[languagecode]/'.
-    Stores output files (like decks and csvs) in 'output/[languagecode]/'
+        Stores proto's SQLite database in 'proto.db'.
+        Stores media in 'media/[languagecode]/'.
+        Stores output files (like decks and csvs) in 'output/[languagecode]/'
 
-    Takes input files in at 'input/[languagecode]'.
+        Takes input files in at 'input/[languagecode]'.
     """
 
     db = 'proto.db'
 
     def __init__(self, code):
-        """Takes in a ISO-639-1 language code and creates the directory structure."""
+        """Takes in a ISO-639-1 language code and creates 
+           the directory structure."""
 
         self.output = 'output/%s/' % code
 
@@ -45,8 +48,9 @@ class PathHelper:
         self.code = code
 
     def ifile(self, fileName):
-        """Returns the relative path of the requested input file. For example, if you pass in 'asd.txt' and your
-        language code is 'de', you would get back 'input/de/asd.txt' as long as the file exists."""
+        """Returns the relative path of the requested input file. For example, 
+        if you pass in 'asd.txt' and your language code is 'de', you would get 
+        back 'input/de/asd.txt' as long as the file exists."""
 
         p = self.input + fileName
 
@@ -56,11 +60,13 @@ class PathHelper:
             raise Exception('File %s not found in input directory.' % fileName)
 
     def ofile(self, fn):
-        """Returns the relative path of the requested output file. See ifile(fileName) for details."""
+        """Returns the relative path of the requested output file. 
+           See ifile(fileName) for details."""
         return self.output + fn
 
     def mfile(self, fn):
-        """Returns the relative path of the requested media file. See ifile(fileName) for details."""
+        """Returns the relative path of the requested media file. 
+           See ifile(fileName) for details."""
         # The path of the file
         p = self.media + fn
 
@@ -70,23 +76,26 @@ class PathHelper:
             raise Exception('File %s not found in media directory.' % fn)
 
     def apkgExport(self, deck, ignoreMedia=False):
-        """The bread and butter of the PathHandler class. Exports a given deck into an .apkg file that
-        can be directly imported into Anki and includes all media files. You must have generated all of
-        the needed files before calling this. See method neededFiles(deck)."""
+        """The bread and butter of the PathHandler class. Exports a given deck 
+        into an .apkg file that can be directly imported into Anki and includes 
+        all media files. You must have generated all of the needed files before 
+        calling this. See method neededFiles(deck)."""
         deckPath = self.output + self.code + '.apkg'
 
         APKGExporter.export(deck, deckPath, self.output, self.media, ignoreMedia=ignoreMedia)
 
     def neededFiles(self, deck):
-        """Returns a list of files that still need to be present before we can generate a deck. Recursively works
-        through all the decks and subdecks."""
+        """Returns a list of files that still need to be present before we can 
+        generate a deck. Recursively works through all the decks and subdecks."""
         def _neededFiles(pname, deck):
             needed = []
-            if deck.cardType != None:
+            if deck.cardType:
                 csvfile = "%s-%s.csv" % (pname, deck.csvname)
 
                 if not os.path.exists(self.ofile(csvfile)):
                     needed.append(csvfile)
+
+                # todo: check if the csv file has the right number of fields
 
             for subdeck in deck.subdecks:
                 needed += _neededFiles(deck.csvname, subdeck)
@@ -118,7 +127,8 @@ def loadTemplate(tname):
 
 
 def applyDefaultTemplate(deck, recursive=True):
-    """Applies proto's default CSS, JS, and HTML template to a deck with optional recursion."""
+    """Applies proto's default CSS, JS, and HTML template to a deck with 
+       optional recursion."""
 
     if deck.cardType != None:
         deck.cardType._css = loadTemplate('proto.css')

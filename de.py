@@ -58,4 +58,4 @@ if bd.needAnyData():
 	for key in filtered:
 		bd.bindDeckData('German::%s' % key,filtered[key])
 
-bd.build()
+bd.build(ignoreMedia=True)

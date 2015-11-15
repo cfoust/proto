@@ -1,3 +1,7 @@
+"""Forvo isn't very forthcoming in offering a good, free API. (With good reason!) 
+This bypasses the need by parsing their site for audio files. I'd like to add
+geolocation support someday (as they provide GPS coordinates for samples) to
+deal with accents."""
 from basic import CacheableFieldType
 import requests, os, urllib, urllib2, string, base64, hashlib, time, random, shutil
 from bs4 import BeautifulSoup as soup
@@ -8,6 +12,8 @@ def get_data_from_url(url_in):
 def get_soup_from_url(url_in):
 	return soup(get_data_from_url(url_in))
 
+"""Grabs audio for a given word in a target language from Forvo, a crowdsourced
+pronunciation database."""
 class ForvoField(CacheableFieldType):
 	db_name = "forvocate"
 	anki_name = "Audio"
@@ -19,7 +25,17 @@ class ForvoField(CacheableFieldType):
 				 throttle=True,
 				 soundCap=1,
 				 randomSound=False):
+		"""pathToDb: path to proto's sqlite database
+		   languageCode: ISO-639-1 language code
+		   outputPath: folder to put the media files (.mp3) in
+		   throttle: sleeps a little bit so that we don't ddos them
+		   soundCap: number of sounds to grab (usually 1)
+		   randomSound: if there are many sounds on the page for the word,
+		   				grab one randomly"""
+
+		# Separate words from different languages in the database
 		self.db_name = self.db_name + '-' + languageCode
+
 		CacheableFieldType.__init__(self,pathToDb)
 
 		self.code = languageCode
@@ -27,6 +43,7 @@ class ForvoField(CacheableFieldType):
 		self.throttle = throttle
 		self.soundCap = soundCap
 		self.randomSound = randomSound
+
 		if not storagePath:
 			self.storage_path = 'forvocate/' + languageCode + '/'
 		else:
@@ -40,6 +57,7 @@ class ForvoField(CacheableFieldType):
 		else:
 			self.output_path = outputPath
 
+		# Create the output dir if it doesn't exist
 		if not os.path.exists(self.output_path):
 			os.makedirs(self.output_path)
 		
@@ -48,13 +66,20 @@ class ForvoField(CacheableFieldType):
 		result = CacheableFieldType.pull(self,word)
 
 		if not result:
-			return '' # It doesn't matter if this field has nothing
+			"""It doesn't matter if this field has nothing, so we return a blank
+			   string. We do this because it's not a dealbreaker if a card has
+			   no sound."""
+			return ''
+
+		# Deal with fucking Python encoding
 		try:
 			word = word.encode('utf-8')
 		except:
 			pass
 
-		# Generates the resulting file paths based on the number of sounds we stored.
+		"""Generates the resulting file paths based on the number of sounds we stored.
+		   We don't really care about using hash here as even big decks have only
+		   30k or so cards. Not worth worrying about conflicts. """
 		results = [hashlib.md5(word).hexdigest() 
 		          + str(x) + '.mp3' 
 		          for x in range(int(result))]
@@ -62,17 +87,22 @@ class ForvoField(CacheableFieldType):
 		if len(results) == 0:
 			return ''
 
+		# Choose a random sound, otherwise just grab the first one
 		if self.randomSound:
 			choice = random.choice(results)
 		else:
 			choice = results[0]
 
+		# Only copy in the file if it's not already there
 		if not os.path.exists(self.output_path + choice):
 			shutil.copyfile(self.storage_path + choice,self.output_path + choice)
 
+		# This is the format Anki understands to play a sound
 		return '[sound:%s]' % choice 
 
 	def generate(self,word):
+		"""This code used to be way worse, trust me. 
+		   This pulls the audio files."""
 		downloads_list = []
 
 		try:

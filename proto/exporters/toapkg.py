@@ -11,6 +11,7 @@ import shutil, os, string
 
 ################################################
 # Taken from http://stackoverflow.com/questions/1868714/how-do-i-copy-an-entire-directory-of-files-into-an-existing-directory-using-pyth
+# Might as well be honest
 ################################################
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -109,6 +110,8 @@ class APKGExporter:
                     m = tcol.models.byName(ct.name)
 
                 # So that we can reuse already-present models
+                # todo: this doesn't actually work but would be a big part of
+                # updating
                 # if m['id'] != ct.mid:
                 # 	m = tcol.models.get(m['id'])
                 # 	m['id'] = ct.mid
@@ -138,5 +141,4 @@ class APKGExporter:
         apkge.includeSched = True
         apkge.exportInto(filename)
 
-        cleanFolder()
         cleanFolder()

@@ -1,3 +1,5 @@
+"""Conwiktion is a field type that parses wiktionary for results."""
+
 import requests, os, urllib, urllib2, string, base64, hashlib, time, random, re
 from peewee import *
 from bs4 import BeautifulSoup as soup
@@ -9,6 +11,11 @@ def get_data_from_url(url_in):
 
 def get_soup_from_url(url_in):
 	return soup(get_data_from_url(url_in))
+
+
+"""The secret to parsing wiktionary (or Wikipedia) is to never parse it at all.
+As you can tell, the code below is pretty messy but works. It's a relic from
+my first attempts at generating flash cards in 8/13."""
 
 wiktionary_en_raw = "http://en.wiktionary.org/wiki/{0}?printable=yes"
 
@@ -120,6 +127,8 @@ class WiktionaryField(CacheableFieldType):
 
 				for defi in ol.findAll('li'):
 					fixed = ''
+
+					# Past Caleb, you are so lame
 					for item in defi.contents:
 						if type(item) == bs4.element.NavigableString:
 							fixed += item

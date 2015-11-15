@@ -1,0 +1,1 @@
+Dependencies: beautifulsoup4 requests peewee progressbar pattern
