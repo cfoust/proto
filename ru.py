@@ -42,6 +42,7 @@ if bd.needAnyData():
         elif pos == 'adj':
             filtered['Adjectives'].append(lemma)
 
+
     print "Filtering out duplicates."
     for key in ['Adjectives', 'Nouns', 'Verbs']:
         old = filtered[key]

@@ -103,8 +103,11 @@ class StarlingVerbField(CacheableFieldType):
             # Create the full url
             url = starlingUrl + w1251
             
-            r = requests.get(url)
-            
+            try:
+                r = requests.get(url)
+            except:
+                return None
+
             # Decode the page from utf-8
             pageText = r.text.encode('utf-8')
 

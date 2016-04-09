@@ -10,7 +10,7 @@ def get_data_from_url(url_in):
 	return requests.get(url_in).text
 
 def get_soup_from_url(url_in):
-	return soup(get_data_from_url(url_in))
+	return soup(get_data_from_url(url_in), 'html.parser')
 
 """Grabs audio for a given word in a target language from Forvo, a crowdsourced
 pronunciation database."""
@@ -118,10 +118,18 @@ class ForvoField(CacheableFieldType):
 
 		word_soup = get_soup_from_url(url)
 
-		languages = word_soup.findAll(attrs={'class': 'word'})
+
+
+		languages = word_soup.findAll(attrs={'class': 'pronunciations'})
 
 		for language in languages:
-			abbr = language.findAll('abbr')[0].contents[0]
+			abbrs = language.findAll('abbr')
+
+			if len(abbrs) == 0:
+				continue 
+
+			abbr = abbrs[0].contents[0]
+			
 			if abbr == target:
 				a_list = language.findAll('a')
 				for a in a_list:

@@ -107,12 +107,10 @@ class Builder:
 
             print 'Building cards for deck %s.' % name
 
-            nones = 0
             for word in Progress(deckObject['data']):
                 result = deck.makeCard(word)
-                if None in result:
-                    nones += 1
-            print 'Generated %d/%d cards.' % (len(data)-nones, len(data))
+
+            print 'Generated %d/%d cards.' % (len(deck.cardType.cards), len(data))
 
             """We output to a .csv because this is what Anki (or in this case,
                 the Anki library) imports into the collection."""

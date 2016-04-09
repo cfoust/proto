@@ -4,32 +4,46 @@ from fields import *
 from wikiinfo import WikiInfo
 
 dualMeaningHTML = """
-<button id="left-button" class="content-button left-button" onclick="selectLeft()">ru</button>
-<button id="right-button"  class="content-button right-button" onclick="selectRight()">en</button>
-<div class="top-cut content" id='toggle-content'>none</div>
-<script>selectLeft()</script>
+<div id='ru-mean' style='display:none'>{{Ru_Meaning}}</div>
+<div id='en-mean' style='display:none'>{{En_Meaning}}</div>
+
+<button id="left-button" class="content-button left-button">ru</button>
+<button id="right-button"  class="content-button right-button">en</button>
+<div class="top-cut content" id='asd'>none</div>
 """
 
 dualMeaningJS = """
+var left = document.getElementById('left-button');
+
 var selectLeft = function() {
-    var text = "{{Ru_Meaning}}";
+    var text = document.getElementById('ru-mean').innerHTML;
     var leftClasses = "content-button left-button content-button-selected";
     var rightClasses = "content-button right-button";
 
-    document.getElementById('toggle-content').innerHTML = text;
+    document.getElementById('asd').innerHTML = text;
     document.getElementById('left-button').className = leftClasses;
     document.getElementById('right-button').className = rightClasses;
 }
 
+left.onclick = selectLeft;
+left.touchstart = selectLeft;
+
+var right = document.getElementById('right-button');
+
 var selectRight = function() {
-    var text = "{{En_Meaning}}";
+    var text = document.getElementById('en-mean').innerHTML;
     var rightClasses = "content-button right-button content-button-selected";
     var leftClasses = "content-button left-button";
 
-    document.getElementById('toggle-content').innerHTML = text;
+    document.getElementById('asd').innerHTML = text;
     document.getElementById('left-button').className = leftClasses;
     document.getElementById('right-button').className = rightClasses;
 }
+
+right.onclick = selectRight;
+right.touchstart = selectRight;
+
+selectLeft();
 """
 
 class RussianVerbCard(BasicCardType):
@@ -43,9 +57,11 @@ class RussianVerbCard(BasicCardType):
         imperfective.anki_name = "Imperfective"
         imperfective.order = 0
 
+
         perfective = FieldType(False)
         perfective.anki_name = "Perfective"
         perfective.order = 1
+        perfective.html = '{{^Imperfective}}<div class="content">%s</div>{{/Imperfective}}'
 
         enmeaning = PriorityFieldType([
             SDictField(pathToSdict),
@@ -53,11 +69,12 @@ class RussianVerbCard(BasicCardType):
         ]) # A priority setup
         enmeaning.anki_name = "En_Meaning"
         enmeaning.order = 4
-        enmeaning.html = "<div class='content'>%s</div>"
+        enmeaning.html = ""
 
         rumeaning = RuktionaryField(pathToDb)
         rumeaning.anki_name = "Ru_Meaning"
-        rumeaning.html = "<div class='content' style='display: none'>%s</div>"
+        rumeaning.html = dualMeaningHTML
+        rumeaning.js = dualMeaningJS
 
         audio = ForvoField(pathToDb,'ru')
         audio.anki_name = "Audio"
@@ -106,67 +123,82 @@ class RussianVerbCard(BasicCardType):
     def generate(self,word):
         card = [None for x in range(9)]
 
+        # Get the aspect, pair, and the pair's aspect
         wordAspect = self.info.getAspect(word)
         wordPair = self.info.getAspectualPair(word)
         wordPairAspect = self.info.getAspect(wordPair)
 
         imperfective = None
         perfective = None
-        if wordAspect == 'impf':
+
+        # If we have both a perfective and imperfective form
+        if wordAspect == 'impf' and wordPairAspect == 'pf':
             imperfective = word
-        else:
+            perfective = wordPair
+        # If we have just an imperfective form
+        elif wordAspect == 'impf' and (not wordPairAspect or not wordPair):
+            imperfective = word
+        # If we have just a perfective form
+        elif wordAspect == 'pf' and (not wordPairAspect or not wordPair):
             perfective = word
 
-        if wordPairAspect == 'impf':
-            imperfective = wordPair
-        else:
-            perfective = wordPair
-
+        # If the imperfective form exists
         if imperfective:
             try:
                 imperfective = imperfective.encode('utf-8')
             except:
                 pass
-            card[0] = imperfective
-            card[4] = self.fields[4].pull(imperfective)
-            card[6] = self.fields[6].pull(imperfective)
-        else:
-            card[0] = ''
-            card[4] = ''
-            card[6] = ''
 
+            # Prioritize this as the headword
+            card[0] = imperfective
+
+            # Get the definitions based on imperfective
+            card[2] = self.fields[2].pull(imperfective)
+            card[3] = self.fields[3].pull(imperfective)
+
+            # Get the sound for imperfective
+            card[4] = self.fields[4].pull(imperfective)
+
+            # Get the conjugation for imperfective
+            card[5] = self.fields[5].pull(imperfective)
+
+            # Get the stress for imperfective
+            card[7] = self.fields[7].pull(imperfective)
+
+        # If the perfective form exists
         if perfective:
             try:
                 perfective = perfective.encode('utf-8')
             except:
                 pass
+
+            # Set the second field as the perfective form
             card[1] = perfective
-            card[5] = self.fields[5].pull(perfective)
-            card[7] = self.fields[7].pull(perfective)
-        else:
-            card[1] = ''
-            card[5] = ''
-            card[7] = ''
 
-        if imperfective:
-            for subfield in self.fields[2]:
-                result = subfield.pull(imperfective)
-                if result:
-                    card[2] = result
-                    break
-            card[3] = self.fields[3].pull(imperfective)
-            card[8] = imperfective
-        elif perfective:
-            for subfield in self.fields[2]:
-                result = subfield.pull(perfective)
-                if result:
-                    card[2] = result
-                    break
+            # Get the perfective conjugation
+            card[6] = self.fields[6].pull(perfective)
+
+            # Get the stress for perfective
+            card[8] = self.fields[8].pull(perfective)
+
+        # When we just have a perfective verb
+        if perfective and not imperfective:
+            # Get the definitions based on perfective
+            card[2] = self.fields[2].pull(perfective)
             card[3] = self.fields[3].pull(perfective)
-            card[8] = perfective
 
-        if not None in card:
+            # Get the sound for imperfective
+            card[4] = self.fields[4].pull(perfective)
+
+        if imperfective and not perfective:
+            # Make these not None, just empty
+            card[1] = ''
+            card[6] = ''
+            card[8] = ''
+
+        if not None in card[0:2] + card[4:] and not (card[2] == None and card[3] == None):
             self.cards.append(card)
+
         return card
 
 class RussianSoundCard(DefaultWikiSoundCard):
@@ -181,11 +213,12 @@ class RussianSoundCard(DefaultWikiSoundCard):
             WiktionaryField(pathToDb,'Russian','ru')
         ]) # A priority setup
         enmeaning.anki_name = "En_Meaning"
-        enmeaning.html = "<div class='content'>%s</div>"
+        enmeaning.html = ""
 
         rumeaning = RuktionaryField(pathToDb)
         rumeaning.anki_name = "Ru_Meaning"
-        rumeaning.html = "<div class='content'>%s</div>"
+        rumeaning.html = dualMeaningHTML
+        rumeaning.js = dualMeaningJS
 
         sound = ForvoField(pathToDb,'ru')
         sound.anki_name = "Audio"
@@ -198,3 +231,18 @@ class RussianSoundCard(DefaultWikiSoundCard):
         self.fields = [front,enmeaning,rumeaning,sound,type]
 
         self.cards = []
+
+    def generate(self, word):
+
+        card = []
+
+        # Creates the card's array using generated fields.
+        for field in self.fields:
+            result = field.pull(word)
+            card.append(result)
+
+        # Ensures that no field returned None.
+        if not (card[1] == None and card[2] == None):
+            self.cards.append(card)
+
+        return card

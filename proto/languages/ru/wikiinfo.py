@@ -8,7 +8,7 @@ from sdict import *
 import requests, urllib, re, string
 
 # Base url format
-wiktionary_en_raw = "http://en.wiktionary.org/wiki/{0}?action=raw"
+wiktionary_en_raw = "https://en.wiktionary.org/wiki/{0}?action=raw"
 
 # We use this to check what SDict thinks about the aspect of a verb
 sdict_template = "несовер\. \- ([^\s-]+)<br>совер\. \- ([^\s-]+)"
@@ -60,7 +60,10 @@ class WikiInfo:
             except:
                 pass
             url = wiktionary_en_raw.format(urllib.quote(word))
-            pageText = requests.get(url).text
+            try:
+                pageText = requests.get(url).text
+            except:
+                return None
 
             # Stores the page in the cache
             self.pageCache.store(word,pageText.encode('utf-8'))
