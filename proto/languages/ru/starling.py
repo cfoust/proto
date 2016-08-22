@@ -52,10 +52,10 @@ class StarlingVerbField(CacheableFieldType):
     db_name = 'starling-verb-ru'
     anki_name = 'Conjugation'
 
-    def __init__(self,pathToDb):
-        CacheableFieldType.__init__(self,pathToDb)
+    def __init__(self,db):
+        CacheableFieldType.__init__(self,db)
 
-        self.pageCache = Cacher(pathToDb,'starling-verb-pagestore-ru')
+        self.pageCache = Cacher(db,'starling-verb-pagestore-ru')
 
     def pull(self,word):
         if self.cacher.exists(word):

@@ -107,7 +107,7 @@ class Builder:
 
             print 'Building cards for deck %s.' % name
 
-            for word in Progress(deckObject['data']):
+            for word in Progress(data):
                 result = deck.makeCard(word)
 
             print 'Generated %d/%d cards.' % (len(deck.cardType.cards), len(data))

@@ -23,12 +23,12 @@ class WiktionaryField(CacheableFieldType):
 	db_name = 'conwiktion'
 	anki_name = 'Meaning'
 
-	def __init__(self,pathToDb,languageName,languageCode):
+	def __init__(self,db,languageName,languageCode):
 		self.db_name = self.db_name + '-' + languageCode.lower()
-		CacheableFieldType.__init__(self,pathToDb)
+		CacheableFieldType.__init__(self,db)
 		self.languageName = languageName
 		
-		self.wikiCache = Cacher(pathToDb,'conwiktion-wikistore')
+		self.wikiCache = Cacher(db,'conwiktion-wikistore')
 
 	def generate(self,word):
 		try:

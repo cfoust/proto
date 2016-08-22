@@ -65,15 +65,12 @@ class CachedInfo(peewee.Model):
 """ Number of characters after which we compress. """
 COMPRESSION_CUTOFF = 1024
 class Cacher:
-    def __init__(self,pathToDb,identifier):
-        """Makes a connection to the provided sqlite db. Really we could use
-           any kind of database that peewee supports here, but it's not a 
-           priority right now."""
-        sqlitedb = peewee.SqliteDatabase(pathToDb)
-        sqlitedb.connect()
-        dbproxy.initialize(sqlitedb)
+    def __init__(self, db, identifier):
+        """Makes a connection to the provided peewee db."""
+        db.connect()
+        dbproxy.initialize(db)
 
-        self.db = sqlitedb
+        self.db = db
 
         # Create the tables if they don't exist
         self.db.create_tables([CachedInfo],safe=True)
@@ -194,3 +191,78 @@ class CacheableFieldType(FieldType):
     def generate(self,word):
         return word
 
+switchHTML = """
+<div id='left-mean-%s' style='display:none'>{{%s}}</div>
+<div id='right-mean-%s' style='display:none'>{{%s}}</div>
+
+<button id="left-button-%s" class="content-button left-button">%s</button>
+<button id="right-button-%s"  class="content-button right-button">%s</button>
+<div class="top-cut content" id='switch-content-%s'>none</div>
+"""
+
+switchJS = """
+var left = document.getElementById('left-button-%s');
+
+var selectLeft = function() {
+    var text = document.getElementById('left-mean-%s').innerHTML;
+    var leftClasses = "content-button left-button content-button-selected";
+    var rightClasses = "content-button right-button";
+
+    document.getElementById('switch-content-%s').innerHTML = text;
+    document.getElementById('left-button-%s').className = leftClasses;
+    document.getElementById('right-button-%s').className = rightClasses;
+}
+
+left.onclick = selectLeft;
+left.touchstart = selectLeft;
+
+var right = document.getElementById('right-button-%s');
+
+var selectRight = function() {
+    var text = document.getElementById('right-mean-%s').innerHTML;
+    var rightClasses = "content-button right-button content-button-selected";
+    var leftClasses = "content-button left-button";
+
+    document.getElementById('switch-content-%s').innerHTML = text;
+    document.getElementById('left-button-%s').className = leftClasses;
+    document.getElementById('right-button-%s').className = rightClasses;
+}
+
+right.onclick = selectRight;
+right.touchstart = selectRight;
+
+selectLeft();
+"""
+import random
+def Switchable(leftLabel, rightLabel, left, right):
+    """Turns two fields that would normally display as separate boxes on the card
+    into one content box. On top are buttons, labeled leftLabel and rightLabel,
+    that the user can press to switch the content box's content.
+
+    The left content is shown by default.
+
+    You should add CSS styles for left-button, right-button, content-button,
+    and content-button-selected."""
+
+    # Used for making sure there's no collision between switchable frames
+    # if there are multiple on one card
+    suffix = str(random.randint(0,1000))
+
+    # formats the html
+    html = switchHTML % (suffix, 
+                         left.anki_name, 
+                         suffix, 
+                         right.anki_name,
+                         suffix,
+                         leftLabel,
+                         suffix,
+                         rightLabel,
+                         suffix)
+    # formats the js
+    js = switchJS.replace('%s',suffix)
+
+    left.html = ""
+    left.js = ""
+
+    right.html = html
+    right.js = js

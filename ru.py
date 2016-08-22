@@ -1,12 +1,14 @@
-
+from proto.db import *
 from proto.builder import *
 
 from proto.languages.ru import RussianDeck
 from proto.languages.ru.wikiinfo import WikiInfo
 
+import json, os
+
 ph = PathHelper('ru')
 
-rd = RussianDeck(ph.db, ph.ifile('rus_eng_full2.dct'))
+rd = RussianDeck(sqlite('proto.db'), ph.ifile('rus_eng_full2.dct'))
 
 # Apply Templates
 applyDefaultTemplate(rd)
@@ -52,19 +54,26 @@ if bd.needAnyData():
                 filtered[key].append(word)
 
     print "Filtering out paired verbs."
-    info = WikiInfo(ph.db, ph.ifile('rus_eng_full2.dct'))
-    skip = []
+    info = WikiInfo(sqlite('proto.db'), ph.ifile('rus_eng_full2.dct'))
+    skip = {}
+    
+    if not os.path.exists('verbskip.js'):
+        for verb in Progress(filtered['Verbs']):
+            if verb in skip:
+                continue
+            pair = info.getAspectualPair(verb)
+            if pair:
+                skip[pair] = 1
 
-    for verb in Progress(filtered['Verbs']):
-        if verb in skip:
-            continue
-        pair = info.getAspectualPair(verb)
-        if pair:
-            skip.append(pair)
-
+        with open('verbskip.js', 'w') as f:
+            f.write(json.dumps(skip))
+    else:
+        with open('verbskip.js', 'r') as f:
+            skip = json.loads(f.read())
+    
     filtered['Verbs'] = [verb for verb in filtered['Verbs'] if not verb in skip and verb]
 
     for key in filtered:
         bd.bindDeckData('Russian::%s' % key, filtered[key])
 
-bd.build(ignoreMedia=True)
+bd.build(ignoreMedia=False)

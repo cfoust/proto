@@ -15,10 +15,10 @@ class RuktionaryField(CacheableFieldType):
     db_name = 'conruktion'
     anki_name = 'Meaning'
 
-    def __init__(self,pathToDb):
-        CacheableFieldType.__init__(self,pathToDb)
+    def __init__(self,db):
+        CacheableFieldType.__init__(self,db)
 
-        self.wikiCache = Cacher(pathToDb,'conwiktion-ru-wikistore')
+        self.wikiCache = Cacher(db,'conwiktion-ru-wikistore')
 
     def generate(self,word):
         try:

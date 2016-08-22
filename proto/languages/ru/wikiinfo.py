@@ -21,12 +21,12 @@ def strip_stress(word):
     return word
 
 class WikiInfo:
-    def __init__(self,pathToDb,sdictPath):
+    def __init__(self,db,sdictPath):
         # Caches the lines that mentions a verb's aspect, pair, and stress
-        self.stringCache = Cacher(pathToDb,'wiki-string-ru')
+        self.stringCache = Cacher(db,'wiki-string-ru')
 
         # Caches the entire raw page
-        self.pageCache = Cacher(pathToDb,'wiki-raw-page-ru')
+        self.pageCache = Cacher(db,'wiki-raw-page-ru')
 
         # Reference to the sDict dictionary
         self.sdict = SDictField(sdictPath)
@@ -122,7 +122,7 @@ class WikiInfo:
             fields = string.split(line,"|")
 
             # Return the third entry
-            return fields[2]
+            return fields[2].strip()
 
     def getStress(self,word):
         """Gets the stress of a verb."""
@@ -135,6 +135,20 @@ class WikiInfo:
 
     def getAspectualPair(self,word):
         """Gets the aspectual pair for the verb."""
+        
+        line = self.getVerbLine(word)
+
+        if not line:
+            return None
+
+        fields = string.split(line,"|")
+        if len(fields) > 3:
+            part = fields[3]
+            if "impf=" in part:
+                return strip_stress(part[5:]).encode('utf-8')
+            else:
+                return strip_stress(part[3:]).encode('utf-8')
+
         definition = self.sdict.pull(word)
 
         if definition:
@@ -146,9 +160,7 @@ class WikiInfo:
 
             imperfective = ""
             perfective = ""
-            if m == None:
-                return None
-            else:
+            if m != None:
                 imperfective = m.group(1)
                 perfective = m.group(2)
                 if imperfective == word:
@@ -156,15 +168,4 @@ class WikiInfo:
                 else:
                     return imperfective
 
-        line = self.getVerbLine(word)
-
-        if not line:
-            return None
-
-        fields = string.split(line,"|")
-        if len(fields) > 3:
-            part = fields[3]
-            if "impf=" in part:
-                return strip_stress(part[5:]);
-            else:
-                return strip_stress(part[3:]);
+        

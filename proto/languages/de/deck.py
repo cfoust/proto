@@ -7,8 +7,8 @@ class GermanVerbsDeck(Deck):
     cardType = None
     languageCode = 'de'
 
-    def __init__(self,pathToDb):
-        self.cardType = GermanVerbCard(pathToDb)
+    def __init__(self,db):
+        self.cardType = GermanVerbCard(db)
 
 
 class GermanDeck(Deck):
@@ -19,19 +19,19 @@ class GermanDeck(Deck):
 
     subdecks = []
 
-    def __init__(self,pathToDb):
+    def __init__(self,db):
         nouns = Deck()
         nouns.name = "Nouns"
         nouns.csvname = 'nouns'
-        nouns.cardType = DefaultWikiSoundCard(pathToDb,'German','de')
+        nouns.cardType = DefaultWikiSoundCard(db,'German','de')
 
         adjectives = Deck()
         adjectives.name = "Adjectives"
         adjectives.csvname = 'adjectives'
-        adjectives.cardType = DefaultWikiSoundCard(pathToDb,'German','de')
+        adjectives.cardType = DefaultWikiSoundCard(db,'German','de')
 
         self.subdecks += [
             nouns,
             adjectives,
-            GermanVerbsDeck(pathToDb)
+            GermanVerbsDeck(db)
         ]

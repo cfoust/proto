@@ -14,9 +14,9 @@ class GermanVerbixField(CacheableFieldType):
     db_name = 'de-verbix'
     anki_name = 'Meaning'
 
-    def __init__(self, pathToDb):
-        CacheableFieldType.__init__(self, pathToDb)
-        self.verbixCache = Cacher(pathToDb, 'de-verbix-pagestore')
+    def __init__(self, db):
+        CacheableFieldType.__init__(self, db)
+        self.verbixCache = Cacher(db, 'de-verbix-pagestore')
 
     def generate(self, word):
         if self.verbixCache.exists(word):

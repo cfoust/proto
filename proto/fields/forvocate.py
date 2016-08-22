@@ -19,30 +19,36 @@ class ForvoField(CacheableFieldType):
 	anki_name = "Audio"
 	html = """%s"""
 
-	def __init__(self,pathToDb,languageCode,
+	def __init__(self,
+		 		 db,
+				 languageCode,
 				 storagePath = None,
 				 outputPath = None,
 				 throttle=True,
 				 soundCap=1,
-				 randomSound=False):
-		"""pathToDb: path to proto's sqlite database
+				 randomSound=False,
+				 limitCountries=[]):
+		"""db: database
 		   languageCode: ISO-639-1 language code
 		   outputPath: folder to put the media files (.mp3) in
 		   throttle: sleeps a little bit so that we don't ddos them
 		   soundCap: number of sounds to grab (usually 1)
 		   randomSound: if there are many sounds on the page for the word,
-		   				grab one randomly"""
+		   				grab one randomly
+		   limitCountries: If array is non-empty, limit sounds to pronouncers
+		   				   from the English name of the given countr(y/ies)"""
 
 		# Separate words from different languages in the database
 		self.db_name = self.db_name + '-' + languageCode
 
-		CacheableFieldType.__init__(self,pathToDb)
+		CacheableFieldType.__init__(self,db)
 
 		self.code = languageCode
 		
 		self.throttle = throttle
 		self.soundCap = soundCap
 		self.randomSound = randomSound
+		self.limitCountries = limitCountries
 
 		if not storagePath:
 			self.storage_path = 'forvocate/' + languageCode + '/'
@@ -118,8 +124,6 @@ class ForvoField(CacheableFieldType):
 
 		word_soup = get_soup_from_url(url)
 
-
-
 		languages = word_soup.findAll(attrs={'class': 'pronunciations'})
 
 		for language in languages:
@@ -130,21 +134,40 @@ class ForvoField(CacheableFieldType):
 
 			abbr = abbrs[0].contents[0]
 			
-			if abbr == target:
-				a_list = language.findAll('a')
+			# Make sure we only get audio for the desired language
+			if not abbr == target:
+				continue
+
+			pronunciations = language.findAll('ul')[0].findAll('li')
+
+			# Iterate through all pronunciations
+			for pron in pronunciations:
+				if len(self.limitCountries) > 0:
+					# Check to see where the speaker is from
+	 				loc = pron.findAll(attrs={'class': 'from'})[0].contents[0]
+
+	 				# Splits the string and grabs just the last word
+	 				loc = loc.split()[-1][:-1]
+
+	 				# Skip the pronunciation
+	 				if not loc in self.limitCountries:
+	 					continue
+
+	 			# Grab the sound
+	 			a_list = pron.findAll('a')
 				for a in a_list:
 					try:
 						href = a['onclick']
 					except KeyError:
 						continue
+
 					# construct the url again
 					parts = string.split(href,",")
 					if "Play" in parts[0]:
 						mp3_64 = parts[1][1:-1]
 						mp3_url = 'http://audio.forvo.com:80/mp3/{0}'.format(base64.b64decode(mp3_64))
 						downloads_list.append(mp3_url)
-					else:
-						continue
+						break
 
 		# Clear out old downloads
 		hashed = hashlib.md5(word).hexdigest()

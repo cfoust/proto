@@ -7,18 +7,18 @@ class GermanVerbCard(BasicCardType):
 
     fields = []
 
-    def __init__(self,pathToDb):
+    def __init__(self,db):
 
         word = FieldType(True)
         word.anki_name = "Word"
 
-        meaning = WiktionaryField(pathToDb,'German','de')
+        meaning = WiktionaryField(db,'German','de')
         meaning.anki_name = "Meaning"
 
-        sound = ForvoField(pathToDb,'de')
+        sound = ForvoField(db,'de')
         sound.anki_name = "Sound"
 
-        conjugation = GermanVerbixField(pathToDb)
+        conjugation = GermanVerbixField(db)
         conjugation.anki_name = "Conjugation"
 
         self.fields = [word,meaning,sound,conjugation]
