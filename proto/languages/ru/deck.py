@@ -32,6 +32,8 @@ class RussianDeck(Deck):
     subdecks = []
 
     def __init__(self,db,pathToSdict):
+        Deck.__init__(self)
+        
         # Creates the nouns deck
         nouns = Deck()
         nouns.name = "Nouns"

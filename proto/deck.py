@@ -1,7 +1,7 @@
 """The Deck class either contains subdecks or a card type. The Deck does not generate cards itself, but passes
 generation calls down to its CardType (if it has one) and thus to the FieldTypes. Offers properties that control how
 the deck will be studied in Anki, how frequently, etc."""
-import string
+import string, copy
 
 # This is directly taken from Anki's database.
 defaultStudyConf = {
@@ -92,6 +92,9 @@ class Deck:
     # Instead of changing a part of the config, this optional variable lets you choose how many new cards will show
     # in a day.
     perDay = None
+
+    def __init__(self):
+        self.conf = copy.deepcopy(defaultStudyConf)
 
     def makeCard(self, word):
         """Generates a card for the card type.
