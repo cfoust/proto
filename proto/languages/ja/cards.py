@@ -1,8 +1,8 @@
 from ...fields import *
 from ...cards import *
 
-class HiraganaCard(BasicCardType):
-    name = 'Hiragana Character'
+class SymbolToSoundCard(BasicCardType):
+    name = 'Symbol to Sound'
 
     def __init__(self,db):
         front = FieldType(True)
@@ -16,17 +16,98 @@ class HiraganaCard(BasicCardType):
 
         self.cards = []
 
-class KatakanaCard(BasicCardType):
-    name = 'Katakana Character'
+class SoundToStrokeCard(BasicCardType):
+    name = 'Sound to Stroke'
 
     def __init__(self,db):
+        sound = ForvoField(db, 'ja')
+        sound.front = True
+        sound.anki_name = "Audio"
+
+
+
+        # The stroke order goes on the back
+        stroke = FieldType()
+        stroke.anki_name = "Stroke"
+        stroke.html = '<div class="content" style="font-size: 1200%; text-align: center; font-family: strokefont;">%s</div>'
+        stroke.css = """@font-face {
+  font-family: 'strokefont';
+  src: url('kanji.ttf')  format('truetype');
+}"""
+
+        self.fields = [sound, stroke]
+
+        self.cards = []
+
+
+class RadicalInfo(BasicCardType):
+    name = 'Radical Info'
+
+    def __init__(self):
         front = FieldType(True)
         front.anki_name = "Front"
         front.html = '<div class="content" style="font-size: 1200%; text-align: center;">%s</div>'
 
-        sound = ForvoField(db, 'ja')
-        sound.anki_name = "Audio"
+        meaning = FieldType()
+        meaning.anki_name = "Meaning"
 
-        self.fields = [front, sound]
+        name = FieldType()
+        name.anki_name = "Name"
+        name.html = """{{#Name}}
+<div class="content center">%s</div>
+{{/Name}}"""
+
+        examples = FieldType()
+        examples.anki_name = "Examples"
+
+        self.fields = [
+            front,
+            meaning,
+            name,
+            examples
+        ]
 
         self.cards = []
+
+    def generate(self,word):
+        card = ['' for x in range(4)]
+
+        parts = word.split("\t")
+
+        card[0] = parts[0]
+        card[1] = parts[3]
+        card[2] = parts[2]
+        card[3] = parts[-1]
+
+        self.cards.append(card)
+
+class RadicalStroke(BasicCardType):
+    name = 'Radical Stroke'
+
+    def __init__(self):
+        radical = FieldType(True)
+        radical.anki_name = "Character"
+        radical.html = '<div class="content" style="font-size: 1200%; text-align: center;">%s</div>'
+
+        # The stroke order goes on the back
+        stroke = FieldType()
+        stroke.anki_name = "Stroke"
+        stroke.html = '<div class="content" style="font-size: 1200%; text-align: center; font-family: strokefont;">%s</div>'
+        stroke.css = """@font-face {
+  font-family: 'strokefont';
+  src: url('kanji.ttf')  format('truetype');
+}"""
+
+        self.fields = [radical, stroke]
+
+        self.cards = []
+
+    def generate(self,word):
+        card = ['' for x in range(2)]
+
+        parts = word.split("\t")
+
+        card[0] = parts[0]
+        card[1] = parts[0]
+
+        self.cards.append(card)

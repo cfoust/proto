@@ -31,6 +31,7 @@ class Builder:
         dictionary, but it works similarly."""
         neededFiles = self.ph.neededFiles(self.headDeck)
 
+
         def appendDeck(parentName, parentCsvName, deck):
             # The Anki-style full name of the deck
             name = parentName + '::' + deck.name if parentName != '' else deck.name
@@ -99,7 +100,6 @@ class Builder:
 
             # Skip this deck if we don't need to generate anything.
             if not deckObject['needData']:
-                print 'Skipping build for deck %s, either does not need data or already built.' % name
                 continue
 
             if len(data) == 0:
@@ -114,7 +114,7 @@ class Builder:
 
             """We output to a .csv because this is what Anki (or in this case,
                 the Anki library) imports into the collection."""
-            CSVExporter.export(deck,self.ph.output + deckObject['csvname'] + '.csv')
+            CSVExporter.export(deck,self.ph.output(deckObject['csvname'] + '.csv'))
 
         self.ph.apkgExport(self.headDeck, ignoreMedia=ignoreMedia)
         print 'Build of %s successful.' % self.headDeck.name

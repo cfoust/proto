@@ -22,67 +22,77 @@ class PathHelper:
         automatically. Convenience class that handles pathing for you and lets 
         you build .apkg files from a Deck.
 
-        Stores proto's SQLite database in 'proto.db'.
+        Stores proto's SQLite database in 'input/[languagecode]/[languagecode].db'.
         Stores media in 'media/[languagecode]/'.
         Stores output files (like decks and csvs) in 'output/[languagecode]/'
 
         Takes input files in at 'input/[languagecode]'.
     """
 
-    db = 'proto.db'
-
     def __init__(self, code):
         """Takes in a ISO-639-1 language code and creates 
            the directory structure."""
+        
+        self.code = code
 
-        self.output = 'output/%s/' % code
+        self._output = 'output/%s/' % code
 
-        self.input = 'input/%s/' % code
+        self._input = 'input/%s/' % code
 
-        self.media = 'media/%s/' % code
+        self._media = 'media/%s/' % code
 
-        for folder in [self.media, self.input, self.output]:
+        self._db = self._input + self.code + '.db'
+
+        for folder in [self._media, self._input, self._output]:
             if not os.path.exists(folder):
                 os.makedirs(folder)
 
-        self.code = code
 
-    def ifile(self, fileName):
+    def db(self):
+        return self._db
+
+    def input(self, fileName):
         """Returns the relative path of the requested input file. For example, 
         if you pass in 'asd.txt' and your language code is 'de', you would get 
         back 'input/de/asd.txt' as long as the file exists."""
 
-        p = self.input + fileName
+        # Return the folder path if there's no filename on the call
+        if not fileName:
+            return self._input
+
+        p = self._input + fileName
 
         if os.path.exists(p):
             return p
         else:
             raise Exception('File %s not found in input directory.' % fileName)
 
-    def ofile(self, fn):
+    def output(self, fileName):
         """Returns the relative path of the requested output file. 
            See ifile(fileName) for details."""
-        return self.output + fn
+        
+        if not fileName:
+            return self._output
 
-    def mfile(self, fn):
+        return self._output + fileName
+
+    def media(self, fileName):
         """Returns the relative path of the requested media file. 
            See ifile(fileName) for details."""
-        # The path of the file
-        p = self.media + fn
 
-        if os.path.exists(p):
-            return p
-        else:
-            raise Exception('File %s not found in media directory.' % fn)
+        if not fileName:
+            return self._media
+
+        return self._media + fileName
 
     def apkgExport(self, deck, ignoreMedia=False):
         """The bread and butter of the PathHandler class. Exports a given deck 
         into an .apkg file that can be directly imported into Anki and includes 
         all media files. You must have generated all of the needed files before 
         calling this. See method neededFiles(deck)."""
-        deckPath = self.output + self.code + '.apkg'
+        deckPath = self._output + self.code + '.apkg'
 
-        APKGExporter.export(deck, deckPath, self.output, self.media, ignoreMedia=ignoreMedia)
+        APKGExporter.export(deck, deckPath, self._output, self._media, ignoreMedia=ignoreMedia)
 
     def neededFiles(self, deck):
         """Returns a list of files that still need to be present before we can 
@@ -92,13 +102,13 @@ class PathHelper:
             if deck.cardType:
                 csvfile = "%s-%s.csv" % (pname, deck.csvname)
 
-                if not os.path.exists(self.ofile(csvfile)):
+                if not os.path.exists(self.output(csvfile)):
                     needed.append(csvfile)
 
                 # todo: check if the csv file has the right number of fields
 
             for subdeck in deck.subdecks:
-                needed += _neededFiles(deck.csvname, subdeck)
+                needed += _neededFiles(pname + '-' + deck.csvname if pname != '' else deck.csvname, subdeck)
 
             return needed
 

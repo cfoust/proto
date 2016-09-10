@@ -132,7 +132,7 @@ class APKGExporter:
                 tcol.save()
 
             for sd in deck.subdecks:
-                makeDeck(deck.name + '::',name + '-', sd)
+                makeDeck(parent + deck.name + '::',prefix + name + '-', sd)
 
         makeDeck('','',deck)
 

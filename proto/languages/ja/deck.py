@@ -12,7 +12,7 @@ class JapaneseDeck(Deck):
     name = "Japanese"
 
     # This is the base CSV name we use to hold data to be imported into Anki
-    csvname = 'jp'
+    csvname = 'ja'
 
     cardType = None
 
@@ -21,28 +21,84 @@ class JapaneseDeck(Deck):
     def __init__(self, db):
         Deck.__init__(self)
 
-        # Creates the hiragana deck
+
+        # Creates the main hiragana deck
         hiragana = Deck()
         hiragana.name = "Hiragana"
-        """ The csvname here is a short (and lowercase) name that we use to 
-            generate CSVs."""
         hiragana.csvname = 'hiragana'
-        hiragana.cardType = HiraganaCard(db)
+        hiragana.cardType = None
         hiragana.conf["rev"]["ivlFct"] = 0.3
         hiragana.conf["rev"]["ease4"] = 1.1
 
-        # Creates the katakana deck
+        generalConf = hiragana.conf
+
+        # Makes its symbol to sound deck
+        hiraganaSymbolToSound = Deck()
+        hiraganaSymbolToSound.name = "Sound"
+        hiraganaSymbolToSound.csvname = 'symbol-to-sound'
+        hiraganaSymbolToSound.cardType = SymbolToSoundCard(db)
+        hiraganaSymbolToSound.conf = generalConf
+
+        hiraganaSoundToStroke = Deck()
+        hiraganaSoundToStroke.name = "Stroke"
+        hiraganaSoundToStroke.csvname = 'sound-to-stroke'
+        hiraganaSoundToStroke.cardType = SoundToStrokeCard(db)
+        hiraganaSoundToStroke.conf = generalConf
+
+        hiragana.subdecks = [
+            hiraganaSymbolToSound,
+            hiraganaSoundToStroke
+        ]
+
         katakana = Deck()
         katakana.name = "Katakana"
-        """ The csvname here is a short (and lowercase) name that we use to 
-            generate CSVs."""
         katakana.csvname = 'katakana'
-        katakana.cardType = KatakanaCard(db)
-        katakana.conf["rev"]["ivlFct"] = 0.3
-        katakana.conf["rev"]["ease4"] = 1.1
+        katakana.cardType = None
+        katakana.conf = generalConf
 
+        # Makes its symbol to sound deck
+        katakanaSymbolToSound = Deck()
+        katakanaSymbolToSound.name = "Sound"
+        katakanaSymbolToSound.csvname = 'symbol-to-sound'
+        katakanaSymbolToSound.cardType = SymbolToSoundCard(db)
+        katakanaSymbolToSound.conf = generalConf
+
+        katakanaSoundToStroke = Deck()
+        katakanaSoundToStroke.name = "Stroke"
+        katakanaSoundToStroke.csvname = 'sound-to-stroke'
+        katakanaSoundToStroke.cardType = SoundToStrokeCard(db)
+        katakanaSoundToStroke.conf = generalConf
+
+        katakana.subdecks = [
+            katakanaSymbolToSound,
+            katakanaSoundToStroke
+        ]
+
+        radicals = Deck()
+        radicals.name = "Radicals"
+        radicals.csvname = 'radicals'
+        radicals.cardType = None
+        radicals.conf = generalConf
+
+        radicalMeaning = Deck()
+        radicalMeaning.name = "Meaning"
+        radicalMeaning.csvname = 'meaning'
+        radicalMeaning.cardType = RadicalInfo()
+        radicalMeaning.conf = generalConf
+
+        radicalStroke = Deck()
+        radicalStroke.name = "Stroke"
+        radicalStroke.csvname = 'stroke'
+        radicalStroke.cardType = RadicalStroke()
+        radicalStroke.conf = generalConf
+
+        radicals.subdecks = [
+            radicalMeaning,
+            radicalStroke
+        ]
 
         self.subdecks = [
             hiragana,
-            katakana
+            katakana,
+            radicals
         ]
