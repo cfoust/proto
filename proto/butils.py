@@ -136,15 +136,19 @@ def loadTemplate(tname):
         raise Exception('Template %s not found in template directory.' % tname)
 
 
-def applyDefaultTemplate(deck, recursive=True):
+def applyDefaultTemplate(deck, recursive=True, css='proto.css', js='proto.js', header='proto.header.html', footer='proto.footer.html'):
     """Applies proto's default CSS, JS, and HTML template to a deck with 
        optional recursion."""
 
     if deck.cardType != None:
-        deck.cardType._css = loadTemplate('proto.css')
-        deck.cardType._js = loadTemplate('proto.js')
-        deck.cardType._bheader = loadTemplate('proto.header.html')
-        deck.cardType._bfooter = loadTemplate('proto.footer.html')
+        if css:
+            deck.cardType._css = loadTemplate(css)
+        if js:
+            deck.cardType._js = loadTemplate(js)
+        if header:
+            deck.cardType._bheader = loadTemplate(header)
+        if footer:
+            deck.cardType._bfooter = loadTemplate(footer)
 
     if not recursive:
         return

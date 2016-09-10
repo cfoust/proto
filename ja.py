@@ -10,28 +10,23 @@ ph = PathHelper('ja')
 jd = JapaneseDeck(sqlite(ph.db()))
 
 # Apply Templates
-applyDefaultTemplate(jd)
+applyDefaultTemplate(jd, css='ja/style.css', js='ja/ja.js', header=None, footer=None)
 
-bd = Builder('ja', jd)
-
-# import numpy
-# raw_input("Cae is the cutest thing ever") 
-
-
+bd = Builder('ja')
 
 # Check if we need stuff
 if bd.needAnyData():
 
     hiriganaChars = fileLines(ph.input('hiragana.txt'))
-    bd.bindDeckData('Japanese::Hiragana::Sound', hiriganaChars)
-    bd.bindDeckData('Japanese::Hiragana::Stroke', hiriganaChars)
+    bd.bindDeckData('Japanese::Alphabets::Hiragana::Sound', hiriganaChars)
+    bd.bindDeckData('Japanese::Alphabets::Hiragana::Stroke', hiriganaChars)
 
     katakanaChars = fileLines(ph.input('katakana.txt'))
-    bd.bindDeckData('Japanese::Katakana::Sound', katakanaChars)
-    bd.bindDeckData('Japanese::Katakana::Stroke', katakanaChars)
+    bd.bindDeckData('Japanese::Alphabets::Katakana::Sound', katakanaChars)
+    bd.bindDeckData('Japanese::Alphabets::Katakana::Stroke', katakanaChars)
 
     radicals = fileLines(ph.input('radicals.txt'))
-    bd.bindDeckData('Japanese::Radicals::Meaning', radicals)
-    bd.bindDeckData('Japanese::Radicals::Stroke', radicals)
+    bd.bindDeckData('Japanese::Alphabets::Radicals::Meaning', radicals)
+    bd.bindDeckData('Japanese::Alphabets::Radicals::Stroke', radicals)
 
 bd.build()

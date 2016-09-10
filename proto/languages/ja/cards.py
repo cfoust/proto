@@ -2,7 +2,7 @@ from ...fields import *
 from ...cards import *
 
 class SymbolToSoundCard(BasicCardType):
-    name = 'Symbol to Sound'
+    name = 'ja-character-to-sound'
 
     def __init__(self,db):
         front = FieldType(True)
@@ -17,7 +17,7 @@ class SymbolToSoundCard(BasicCardType):
         self.cards = []
 
 class SoundToStrokeCard(BasicCardType):
-    name = 'Sound to Stroke'
+    name = 'ja-sound-to-stroke'
 
     def __init__(self,db):
         sound = ForvoField(db, 'ja')
@@ -41,7 +41,7 @@ class SoundToStrokeCard(BasicCardType):
 
 
 class RadicalInfo(BasicCardType):
-    name = 'Radical Info'
+    name = 'ja-radical-meaning'
 
     def __init__(self):
         front = FieldType(True)
@@ -82,7 +82,7 @@ class RadicalInfo(BasicCardType):
         self.cards.append(card)
 
 class RadicalStroke(BasicCardType):
-    name = 'Radical Stroke'
+    name = 'ja-radical-stroke'
 
     def __init__(self):
         radical = FieldType(True)
