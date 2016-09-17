@@ -1,0 +1,35 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body class="card">
+
+<div class="headword" id="head"><ruby><rb>学</rb><rp>(</rp><rt>がく</rt><rp>)</rp></ruby><ruby><rb>生</rb><rp>(</rp><rt>せい</rt><rp>)</rp></ruby></div>
+<div class="stroke" id="stroke" style="display: none">学生</div>
+
+<div class="redbutton" style="float: left" ontouchstart="switchStroke()">筆順</div>
+
+<a id="sound" class="redbutton">
+<div class="redbutton" style="float: right">
+	<div class="play"></div>
+</div>
+</a>
+
+
+
+<div class="content" id="def">student (esp. a university student)</div>
+<script src="japroto.js"></script>
+<script>
+
+var reading = '["\u4ffa|\u304a\u308c|0:\u304a\u308c", "\u4ffa|\u304a\u3089\u3042|0:\u304a\u3089\u3042", "\u4ffa|\u304a\u308a|0:\u304a\u308a"]';
+document.getElementById("head").innerHTML = furiToHTML(reading);
+
+var def = '[{"defs": [{"glosses": ["I", "me"], "pos": ["&pn;", "&adj-no;"], "tags": ["♂"]}], "kanji": ["\u4ffa", "\u5df1"], "kana": ["\u304a\u308c", "\u304a\u3089\u3042", "\u304a\u308a"]}]';
+document.getElementById("def").innerHTML = defToHtml(def);
+
+</script>
+
+</body>
+
+</html>

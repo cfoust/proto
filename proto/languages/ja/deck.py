@@ -4,6 +4,7 @@
 from ...deck import Deck
 
 from alphabets import *
+from words import *
 
 # Imports all of the card types specific to Japanese.
 from cards import *
@@ -21,12 +22,15 @@ class JapaneseDeck(Deck):
 
     subdecks = []
 
-    def __init__(self, db):
+    def __init__(self, db, dictFile, furiFile):
         Deck.__init__(self)
 
         alphabets = AlphabetsDeck(db)
 
+        words = WordsDeck(db, dictFile, furiFile)
+
         self.subdecks = [
-            alphabets
+            alphabets,
+            words
         ]
         

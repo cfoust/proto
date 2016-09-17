@@ -7,12 +7,14 @@ from proto.languages.ja import JapaneseDeck
 ph = PathHelper('ja')
 
 # The actual deck structure
-jd = JapaneseDeck(sqlite(ph.db()))
+jd = JapaneseDeck(sqlite(ph.db()), 
+                  ph.input('JMdict_e'), 
+                  ph.input('JmdictFurigana.txt'))
 
 # Apply Templates
 applyDefaultTemplate(jd, css='ja/style.css', js='ja/ja.js', header=None, footer=None)
 
-bd = Builder('ja')
+bd = Builder('ja', jd)
 
 # Check if we need stuff
 if bd.needAnyData():
@@ -28,5 +30,17 @@ if bd.needAnyData():
     radicals = fileLines(ph.input('radicals.txt'))
     bd.bindDeckData('Japanese::Alphabets::Radicals::Meaning', radicals)
     bd.bindDeckData('Japanese::Alphabets::Radicals::Stroke', radicals)
+
+    words = fileLines(ph.input('base_aggregates_fixed.txt'))
+    nouns = []
+    for line in words:
+        parts = line.split('\t')
+
+        if parts[2] == 'noun':
+            nouns.append(parts[1])
+
+    nouns.reverse()
+
+    bd.bindDeckData('Japanese::Words::Nouns', nouns)
 
 bd.build()

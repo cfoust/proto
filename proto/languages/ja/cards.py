@@ -1,5 +1,6 @@
 from ...fields import *
 from ...cards import *
+from fields import *
 
 class SymbolToSoundCard(BasicCardType):
     name = 'ja-character-to-sound'
@@ -111,3 +112,52 @@ class RadicalStroke(BasicCardType):
         card[1] = parts[0]
 
         self.cards.append(card)
+
+restrictedUsers = [
+    'strawberrybrown',
+    'skent',
+    'akiko',
+    'Emmacaron',
+    'yasuo',
+    'kaoring'
+]
+
+class NounCard(BasicCardType):
+    name = 'ja-noun'
+
+    def __init__(self, db, dictFile, furiFile):
+        global restrictedUsers
+
+        headword = FieldType(True)
+        headword.anki_name = "Headword"
+        headword.html = '<div class="headword">%s</div>'
+
+        reading = JMReadingField(furiFile)
+        reading.anki_name = "Reading"
+        reading.html = "<div style='display: none'>%s</div>"
+
+        sound = ForvoField(db, 'ja', limitUsers=restrictedUsers)
+        sound.anki_name = "Sound"
+
+        definition = JMDictField(dictFile)
+        definition.anki_name = "Definition"
+        definition.html = "<div style='display: none'>%s</div>"
+
+        self.fields = [
+            headword,
+            reading,
+            sound,
+            definition
+        ]
+
+        self.cards = []
+
+    # def generate(self, word):
+    #     card = []
+
+    #     # Creates the card's array using generated fields.
+    #     for field in self.fields:
+    #         result = field.pull(word)
+    #         card.append(result)
+
+    #     return card
