@@ -12,12 +12,111 @@ def parseEntry(entryString):
 	# Look for all the kanji readings
 	kanjiReadings = []
 	for r in entrySoup.findAll('k_ele'):
-		kanjiReadings.append(r.findAll('keb')[0].contents[0])
+		obj = {}
+
+		# Grab the reading
+		obj['reading'] = r.find('keb').contents[0]
+		
+		# Get the reading's priorities
+		obj['priority'] = []
+		for pri in r.findAll('ke_pri'):
+			obj['priority'].append(pri.contents[0])
+
+		# Get the kanji's information fields
+		obj['info'] = []
+		for pri in r.findAll('ke_inf'):
+			obj['info'].append(pri.contents[0])
+
+		kanjiReadings.append(obj)
+
 
 	# Look for all the kana readings
 	kanaReadings = []
 	for r in entrySoup.findAll('r_ele'):
-		kanaReadings.append(r.findAll('reb')[0].contents[0])
+		obj = {}
+
+		# Grab the reading
+		obj['reading'] = r.find('reb').contents[0]
+		
+		# Get the reading's priorities
+		obj['priority'] = []
+		for pri in r.findAll('re_pri'):
+			obj['priority'].append(pri.contents[0])
+
+		# See whether it's restricted to a certain kanji reading
+		if r.find('re_restr'):
+			obj['restrict'] = r.find('re_restr').contents[0]
+
+		# Get the reading's information fields
+		obj['info'] = []
+		for pri in r.findAll('re_inf'):
+			obj['info'].append(pri.contents[0])
+
+		kanaReadings.append(obj)
+
+	# Now we have to parse through and combine the readings to make the
+	# ultimate list of them. 
+	readings = []
+	# If we have no kanji readings, this just a word written in kana
+	if len(kanjiReadings) == 0:
+		for r_read in kanaReadings:
+
+			# Calculate the reading's score, or its pertinence based on
+			# the various frequency indicators jmdict provides
+			score = 0
+			common = ['news1', 'ichi1', 'gail1', 'spec1']
+			lessCommon = ['news2', 'ichi2', 'gail2', 'spec2']
+			for info in r_read['priority']:
+				if info in common:
+					score += 50
+				elif info in lessCommon:
+					score += 25
+				elif 'nf' in info:
+					score += 50 - int(info[2:])
+
+			reading = {
+				'kanji': "",
+				'kana': r_read['reading'],
+				'info': r_read['info'],
+				'score': score,
+				'priority': r_read['priority']
+			}
+			readings.append(reading)
+
+	# Otherwise we go through and assign readings
+	else:
+		for k_read in kanjiReadings:
+			for r_read in kanaReadings:
+				# Deal with restricted readings
+				if 'restrict' in r_read and r_read['restrict'] != k_read['reading']:
+					continue
+
+				# Calculate the reading's score, or its pertinence based on
+				# the various frequency indicators jmdict provides
+				score = 0
+				common = ['news1', 'ichi1', 'gail1', 'spec1']
+				lessCommon = ['news2', 'ichi2', 'gail2', 'spec2']
+				for info in r_read['priority']:
+					if info in common:
+						score += 50
+					elif info in lessCommon:
+						score += 25
+					elif 'nf' in info:
+						score += 50 - int(info[2:])
+
+
+				reading = {
+					'kanji': k_read['reading'],
+					'kana': r_read['reading'],
+					'info': r_read['info'],
+					'score': score,
+					'priority': []
+				}
+
+				if ';'.join(k_read['priority']) == ';'.join(r_read['priority']):
+					reading['priority'] = k_read['priority']
+
+				readings.append(reading)
 
 	# Parse all of the senses
 	senses = []
@@ -44,9 +143,14 @@ def parseEntry(entryString):
 			'glosses': glosses
 		})
 
+	# Look through and get the highest score
+	maxScore = 0
+	for reading in readings:
+		maxScore = max(maxScore, reading['score'])
+
 	obj = {
-		'kanji': kanjiReadings,
-		'kana': kanaReadings,
+		'readings': readings,
+		'score': maxScore,
 		'defs': senses
 	}
 	return obj
@@ -100,11 +204,7 @@ def parseToFile(jmDict, out):
 
 		entry = '\n'.join(dictLines[index : endIndex + 1])
 		parsed = parseEntry(entry)
-		parsedArray = [
-			','.join(parsed['kanji']),
-			','.join(parsed['kana']),
-			json.dumps(parsed['defs'])
-		]
-		outFile.write('\t'.join(parsedArray) + '\n')
+
+		outFile.write(json.dumps(parsed) + '\n')
 
 		index += 1

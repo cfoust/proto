@@ -60,8 +60,11 @@ class APKGExporter:
         def makeDeck(parent,prefix,deck):
             name = deck.csvname
             csvfile = "%s%s%s.csv" % (tmpPath,prefix,name)
+
             if not os.path.exists(csvfile) and deck.cardType != None:
-                raise Exception('No csv file "' + csvfile + '" found.')
+                print 'Skipping deck "%s" because no file "%s" was found.' % (name, csvfile)
+                return
+                # raise Exception('No csv file "' + csvfile + '" found.')
 
             did = tcol.decks.id(parent + deck.name)
             d = tcol.decks.get(did)

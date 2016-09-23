@@ -191,6 +191,16 @@ class CacheableFieldType(FieldType):
     def generate(self,word):
         return word
 
+"""Field type that just returns the string provided to it on
+initialization. Useful for generic card types that need some data
+affixed to eery card."""
+class StaticFieldType(FieldType):
+    def __init__(self, staticString):
+        self.staticString = staticString
+
+    def pull(self,word):
+        return self.staticString
+
 switchHTML = """
 <div id='left-mean-%s' style='display:none'>{{%s}}</div>
 <div id='right-mean-%s' style='display:none'>{{%s}}</div>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """File that describes all of the fields necessary for Japanese's cards."""
 
 from ...fields import FieldType
@@ -41,6 +42,7 @@ class JMReadingField(FieldType):
 		return []
 
 	def pull(self,word):
+
 		"""The code that looks through the dictionary is a little bit odd, but
 		   the efficiency is definitely better than O(n). Just looks strange."""
 		defs = self.getReadings(word)
@@ -67,81 +69,35 @@ class JMDictField(FieldType):
 		"""Load the dict csv file and parse it into our dictionaries."""
 		lines = fileLines(dictFile + '.csv')
 
-		# For entries that have exactly ONE kanji reading
-		self.kanjiDict = {}
-
-		# For entries that have exactly ONE kana reading
-		self.kanaDict  = {}
-
-		# Entries can be in either or both of above.
-
-		# Every other entry.
-		self.rest      = []
-
-		numConflicts = 0
+		# Sucks to suck. We had to switch to an O(n) algorithm for dictionary
+		# lookups because there's really no clean way to make it a hashmap.
+		# 
+		# I may revisit this if it becomes too slow. Japanese is not very
+		# polysemous, so we could conjure some kind of key-value lookup
+		# where multiple keys point to the same value. For now, this is fine.
+		self.dictionary = []
 
 		for line in lines:
-			parts = line.split('\t')
+			self.dictionary.append(json.loads(line))
 
-			# Parse the definitions
-			defs = json.loads(parts[2])
-
-			kanjiReadings = parts[0].split(',')
-			# Filter out empty strings
-			kanjiReadings = [x for x in kanjiReadings if not x == '']
-
-			kanaReadings  = parts[1].split(',')
-			# Filter out empty strings
-			kanaReadings = [x for x in kanaReadings if not x == '']
-
-			obj = {
-				'kanji': kanjiReadings,
-				'kana': kanaReadings,
-				'defs': defs
-			}
-
-			if len(kanjiReadings) == 1:
-				reading = kanjiReadings[0]
-				# Check to see if there are any conflicts (same phrase)
-				if reading in self.kanjiDict:
-					if isinstance(self.kanjiDict[reading], list):
-						self.kanjiDict[reading].append(obj)
-					else:
-						self.kanjiDict[reading] = [self.kanjiDict[reading], obj]
-
-					numConflicts += 1
-				else:
-					self.kanjiDict[reading] = [obj]
-
-
-			if len(kanaReadings) == 1:
-				reading = kanaReadings[0]
-				# Check to see if there are any conflicts (same phrase)
-				if reading in self.kanaDict:
-					if isinstance(self.kanaDict[reading], list):
-						self.kanaDict[reading].append(obj)
-					else:
-						self.kanaDict[reading] = [self.kanaDict[reading], obj]
-					numConflicts += 1
-				else:
-					self.kanaDict[reading] = [obj]
-
-			self.rest.append(obj)
-
-		# print "There were %d conflicts in the dictionary. (%d/%d/%d)" % (numConflicts, len(self.kanjiDict), len(self.kanaDict), len(self.rest))
 	
 	def getDefinitions(self, word):
-		if word in self.kanjiDict:
-			return json.dumps(self.kanjiDict[word])
-		
-		if word in self.kanaDict:
-			return json.dumps(self.kanaDict[word])
+		results = []
 
-		refs = []
-		for entry in self.rest:
-			if word in entry['kanji'] or word in entry['kana']:
-				refs.append(entry)
-		return json.dumps(refs)
+		try:
+			word = word.decode('utf-8')
+		except:
+			pass
+	
+		for definition in self.dictionary:
+			for reading in definition['readings']:
+				if word == reading['kana'] or word == reading['kanji']:
+					results.append(definition)
+					break
+
+		results = sorted(results, key=lambda d: d['score'], reverse=True)
+
+		return results
 
 	def pull(self,word):
 		"""The code that looks through the dictionary is a little bit odd, but
@@ -151,4 +107,4 @@ class JMDictField(FieldType):
 		if len(defs) == 0:
 			return None
 		else:
-			return defs
+			return json.dumps(defs)

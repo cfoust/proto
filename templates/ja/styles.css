@@ -64,6 +64,7 @@
   display: block;
 }
 .meaning-number {
+  color: #999;
   margin-right: 15px;
 }
 .meaning-meaning {

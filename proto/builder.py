@@ -103,7 +103,8 @@ class Builder:
                 continue
 
             if len(data) == 0:
-                raise Exception('Deck %s needs data and has none.' % name)
+                print 'Deck %s needs data and has none. Skipping.' % name
+                continue
 
             print 'Building cards for deck %s.' % name
 

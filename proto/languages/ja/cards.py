@@ -122,10 +122,10 @@ restrictedUsers = [
     'kaoring'
 ]
 
-class NounCard(BasicCardType):
-    name = 'ja-noun'
+class WordCard(BasicCardType):
+    name = 'ja-word'
 
-    def __init__(self, db, dictFile, furiFile):
+    def __init__(self, db, dictFile, furiFile, partOfSpeech):
         global restrictedUsers
 
         headword = FieldType(True)
@@ -143,11 +143,16 @@ class NounCard(BasicCardType):
         definition.anki_name = "Definition"
         definition.html = "<div style='display: none'>%s</div>"
 
+        pos = StaticFieldType(partOfSpeech)
+        pos.anki_name = "POS"
+        pos.html = "<div style='display: none'>%s</div>"
+
         self.fields = [
             headword,
             reading,
             sound,
-            definition
+            definition,
+            pos
         ]
 
         self.cards = []

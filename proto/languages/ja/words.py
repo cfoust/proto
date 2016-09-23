@@ -19,8 +19,20 @@ class WordsDeck(Deck):
 		nouns = Deck()
 		nouns.name = "Nouns"
 		nouns.csvname = 'nouns'
-		nouns.cardType = NounCard(db, dictFile, furiFile)
+		nouns.cardType = WordCard(db, dictFile, furiFile, 'noun')
+
+		verbs = Deck()
+		verbs.name = "Verbs"
+		verbs.csvname = 'verbs'
+		verbs.cardType = WordCard(db, dictFile, furiFile, 'verb')
+
+		adjectives = Deck()
+		adjectives.name = "Adjectives"
+		adjectives.csvname = 'adj'
+		adjectives.cardType = WordCard(db, dictFile, furiFile, 'adj')
 
 		self.subdecks = [
-			nouns
+			nouns,
+			verbs,
+			adjectives
 		]
