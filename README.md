@@ -1,5 +1,6 @@
-PROTO is a python toolkit for generating Anki flashcard decks
+PROTO
 =============================================================
+a python toolkit for generating Anki flashcard decks
 
 Dependencies: beautifulsoup4 requests peewee progressbar pattern
 
@@ -22,7 +23,7 @@ range of sources:
 * [Wiktionary](https://www.wiktionary.org/): Crowdsourced definitions.
 * SDictionary: Legacy dictionary format with extensive records for some
 languages.
-* [WordReference[(http://www.wordreference.com/)
+* [WordReference](http://www.wordreference.com/)
 * [EDict](http://www.edrdg.org/jmdict/edict.html): Extensive Japanese-English 
 dictionary.
 * And many others.
