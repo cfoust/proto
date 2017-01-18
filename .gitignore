@@ -4,6 +4,10 @@ media/**
 input/**
 output/**
 .idea/**
+build/**
+dist/**
+proto.egg-info/**
+
 
 **.db
 **.csv

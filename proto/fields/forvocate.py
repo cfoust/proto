@@ -2,8 +2,8 @@
 This bypasses the need by parsing their site for audio files. I'd like to add
 geolocation support someday (as they provide GPS coordinates for samples) to
 deal with accents."""
-from basic import CacheableFieldType
-import requests, os, urllib, urllib2, string, base64, hashlib, time, random, shutil
+from .basic import CacheableFieldType
+import requests, os, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, string, base64, hashlib, time, random, shutil
 from bs4 import BeautifulSoup as soup
 
 def get_data_from_url(url_in):
@@ -80,7 +80,6 @@ class ForvoField(CacheableFieldType):
 			   no sound."""
 			return ''
 
-		# Deal with fucking Python encoding
 		try:
 			word = word.encode('utf-8')
 		except:
@@ -119,7 +118,7 @@ class ForvoField(CacheableFieldType):
 		except:
 			pass
 
-		u_word = urllib.quote(word)
+		u_word = urllib.parse.quote(word)
 
 		language = "en"
 		target = self.code

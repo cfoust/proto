@@ -1,10 +1,10 @@
 """Conwiktion is a field type that parses wiktionary for results."""
 
-import requests, os, urllib, urllib2, string, base64, hashlib, time, random, re
+import requests, os, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, string, base64, hashlib, time, random, re
 from peewee import *
 from bs4 import BeautifulSoup as soup
 import bs4
-from basic import CacheableFieldType, Cacher
+from .basic import CacheableFieldType, Cacher
 
 def get_data_from_url(url_in):
 	return requests.get(url_in).text
@@ -39,7 +39,7 @@ class WiktionaryField(CacheableFieldType):
 		if self.wikiCache.exists(word):
 			wikiText = self.wikiCache.retrieve(word)
 		else:
-			url = wiktionary_en_raw.format(urllib.quote(word))
+			url = wiktionary_en_raw.format(urllib.parse.quote(word))
 			wikiText = requests.get(url).text
 			self.wikiCache.store(word,wikiText.encode('utf-8'))
 
