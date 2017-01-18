@@ -1,5 +1,5 @@
 import os, sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="proto",
@@ -16,5 +16,5 @@ setup(
         "anki"
     ],
     dependency_links=['http://github.com/cfoust/anki/tarball/master#egg=anki-2.1.0a8'],
-    packages=["proto"]
+    packages=find_packages()
 )
