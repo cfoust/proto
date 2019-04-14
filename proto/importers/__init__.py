@@ -1,1 +1,1 @@
-from .fromcsv import *
+from fromcsv import *

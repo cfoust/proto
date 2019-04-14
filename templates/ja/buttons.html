@@ -1,0 +1,35 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body class="card">
+
+<div class="headword" id="head"></div>
+<div class="stroke" id="stroke" style="display: none"></div>
+
+<div id="deftext" style="display: none">[{"defs": [{"glosses": ["face", "visage"], "pos": ["&n;"], "tags": []}, {"glosses": ["look", "expression", "countenance"], "pos": [], "tags": []}, {"glosses": ["honor", "honour", "face"], "pos": [], "tags": []}, {"glosses": ["influence", "notoriety"], "pos": [], "tags": []}], "score": 149, "readings": [{"info": [], "priority": ["ichi1", "news1", "nf01"], "score": 149, "kanji": "\u9854", "kana": "\u304b\u304a"}, {"info": ["&ok;"], "priority": [], "score": 0, "kanji": "\u9854", "kana": "\u304c\u3093"}, {"info": [], "priority": [], "score": 149, "kanji": "\u8c8c", "kana": "\u304b\u304a"}, {"info": [], "priority": [], "score": 149, "kanji": "\u984f", "kana": "\u304b\u304a"}]}, {"defs": [{"glosses": ["countenance", "visage"], "pos": ["&n;"], "tags": ["&arch;"]}, {"glosses": ["face", "honor (honour)", "dignity"], "pos": [], "tags": []}], "score": 0, "readings": [{"info": [], "priority": [], "score": 0, "kanji": "\u9854", "kana": "\u304b\u3093\u3070\u305b"}, {"info": [], "priority": [], "score": 0, "kanji": "\u5bb9", "kana": "\u304b\u3093\u3070\u305b"}]}]</div>
+
+<div class="redbutton" style="float: left" ontouchstart="switchStroke()">筆順</div>
+
+<a id="sound" class="redbutton">
+<div class="redbutton" style="float: right">
+	<div class="play"></div>
+</div>
+</a>
+
+
+
+<div class="content" id="def">student (esp. a university student)</div>
+<script src="japroto.js"></script>
+<script>
+
+proto.render('顔', document.getElementById("deftext").innerHTML, '["\u9854|\u304b\u304a|0:\u304b\u304a", "\u9854|\u304c\u3093|0:\u304c\u3093", "\u9854|\u304b\u3093\u3070\u305b|0:\u304b\u3093\u3070\u305b"]');
+// proto.render(,'[""\u884c\u304f|\u3044\u304f|0:\u3044"", ""\u884c\u304f|\u3086\u304f|0:\u3086""]');
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 """Defines and implements the card types. Card Types are just containers of FieldTypes with some extra properties
 that we need to generate a valid deck for Anki. """
 
-from .fields import *
+from fields import *
 import string
 
 class BasicCardType:
@@ -54,11 +54,17 @@ class BasicCardType:
         # Creates the card's array using generated fields.
         for field in self.fields:
             result = field.pull(word)
+
+            # There was some problem in card generation, just return
+            if result is None and not field.optional:
+                return None
+            # if the card was optional, just put in a blank string
+            elif result is None:
+                result = ''
+
             card.append(result)
 
-        # Ensures that no field returned None.
-        if not None in card:
-            self.cards.append(card)
+        self.cards.append(card)
 
         return card
 

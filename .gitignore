@@ -4,15 +4,11 @@ media/**
 input/**
 output/**
 .idea/**
-build/**
-dist/**
-proto.egg-info/**
-
+scripts/**
 
 **.db
 **.csv
 **.pyc
-**.sw*
 
 test.py
 ruimport.py

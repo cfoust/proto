@@ -18,6 +18,10 @@ class FieldType:
 
     order = -1
 
+    # If the field is optional, the generator doesn't care if the field is
+    # None, but will replace it with a blank string
+    optional = False
+
     # Whether or not this field shows up on the front of the card.
     front = False
 
@@ -91,14 +95,25 @@ class Cacher:
         except peewee.DoesNotExist:
             return False
 
-    """ Pulls some cached info from the DB. """
+    """ Pulls some cached info from the DB. 
+
+        Returns a tuple of (timestamp, data) if the word exists and None if
+        it does not."""
     def retrieve(self,word):
         try:
+            # Grab the word from the database
             info = self._getRow(word)
+
+            # Get its data and uncompress it if necessary
+            data = ""
             if info.compressed:
-                return zlib.decompress(base64.b64decode(info.data))
+                data = zlib.decompress(base64.b64decode(info.data))
             else:
-                return info.data
+                data = info.data
+
+            # Return the data and its timestamp.
+            return (info.timestamp, data)
+
         except peewee.DoesNotExist:
             return None
 
@@ -164,32 +179,58 @@ class Cacher:
 
 """This field type automatically caches the results of its 'generate' function.
    Very good for pulling data from websites or sources that require a lot of
-   time for each word. Does not cache None results."""
+   time for each word. Remembers the last time that the method returned None
+   and does not call generate again until after a certain timedelta."""
 class CacheableFieldType(FieldType):
     """ Just for cached fields, how the name will show up in the DB. 
         Needs to be unique or will conflict with other data."""
     db_name = "cacheable-default"
 
-    def __init__(self,pathToDb):
+    def __init__(self,pathToDb, delta = datetime.timedelta(weeks=2)):
         self.cacher = Cacher(pathToDb, self.db_name)
+        self.delta = delta
 
     def pull(self,word):
         if self.cacher.exists(word):
             result = self.cacher.retrieve(word)
-            return result
+
+            timestamp = result[0]
+            data = result[1]
+
+            # If the call originally returned nothing
+            # I recognize this is a terrible idea, but it's just not a big deal
+            if data == '[nothing]':
+                # If we've passed the cache date, we can try again
+                if (timestamp + self.delta) < datetime.datetime.now():
+                    # Delete the cache
+                    self.cacher.delete(word)
+
+                    # We just pull again
+                    return self.pull(word)
+
+                # Otherwise return None
+                return None
+            
+            return data
         else:
             result = self.generate(word)
 
+            # Make a note if the generator returned None so we don't pull again
+            # for awhile
             if not result:
+                self.cacher.store(word, '[nothing]')
                 return None
 
             self.cacher.store(word,result)
             return result
 
     """ Generates the resulting string given the input. 
-        May be computationally expensive because this is cacheable."""
+        May be computationally expensive because this is cacheable.
+
+        Normally this method hits another resource."""
     def generate(self,word):
         return word
+
 
 """Field type that just returns the string provided to it on
 initialization. Useful for generic card types that need some data

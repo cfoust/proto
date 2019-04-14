@@ -6,7 +6,7 @@ except:
 from anki.storage import Collection
 from anki.importing import TextImporter
 from anki.exporting import AnkiPackageExporter
-from .tocsv import CSVExporter
+from tocsv import CSVExporter
 import shutil, os, string
 
 ################################################
@@ -62,7 +62,7 @@ class APKGExporter:
             csvfile = "%s%s%s.csv" % (tmpPath,prefix,name)
 
             if not os.path.exists(csvfile) and deck.cardType != None:
-                print('Skipping deck "%s" because no file "%s" was found.' % (name, csvfile))
+                print 'Skipping deck "%s" because no file "%s" was found.' % (name, csvfile)
                 return
                 # raise Exception('No csv file "' + csvfile + '" found.')
 

@@ -1,0 +1,89 @@
+.card {
+    font-family: lucida sans unicode;
+    font-size: 20px;
+    text-align: center;
+    color: black;
+    background-color: #3F587F;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 0px;
+}
+.ipod .hide {
+    display: block
+}
+.iphone .hide {
+    display: block
+}
+.ipad .hide {
+    display: block
+}
+.hide {
+    display: none
+}
+.ipod .show {
+    display: none
+}
+.iphone .show {
+    display: none
+}
+.ipad .show {
+    display: none
+}
+.show {
+    display: block
+}
+.content {
+    width: 100%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    text-align: left;
+    color: #0D1219;
+    background-color: #6C8CD5;
+}
+.content::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+.center {
+    text-align: center;
+}
+.title {
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    font-size: 20px;
+}
+
+
+.top-cut {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.content-button {
+    width: 50%;
+    height: 30px;
+    font-size: 20px;
+    background-color: #656F7F;
+    border: none;
+    color: white;
+}
+
+.content-button:focus {
+    outline: 0;
+}
+
+.content-button-selected {
+    background-color: #7EB0FF;
+}
+
+.left-button {
+    float: left;
+    border-top-left-radius: 4px;
+}
+
+.right-button {
+    float: right;
+    border-top-right-radius: 4px;
+}
