@@ -1,0 +1,23 @@
+Simple search API at http://jisho.org/api/v1/search/words?keyword=%E4%BA%BA
+
+
+Add kanji.ttf to collection.media
+
+Add this to css:
+@font-face {
+  font-family: 'strokefont';
+  src: url('kanji.ttf')  format('truetype');
+}
+
+font-family: strokefont;
+
+
+Getting sounds from http://nihongo.monash.edu/cgi-bin/wwwjdic?1F
+
+
+
+http://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kana=[kana reading]&kanji=[kanji]
+http://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kana=&kanji=
+
+Working:
+http://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kana=%E3%81%84%E3%81%8D%E3%81%A5%E3%81%8F&kanji=%E6%81%AF%E8%A1%9D%E3%81%8F

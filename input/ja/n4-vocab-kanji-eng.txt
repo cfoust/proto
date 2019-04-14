@@ -1,0 +1,632 @@
+あ	Ah	
+ああ	like that	
+あいさつ・する	to greet	
+間	a space	
+合う	to match	
+あかちゃん	infant	
+上る	to rise	
+赤ん坊	baby	
+空く	to open, to become empty	
+アクセサリー	accessory	
+あげる	to give	
+浅い	shallow,superficial	
+味	flavour	
+アジア	Asia	
+明日	tomorrow	
+遊び	play	
+集る	to gather	
+集める	to collect something	
+アナウンサー	announcer	
+アフリカ	Africa	
+アメリカ	America	
+謝る	to apologize	
+アルコール	alcohol	
+アルバイト	part-time job	
+安心	relief	
+安全	safety	
+あんな	such	
+案内	to guide	
+以下	less than	
+以外	with the exception of	
+医学	medical science	
+生きる	to live	
+意見	opinion	
+石	stone	
+いじめる	to tease	
+以上	more than,this is all	
+急ぐ	to hurry	
+致す	(humble) to do	
+いただく	(humble) to receive	
+一度	once	
+一生懸命	with utmost effort	
+いっぱい	full	
+糸	thread	
+以内	within	
+田舎	countryside	
+祈る	to pray	
+いらっしゃる	(respectful) to be,to come or to go	
+植える	to plant,to grow	
+うかがう	to visit	
+受付	receipt	
+受ける	to take a lesson or test	
+動く	to move	
+うそ	a lie	
+うち	within	
+打つ	to hit	
+美しい	beautiful	
+写す	to copy or photograph	
+移る	to move house or transfer	
+腕	arm	
+うまい	delicious	
+裏	reverse side	
+売り場	place where things are sold	
+うれしい	glad	
+うん	(informal) yes	
+運転	to drive	
+運転手	driver	
+運動	to exercise	
+エスカレーター	escalator	
+枝	branch, twig	
+選ぶ	to choose	
+遠慮	to be reserved, to be restrained	
+おいでになる	(respectful) to be	
+お祝い	congratulation	
+オートバイ	motorcycle	
+おかげ	owing to	
+おかしい	strange or funny	
+億	one hundred million	
+屋上	rooftop	
+贈り物	gift	
+送る	to send	
+遅れる	to be late	
+起す	to wake	
+行う	to do	
+怒る	to get angry,to be angry	
+押し入れ	closet	
+お嬢さん	young lady	
+お宅	(polite) your house	
+落る	to fall or drop	
+おっしゃる	(respectful) to say	
+夫	husband	
+おつり	change from purchase, balance	
+音	sound,note	
+落す	to drop	
+踊り	a dance	
+踊る	to dance	
+驚く	to be surprised	
+お祭り	festival	
+お見舞い	calling on someone who is ill,enquiry	
+お土産	souvenir	
+思い出す	to remember	
+思う	to think,to feel	
+おもちゃ	toy	
+表	the front	
+親	parents	
+下りる	to get off	
+折る	to break or to fold	
+お礼	expression of gratitude	
+折れる	to break or be folded	
+終わり	the end	
+カーテン	curtain	
+海岸	coast	
+会議	meeting	
+会議室	meeting room	
+会場	assembly hall or meeting place	
+会話	conversation	
+帰り	return	
+変える	to change	
+科学	science	
+鏡	mirror	
+掛ける	to hang something	
+飾る	to decorate	
+火事	fire	
+ガス	petrol	
+ガソリン	petrol	
+ガソリンスタンド	petrol station	
+堅/硬/固い	hard	
+形	shape	
+片付ける	to tidy up	
+課長	section manager	
+勝つ	to win	
+かっこう	appearance	
+家内	housewife	
+悲しい	sad	
+必ず	certainly,necessarily	
+お・金持ち	rich man	
+彼女	she,girlfriend	
+壁	wall	
+かまう	to mind	
+髪	hair	
+噛む	to bite,to chew	
+通う	to commute	
+ガラス	a glass pane	
+彼	he,boyfriend	
+彼ら	they	
+乾く	to get dry	
+代わり	substitute,alternate	
+変わる	to change	
+考える	to consider	
+関係	relationship	
+看護婦	female nurse	
+簡単	simple	
+気	spirit,mood	
+機会	opportunity	
+危険	danger	
+聞こえる	to be heard	
+汽車	steam train	
+技術	art,technology,skill	
+季節	season	
+規則	regulations	
+きっと	surely	
+絹	silk	
+厳しい	strict	
+気分	mood	
+決る	to be decided	
+君	(informal) You (used by men towards women)	
+決める	to decide	
+気持ち	feeling,mood	
+着物	kimono	
+客	guest,customer	
+急	urgent, steep	
+急行	speedy, express	
+教育	education	
+教会	church	
+競争	competition	
+興味	an interest	
+近所	neighbourhood	
+具合	condition,health	
+空気	air,atmosphere	
+空港	airport	
+草	grass	
+くださる	(respectful) to give	
+首	neck	
+雲	cloud	
+比べる	to compare	
+くれる	to give	
+暮れる	to get dark,to come to an end	
+毛	hair or fur	
+計画	to plan	
+経験	to experience	
+経済	finance,economy	
+警察	police	
+ケーキ	cake	
+けが・する	to injure	
+景色	scene,landscape	
+消しゴム	eraser	
+下宿	lodging	
+決して	never	
+けれど/けれども	however	
+原因	cause,source	
+けんか・する	to quarrel	
+研究	research	
+研究室	study room,laboratory	
+見物	sightseeing	
+子	child	
+こう	this way	
+郊外	outskirts	
+講義	lecture	
+工業	the manufacturing industry	
+高校	high school	
+高校生	high school student	
+工場	factory	
+校長	headmaster	
+交通	traffic,transportation	
+講堂	auditorium	
+高等学校	high school	
+公務員	government worker	
+国際	international	
+心	core,heart	
+御主人	(honorable) your husband	
+故障	to break-down	
+ご存じ	knowing,acquaintance	
+答	response	
+ごちそう	a feast	
+こと	thing,matter	
+小鳥	small bird	
+このあいだ	the other day,recently	
+このごろ	these days,nowadays	
+細かい	small, fine	
+ごみ	rubbish	
+込む	to be crowded	
+米	uncooked rice	
+ごらんになる	(respectful) to see	
+これから	after this	
+怖い	frightening	
+壊す	to break	
+壊れる	to be broken	
+コンサート	concert	
+今度	now,next time	
+コンピュータ/コンピューター	computer	
+今夜	tonight	
+最近	latest,nowadays	
+最後	last,end	
+最初	beginning,first	
+坂	slope,hill	
+探す	to look for	
+下る	to get down,to descend	
+盛ん	popularity,prosperous	
+下げる	to hang,to lower,to move back	
+差し上げる	(polite) to give	
+さっき	some time ago	
+寂しい	lonely	
+さ来月	the month after next	
+さ来週	the week after next	
+サラダ	salad	
+騒ぐ	to make noise,to be excited	
+触る	to touch	
+産業	industry	
+サンダル	sandal	
+サンドイッチ	sandwich	
+残念	disappointment	
+市	city	
+字	character	
+試合	match,game	
+仕方	method	
+しかる	a particular	
+試験	examination	
+事故	accident	
+地震	earthquake	
+時代	era	
+下着	underwear	
+支度	to prepare	
+しっかり	firmly,steadily	
+失敗	failure,mistake	
+辞典	dictionary	
+品物	goods	
+しばらく	little while	
+島	island	
+市民	citizen	
+事務所	office	
+社会	society,public	
+社長	company president	
+じゃま	hindrance,intrusion	
+ジャム	jam	
+自由	freedom	
+習慣	custom,manners	
+住所	an address,a residence	
+柔道	judo	
+十分	enough	
+出席	to attend	
+出発	to depart	
+趣味	hobby	
+準備	to prepare	
+紹介	introduction	
+小学校	elementary school	
+小説	novel	
+招待	to invite	
+承知	to consent	
+将来	future,prospects	
+食事	to have a meal	
+食料品	groceries	
+女性	woman	
+知らせる	to notify	
+調べる	to investigate	
+人口	population	
+神社	Shinto shrine	
+親切	kindness	
+心配	to worry	
+新聞社	newspaper company	
+水泳	swimming	
+水道	water supply	
+ずいぶん	extremely	
+数学	mathematics,arithmetic	
+スーツ	suit	
+スーツケース	suitcase	
+過ぎる	to exceed	
+すく	to become empty	
+スクリーン	screen	
+凄い	terrific	
+進む	to make progress	
+すっかり	completely	
+すっと	straight,all of a sudden	
+ステーキ	steak	
+捨てる	to throw away	
+ステレオ	stereo	
+砂	sand	
+すばらしい	wonderful	
+滑る	to slide,to slip	
+隅	corner,nook	
+済む	to finish	
+すり	pickpocket	
+すると	then	
+生活	to live	
+生産	to produce	
+政治	politics,government	
+西洋	western countries	
+世界	the world	
+席	seat	
+説明	explanation	
+背中	back of the body	
+ぜひ	without fail	
+世話	to look after	
+線	line	
+ぜんぜん	not entirely (used in a negative sentence)	
+戦争	war	
+先輩	senior	
+そう	really	
+相談	to discuss	
+育てる	to rear,to bring up	
+卒業	graduation	
+ソフト	soft	
+祖父	grandfather	
+祖母	grandmother	
+それで	because of that	
+それに	moreover	
+それほど	to that extent	
+そろそろ	gradually,soon	
+そんな	that sort of	
+そんなに	so much,like that	
+退院	to leave hospital	
+大学生	university student	
+大体	generally	
+大事	important,valuable,serious matter	
+たいてい	usually	
+タイプ	type,style	
+大分	greatly	
+台風	typhoon	
+倒れる	to break down	
+だから	so,therefore	
+確か	definite	
+足す	to add a number	
+訪ねる	to visit	
+尋ねる	to ask	
+正しい	correct	
+畳	Japanese straw mat	
+立てる	to stand something up	
+建てる	to build	
+例えば	for example	
+棚	shelves	
+楽しみ	joy	
+楽む	to enjoy oneself	
+たまに	occasionally	
+為	in order to	
+だめ	no good	
+足りる	to be enough	
+男性	male	
+暖房	heating	
+血	blood	
+チェック・する	to check	
+力	strength,power	
+ちっとも	not at all (used with a negative verb)	
+ちゃん	suffix for familiar female person	
+注意	caution	
+中学校	junior high school,middle school	
+注射	injection	
+駐車場	parking lot	
+地理	geography	
+捕まえる	to seize	
+つき	moon	
+付く	to be attached	
+漬ける	to soak,to pickle	
+都合	circumstances,convenience	
+伝える	to report	
+続く	to be continued	
+続ける	to continue	
+包む	to wrap	
+妻	(humble) wife	
+つもり	intention	
+釣る	to fish	
+連れる	to lead	
+丁寧	polite	
+テキスト	text,text book	
+適当	suitability	
+できるだけ	as much as possible	
+手伝う	to assist	
+テニス	tennis	
+手袋	glove	
+寺	temple	
+点	point,dot	
+店員	shop assistant	
+天気予報	weather forecast	
+電灯	electric light	
+電報	telegram	
+展覧会	exhibition	
+都	metropolitan	
+道具	tool,means	
+とうとう	finally, after all	
+動物園	zoo	
+遠く	distant	
+通る	to go through	
+特に	particularly,especially	
+特別	special	
+とこや	barber	
+途中	on the way	
+特急	limited express train (faster than an express train)	
+届ける	to reach	
+泊まる	to lodge at	
+止める	to stop something	
+取り替える	to exchange	
+泥棒	thief	
+どんどん	more and more	
+直す	to fix,to repair	
+直る	to be fixed,to be repaired	
+治る	to be cured,to heal	
+中々	considerably	
+泣く	to weep	
+無くなる	to disappear,to get lost	
+亡くなる	to die	
+投げる	to throw or cast away	
+なさる	(respectful) to do	
+鳴る	to sound	
+なるべく	as much as possible	
+なるほど	now I understand	
+慣れる	to grow accustomed to	
+におい	a smell	
+苦い	bitter	
+二階建て	two storied	
+逃げる	to escape	
+日記	journal	
+入院	to hospitalise	
+入学	to enter school or university	
+似る	to be similar	
+人形	doll, figure	
+盗む	to steal	
+塗る	to paint,to plaster	
+ぬれる	to get wet	
+ねだん	price	
+熱	fever	
+ねっしん	enthusiasm	
+寝坊	sleeping in late	
+眠い	sleepy	
+眠る	to sleep	
+残る	to remain	
+のど	throat	
+乗り換える	to change between buses or trains	
+乗り物	vehicle	
+葉	leaf	
+場合	situation	
+パート	part time	
+倍	double	
+拝見	(humble) to look at	
+歯医者	dentist	
+運ぶ	to transport	
+始める	to begin	
+場所	location	
+はず	it should be so	
+恥ずかしい	embarrassed	
+パソコン	personal computer	
+発音	pronunciation	
+はっきり	clearly	
+花見	cherry-blossom viewing	
+林	woods,forester	
+払う	to pay	
+番組	television or radio program	
+反対	opposition	
+ハンドバッグ	handbag　	
+日	day, sun	
+火	fire	
+ピアノ	piano	
+冷える	to grow cold	
+光	light	
+光る	to shine,to glitter	
+引き出し	drawer,drawing out	
+引き出す	to withdraw	
+ひげ	beard	
+飛行場	airport	
+久しぶり	after a long time	
+美術館	art gallery	
+非常に	extremely	
+びっくり・する	to be surprised	
+引っ越す	to move house	
+必要	necessary	
+ひどい	awful	
+開く	to open an event	
+ビル	building or bill	
+昼間	daytime,during the day	
+昼休み	noon break	
+拾う	to pick up,to gather	
+ファックス	fax	
+増える	to increase	
+深い	deep	
+複雑	complexity,complication	
+復習	revision	
+部長	head of a section	
+普通	usually, or a train that stops at every station	
+ぶどう	grapes	
+太る	to become fat	
+布団	Japanese bedding, futon	
+舟	ship	
+不便	inconvenience	
+踏む	to step on	
+降り出す	to start to rain	
+プレゼント	present	
+文化	culture	
+文学	literature	
+文法	grammar	
+別	different	
+ベル	bell	
+変	strange	
+返事	reply	
+貿易	trade	
+放送	to broadcast	
+法律	law	
+僕	I (used by males)	
+星	star	
+ほど	extent	
+ほとんど	mostly	
+ほめる	to praise	
+翻訳	translation	
+参る	(humble) to go,to come	
+負ける	to lose	
+まじめ	serious	
+まず	first of all	
+または	or,otherwise	
+間違える	to make a mistake	
+間に合う	to be in time for	
+周り	surroundings	
+回る	to go around	
+漫画	comic	
+真中	middle	
+見える	to be in sight	
+湖	lake	
+味噌	bean paste	
+見つかる	to be discovered	
+見つける	to discover	
+皆	everybody	
+港	harbour	
+向かう	to face	
+迎える	to go out to meet	
+昔	olden days, former	
+虫	insect	
+息子	(humble) son	
+娘	(humble) daughter	
+無理	impossible	
+召し上がる	(polite) to eat	
+珍しい	rare	
+申し上げる	(humble) to say,to tell	
+申す	(humble) to be called,to say	
+もうすぐ	soon	
+もし	if	
+もちろん	of course	
+もっとも	extremely	
+戻る	to turn back	
+木綿	cotton	
+もらう	to receive	
+森	forest	
+焼く	to bake,to grill	
+約束	promise	
+役に立つ	to be helpful	
+焼ける	to burn,to be roasted	
+優しい	kind	
+痩せる	to become thin	
+やっと	at last	
+やはり/やっぱり	as I thought,absolutely	
+止む	to stop	
+柔らかい	soft	
+湯	hot water	
+輸出	to export	
+輸入	to import	
+指	finger	
+指輪	finger ring	
+夢	dream	
+揺れる	to shake,to sway	
+用	use	
+用意	preparation	
+用事	things to do	
+汚れる	to get dirty	
+予習	preparation for a lesson	
+予定	arrangement	
+予約	reservation	
+寄る	to visit	
+喜ぶ	to be delighted	
+よろしい	(respectful) OK,all right	
+理由	reason	
+利用	utilization	
+両方	both sides	
+旅館	Japanese hotel	
+留守	absence	
+冷房	air conditioning	
+歴史	history	
+レジ	register	
+レポート/リポート	report	
+連絡	contact	
+ワープロ	word processor	
+沸かす	to boil,to heat	
+別れる	to separate	
+沸く	to boil, to grow hot,to get excited	
+訳	meaning,reason	
+忘れ物	lost article	
+笑う	to laugh,to smile	
+割合	rate,ratio,percentage	
+割れる	to break	
+泳ぎ方	way of swimming	

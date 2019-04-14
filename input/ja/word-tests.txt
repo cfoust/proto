@@ -1,0 +1,43 @@
+word
+kuromoji output
+ojad
+# more
+
+何
+何	1	*	*
+First is high, second low
+2
+
+気
+気	0	C3	*
+First is low
+1
+
+五
+五	1	C3	*
+First is high, second low
+2
+
+部屋
+部屋	2	C3	*
+First is low, second high
+
+国
+国	0	C3	*
+All are low
+
+言葉
+言葉	3	C2	*
+On third mora
+
+Okay fam:
+0 - accentless (low pitch)
+n - drops after/on the n-th mora
+
+難しい
+難しい	0,4	C2	*
+This is where it gets messed up. High 2-5 or 2-4?
+
+赤い
+赤い	0	C2	*
+First low, second onwards high

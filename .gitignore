@@ -1,7 +1,6 @@
 anki/**
 forvocate/**
 media/**
-input/**
 output/**
 .idea/**
 scripts/**
@@ -19,3 +18,4 @@ ruru.py
 verbskip.js
 out.*
 ja-queue.py
+**.pdf

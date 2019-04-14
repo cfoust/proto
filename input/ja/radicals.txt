@@ -1,0 +1,193 @@
+一	1	いち	one		一 戸 旦
+丨	1		line		巾 引 中 甲 旧
+丶	1	てん	dot		刃 凡 丸 丹 太 犬 丼
+丿	1		bend		丈 久 才 万 丹 少
+乙	1	おつ	second, latter		乙 乞 乏 孔 屯 札 礼 宅 乱 枕 乳
+亅	1		hook		了 丁 才
+二	2	に	two		井 仁 元 示
+亠	2		lid	⊤	六 玄 市 夜 京
+人	2	ひと	human, person		人 欠 夫 内 囚 丙 失 肉 扶 快 決
+亻	2		human, person	◧	仏 化 付 代 他 仕 休 位 作 体 住 何 花 信
+𠆢	2		person (人); (入; roof)	⊤	介 今 合 全 会 谷
+入	2	いる	enter		入 込
+八	2	はち	eight; divide	⊤	八 分 公 谷 沿 松 俗 盆 翁 紛容 益 粉 浴 挙 訟 欲 船 雰 裕 鉛 溶 寡 総 嬢
+ハ	2		animal legs	⊥	六 穴 呉 兵 貝 洪 唄 冥 浜 財 員 棋 貿 貸 買 賛 質 興
+儿	2		human legs	⊥	児 兄 四 見
+丷	2		grass, plant; horns	⊤	平 半 羊 岡 前 首 南
+冫	2		ice	◧	次 冶 冷
+凵	2		container, open mouth	⊥	
+匚	2		box	⿴	
+冂	2		upside down box	⿴	円 冊 再 同
+冖	2		cover	⊤	売 学 骨 常
+几	2	つくえ tsukue	desk, table	◨	
+九	2	きゅう-kyū	nine		
+力	2	ちから	power, force		
+刀	2	かたな	knife, sword		
+刂	2		knife, sword	◨	
+乃	2	の		⊥	秀 透 携 誘 /及
+勹	2		wrap, embrace	⿴	与 勾 匂 欠 巧 句 包 号 写 旬 朽 汚 考 均 泡 抱 拘 易 的 物
+⺈	2		knife, sword	⊤	危 争 色 角 免 浄 急 負 陥 逸 亀 喚 換 象 像 静 衡 艶
+マ	2	ま-ma.	Katakana マ	⊤	勇 通 湧 痛 踊 疑 凝 擬 /予 矛]]
+匕	2	さじ	spoon; (七 = seven)		七 匂 化 切 叱 北 旨 死 花 虎 背
+十	2	じゅう-jū	ten, complete		
+卜	2	うらない	divination	◨	
+又	2	また mata	again, right hand		
+厶	2	む	private		
+卩	2		seal	◨	厄 犯 令 危 印 服 卵 命 報
+厂	2		cliff	⿸	
+广	3		on a cliff	⿸	序 店 府
+口	3	くち	mouth, opening		口 古 可 名 君 否 呉 告 周 味 命 和 哲 唐 善 器
+囗	3		enclosure	⿴	四 回
+土	3	つち	earth		土 地
+士	3	さむらい	scholar, bachelor		士
+夂	3		go	⊥	夏
+夕	3	ゆうべ-yūbe	evening, sunset		夕 外 多 夜
+尢	3				沈 枕 就 蹴 /尤 无
+大	3	だい	big, very		大 天
+女	3	おんな	woman, female		女
+子	3	こ	child, seed		子
+宀	3		roof		家
+寸	3	すん	thumb, sundial degree		時
+小	3	ちいさい-chīsai	small, insignificant		小 少
+⺌	3		small, insignificant		当 光 鎖 巣 桜 獣 単 脳 悩 厳
+幺	3		short thread		幻 幼
+尸	3		corpse		尺 局
+山	3	やま	mountain		山 岡 岩 島
+川	3	かわ	river		川 州 巡
+工	3	たくみ	work		工 左 差
+已	3	おのれ	oneself		(己 巳)
+亡	3	な・くす	dead, gone		亡 妄 忙 忘 盲 荒 望 慌 網
+巾	3	はば	turban, scarf		市 布 帝 常
+干	3	ほし	dry		平 年
+廾	3		two hands, twenty		弁
+廴	3		long stride	⿺	延
+⻌	3		walk	⿺	巡 迎 通 追 逃 迎 進
+也	3			◨	地 池 他 施
+弋	3		ceremony, shoot, arrow		式
+弓	3	ゆみ	bow		弓 引
+彐	3		pig snout		
+彡	3		hair, bristle, stubble, beard		杉 形 参 珍 修 彫 惨 彩 診 須 髪 彰 影 膨 顔 鬱
+彳	3		step	◧	役 彼 後 得 徳
+氵	3		water	◧	泳 決 治 海 演 漢 瀬
+丬	3		split wood	◧	北 壮 状 荘 背 将 装 寝 奨
+犭	3		dog	◧	犯 狂 狙
+扌	3		hand	◧	持 掛 打 批 技 抱 押
+艹	3		grass, vegetation	⊤	共 花 英 苦 草 茶 落 幕 靴 薬
+⻖←	3		mound (阝-left)	◧	阪 防 阻 院 陳
+→⻏	3		town (阝-right)	◨	那 邦 郎 部 郭 都
+忄	3		heart	◧	忙 快 怪 怖 性 恒 恨 悔 悟 悩 悦 惨 悼 惧 惜 情 愉 惰 慌 慄 慨 慎 憎 慢 慣
+心	4	こころ	heart	⊥	心 必 芯 忍 忌 忘 志 応 泌 忠 念 怒 怠 怨 急 思 恭 恥 恐 恋 恵 恣 秘 恩 息
+戈	4		spear, halberd		成 式 弐 戦
+戸	4	と	door, house		戸 戻 所
+手	4	て	hand		手 挙
+攵	4	のぶん	action, whip		
+文	4	ぶん	script, literature		文
+斗	4		dipper, measuring scoop		料
+斤	4	きん	axe		新
+方	4	ほう-hō	way, square, raft		方 放 旅 族
+日	4	にち	sun, day		日 白 百 明 的 映 時 晩
+月	4	つき	moon, month; body, flesh		有 服 青 朝
+木	4	き	tree		木 板 相 根 森 楽 機 末 本 杉 林
+欠	4	けつ	yawn, lack		歌 欧
+止	4	とめる	stop		止 正 歩
+歹	4		death, decay		死 列
+殳	4	るまた	weapon, lance		役 投 殴
+毋	4		do not		毎 梅
+比	4	くらべる	compare, compete		皆 昆
+毛	4	け	fur, hair		毛
+氏	4	うじ	clan		氏 民 紙
+气	4		steam, breath		汽 気
+水	4	みず	water		水 永
+火	4	ひ	fire		火 灯
+灬	4		fire		焦 然 煮
+⺤	4	つめ	claw, nail, talon		爪 妥 采 乳 受 浮 将 渓 淫 彩 授 採 菜 援 揺 媛 奨 暖 愛 稲 緩 謡 穏 曖 爵
+父	4	ちち	father		釜
+牛	4	うし	cow		牛 告 牧 物 特 解
+犬	4	いぬ	dog		犬 献 獣
+王	4	おう-ō	king		王 玉 主 国 弄 皇 理 差 聖
+礻	4		altar, display		礼 社 神 視 福
+耂	4		old		孝
+勿	4		do not		
+五	4	ご	five		五
+巴	4		cylinder with a trailing tail		色 把 肥
+元	4	もと	base, origin		
+井	4	せい	well		
+予	4	よ	mineself		予 序 野 預 /矛
+屯	4	トン			屯 純 鈍 頓
+甘	5	あまい	sweet		甘 甚 某 勘 紺 基 欺 堪 棋 媒 期 旗 謀
+生	5	うまれる	life		牲 甥
+用	5	よう-yō	use		用
+田	5	た	field		田 町 思 留 略 番
+疋	5	ひき	small animal; bolt of cloth		延
+疒	5		sickness	⿸	病 症 痛 癖
+癶	5		footsteps		発 登
+白	5	しろ	white		的 皆 皇
+皮	5	けがわ	skin		披 彼 波
+皿	5	さら	dish		皿
+目	5	め	eye		目 見 具 省 眠 眼 観 覧
+矢	5	や	arrow		医 族
+石	5	いし	stone		石 岩 砂 破 碑
+示	5	しめす	altar, display		示 奈 祭 禁
+禾	5	のぎ	grain		利 私 季 和 科 香
+穴	5	あな	cave		空 突
+立	5	たつ	stand, erect		立 音 産 翌 意 新 端 親 競
+母	5	はは	mother		母
+衤	5		clothes		初 被 複
+罒	5		net		買 罪 置 羅
+世	5	よ	society, world; generation		
+⺻	5		brush		津 律 建 書 庸 健 筆 鍵
+冊	5	さつ	(counting) books		冊 柵 倫 偏 遍 論 編 輪
+而	6		rake		耐 需 端 儒
+⺮	6	たけ	bamboo		竹 第 筆 竿 算 答 管 筋 等 笑 箸
+米	6	こめ	rice		
+糸	6	いと	silk		
+缶	6	かん	tin can		缶 陶 鬱
+羊	6	ひつじ	sheep		
+羽	6	はね	feather, wing		
+耳	6	みみ	ear		
+自	6	じ	self (nose=self)		
+至	6	いたる	arrive		
+舌	6	した	tongue		
+舟	6	ふね	boat		
+艮	6	うしとら	stopping(?); (good)		
+虍	6		tiger stripes		虎 虐 虚 虜 虞 戯 膚 慮 劇
+虫	6	むし	insect		
+血	6	ち	blood		
+行	6	ぎょう-gyō	go, do		
+衣	6	ころも	clothes		
+覀	6	にし	west		西 価 要 票 煙 腰 慄 漂 遷 標 覆 覇
+臣	7	しん	minister, official; slave (building a brick wall)		
+見	7	みる	see		
+角	7	つの	horn		
+言	7	こと	speech		
+谷	7	たに	valley		
+豆	7	まめ	bean		
+豕	7	いのこ	pig		
+貝	7	かい	shell		
+足	7	あし	foot		
+身	7	み	body		
+車	7	くるま	cart, car		
+辛	7	からい	spicy, bitter		
+辰	7	たつ	dragon; morning		
+酉	7	とり	wine, alcohol		
+里	7	さと	village, mile		
+赤	7	あか	red		赤 赦 跡 嚇 繊
+走	7	そう-sō	race		走 赴 徒 起 越 超 趣
+金	8	かね	metal, gold		
+長	8	ながい-nagai; ちょう-chyō	long, grow; leader		
+門	8	もん	gate		
+隹	8	ふるとり	small bird		
+雨	8	あめ	rain		
+青	8	あお	blue, green		
+岡	8	おか	hill		岡 剛 綱 鋼
+免	8	めん	dismissal		免 勉 逸 晩
+斉	8	せい	Chinese Qi kingdom		斉 剤 斎 済
+音	9	おと	sound		
+頁	9	おおがい-ōgai	leaf		
+食	9	しょく	eat, food		
+首	9	くび	neck, head		
+品	9	ひん	item		
+馬	10	うま	horse		
+高	10	たかい	tall, high		
+啇	11		base, stem		嫡 滴 摘 適 敵
+無	12	む	nothing		無 舞
