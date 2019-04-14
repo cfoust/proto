@@ -113,6 +113,7 @@ class RadicalStroke(BasicCardType):
 
         self.cards.append(card)
 
+
 restrictedUsers = [
     'strawberrybrown',
     'skent',
@@ -122,7 +123,7 @@ restrictedUsers = [
     'kaoring',
     'akitomo'
 ]
-import json
+
 class WordCard(BasicCardType):
     name = 'ja-word'
 
