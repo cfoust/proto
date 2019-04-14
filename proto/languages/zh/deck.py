@@ -9,11 +9,16 @@ class WordCard(BasicCardType):
     name = 'zh-word'
 
     def __init__(self, db, partOfSpeech):
-        headword = FieldType(True)
+        headword = ComposedField(FieldType())
+        headword.front = True
         headword.anki_name = "Headword"
         headword.html = '<div class="headword">%s</div>'
+        headword.accessor = lambda a: a[0]
 
-        sound = ForvoField(db, 'zh', limitCountries=['China'])
+        sound = ComposedField(
+            ForvoField(db, 'zh', limitCountries=['China'])
+        )
+        sound.accessor = lambda a: a[0]
         sound.anki_name = "Sound"
 
         pos = StaticFieldType(partOfSpeech)
