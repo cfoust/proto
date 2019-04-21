@@ -21,11 +21,10 @@ def get_word_data(filename):
 # Check if we need stuff
 if builder.needAnyData():
     words = {
-        'verb': get_word_data('verbs')[1000:],
-        'noun': get_word_data('nouns')[2000:],
-        'adj': get_word_data('adjectives')[2000:],
+            'verb': get_word_data('verbs')[:2000],
+            'noun': get_word_data('nouns')[:4000],
+            'adj': get_word_data('adjectives')[:4000],
     }
-    print([words['noun'][0]])
 
     print len(words['noun'])
     print len(words['verb'])

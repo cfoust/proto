@@ -15,8 +15,12 @@ class WordCard(BasicCardType):
         headword.html = '<div class="headword">%s</div>'
         headword.accessor = lambda a: a[0]
 
+        pinyin = ComposedField(FieldType())
+        pinyin.accessor = lambda a: a[2]
+        pinyin.anki_name = "Pinyin"
+
         sound = ComposedField(
-            ForvoField(db, 'zh', limitCountries=['China'])
+            ForvoField(db, 'zh', limitCountries=['China', 'Taiwan', 'United States'])
         )
         sound.accessor = lambda a: a[0]
         sound.anki_name = "Sound"

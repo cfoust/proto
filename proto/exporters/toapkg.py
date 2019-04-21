@@ -25,7 +25,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 class APKGExporter:
     @staticmethod
-    def export(deck,filename,tmpPath = '',mediaPath = '',ignoreMedia = False):
+    def export(deck, filename, tmpPath = '', mediaPath = '', ignoreMedia = False):
         wdir = os.getcwd()
 
         def cleanFolder():
@@ -51,13 +51,13 @@ class APKGExporter:
         # Copies media over
 
         if not ignoreMedia:
-            copytree(mediaPath,tmpPath + 'tmp.media')
+            copytree(mediaPath, tmpPath + 'tmp.media')
 
         os.chdir(wdir)
 
         # Sets up the decks and pulls them in
 
-        def makeDeck(parent,prefix,deck):
+        def makeDeck(parent, prefix, deck):
             name = deck.csvname
             csvfile = "%s%s%s.csv" % (tmpPath,prefix,name)
 
@@ -124,7 +124,7 @@ class APKGExporter:
 
                 m['did'] = did
                 tcol.decks.select(did)
-                ti = TextImporter(tcol,csvfile)
+                ti = TextImporter(tcol, csvfile)
                 ti.model = m
                 ti.allowHTML = True
                 ti.initMapping()
