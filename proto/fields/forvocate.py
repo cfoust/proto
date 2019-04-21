@@ -2,8 +2,18 @@
 This bypasses the need by parsing their site for audio files. I'd like to add
 geolocation support someday (as they provide GPS coordinates for samples) to
 deal with accents."""
-from basic import CacheableFieldType
-import requests, os, urllib, urllib2, string, base64, hashlib, time, random, shutil
+from proto.fields.basic import CacheableFieldType
+
+import base64
+import hashlib
+import os
+import random
+import requests
+import shutil
+import string
+import time
+from urllib.parse import quote
+
 from bs4 import BeautifulSoup as soup
 
 def get_data_from_url(url_in):
@@ -24,13 +34,15 @@ def get_data_from_url(url_in):
 
         # Sleep
         if times < 10:
-            print "Call failed to %s." % url_in
+            print("Call failed to %s." % url_in)
             time.sleep(pow(2, times) * sec)
         else:
             break
 
 def get_soup_from_url(url_in):
     return soup(get_data_from_url(url_in), 'html.parser')
+
+BASE_URL = "https://audio00.forvo.com/"
 
 """Grabs audio for a given word in a target language from Forvo, a crowdsourced
 pronunciation database."""
@@ -132,7 +144,7 @@ class ForvoField(CacheableFieldType):
         return '[sound:%s]' % choice
 
 
-    def generate(self,word):
+    def generate(self, word):
         """This code used to be way worse, trust me.
            This pulls the audio files."""
         downloads_list = []
@@ -142,7 +154,7 @@ class ForvoField(CacheableFieldType):
         except:
             pass
 
-        u_word = urllib.quote(word)
+        u_word = quote(word)
 
         language = "en"
         target = self.code
@@ -204,12 +216,18 @@ class ForvoField(CacheableFieldType):
                         continue
 
                     # construct the url again
-                    parts = string.split(href,",")
-                    if "Play" in parts[0]:
-                        mp3_64 = parts[1][1:-1]
-                        mp3_url = 'http://audio.forvo.com:80/mp3/{0}'.format(base64.b64decode(mp3_64))
-                        downloads_list.append(mp3_url)
-                        break
+                    parts = href.split(',')
+
+                    if not "Play" in parts[0]:
+                        continue
+
+                    mp3_64 = parts[1][1:-1]
+                    mp3_url = (
+                        (BASE_URL + 'mp3/{0}')
+                        .format(base64.b64decode(mp3_64).decode('utf-8'))
+                    )
+                    downloads_list.append(mp3_url)
+                    break
 
         # Clear out old downloads
         hashed = hashlib.md5(word).hexdigest()

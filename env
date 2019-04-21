@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+this_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+image="proto:dev"
+container="proto-dev"
+
+if ! docker ps -f name="$container" | grep -q "$container"; then
+  # Remove the container after running
+  args="--rm "
+
+  # For interactivity
+  args+="-it "
+
+  # Don't connect our TTY to the container
+  args+="--detach "
+
+  # Mount in the current directory
+  args+="--volume=$this_dir:$this_dir "
+  args+="-w $this_dir "
+
+  # Make it so file reads/writes are done with the current user
+  uid="$(id -u)"
+  args+="--user $uid:$uid "
+
+  # Kill the container when the init process dies (helpful sometimes)
+  args+="--init "
+
+  args+="--name $container "
+  args+="$image "
+
+  docker run $args > /dev/null
+fi
+
+if [ "$#" -eq 0 ]; then
+  docker exec -it $container /bin/bash
+  exit 0
+fi
+
+docker exec -it $container $@

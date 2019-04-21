@@ -1,6 +1,5 @@
 """Utilities used to make deck generation a lot easier and more streamlined."""
 import os
-from proto.exporters import APKGExporter
 from progressbar import Bar, ProgressBar, Percentage, ETA
 
 
@@ -92,7 +91,7 @@ class PathHelper:
         calling this. See method neededFiles(deck)."""
         deckPath = self._output + self.code + '.apkg'
 
-        APKGExporter.export(deck, deckPath, self._output, self._media, ignoreMedia=ignoreMedia)
+        #APKGExporter.export(deck, deckPath, self._output, self._media, ignoreMedia=ignoreMedia)
 
     def neededFiles(self, deck):
         """Returns a list of files that still need to be present before we can 
