@@ -15,8 +15,8 @@ if ! docker ps -f name="$container" | grep -q "$container"; then
   args+="--detach "
 
   # Mount in the current directory
-  args+="--volume=$this_dir:$this_dir "
-  args+="-w $this_dir "
+  args+="--volume=$this_dir:/app/proto "
+  args+="-w /app/proto "
 
   # Make it so file reads/writes are done with the current user
   uid="$(id -u)"

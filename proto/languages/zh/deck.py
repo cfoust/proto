@@ -1,8 +1,9 @@
 """Defines the different deck types for Mandarin."""
 
-from ...deck import Deck
-from ...fields import *
-from ...cards import *
+from proto.deck import Deck
+from proto.fields.basic import ComposedField, FieldType, StaticFieldType
+from proto.fields.forvocate import ForvoField
+from proto.cards import BasicCardType
 
 
 class WordCard(BasicCardType):
@@ -15,9 +16,8 @@ class WordCard(BasicCardType):
         headword.html = '<div class="headword">%s</div>'
         headword.accessor = lambda a: a[0]
 
-        pinyin = ComposedField(FieldType())
-        pinyin.accessor = lambda a: a[2]
-        pinyin.anki_name = "Pinyin"
+        data = ComposedField(FieldType())
+        data.anki_name = "Data"
 
         sound = ComposedField(
             ForvoField(db, 'zh', limitCountries=['China', 'Taiwan', 'United States'])
@@ -31,6 +31,7 @@ class WordCard(BasicCardType):
 
         self.fields = [
             headword,
+            data,
             sound,
             pos
         ]

@@ -1,7 +1,7 @@
 """Defines and implements the card types. Card Types are just containers of FieldTypes with some extra properties
 that we need to generate a valid deck for Anki. """
 
-from fields import *
+from proto.fields.basic import FieldType
 import string
 
 class BasicCardType:

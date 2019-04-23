@@ -3,3 +3,4 @@ requests
 peewee
 progressbar
 pattern
+decorator

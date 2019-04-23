@@ -4,8 +4,8 @@ It associates data (headwords) with a deck so that all the user has to do
 is provide those instead of handle all the nasty pathing code.
 """
 
-from butils import PathHelper
-from proto.exporters import CSVExporter
+from proto.butils import PathHelper, Progress
+from proto.exporters.tocsv import CSVExporter
 
 class Builder:
     """
@@ -88,6 +88,7 @@ class Builder:
         for deck in self.deckTree:
             if self.deckTree[deck]['needData']:
                 return True
+
         return False
 
 
@@ -124,19 +125,19 @@ class Builder:
                 continue
 
             if len(data) == 0:
-                print 'Deck %s needs data and has none. Skipping.' % name
+                print('Deck %s needs data and has none. Skipping.' % name)
                 continue
 
-            print 'Building cards for deck %s.' % name
+            print('Building cards for deck %s.' % name)
 
             for word in Progress(data):
                 result = deck.makeCard(word)
 
-            print 'Generated %d/%d cards.' % (len(deck.cardType.cards), len(data))
+            print('Generated %d/%d cards.' % (len(deck.cardType.cards), len(data)))
 
             """We output to a .csv because this is what Anki (or in this case,
                 the Anki library) imports into the collection."""
             CSVExporter.export(deck,self.ph.output(deckObject['csvname'] + '.csv'))
 
         self.ph.apkgExport(self.headDeck, ignoreMedia=ignoreMedia)
-        print 'Build of %s successful.' % self.headDeck.name
+        print('Build of %s successful.' % self.headDeck.name)

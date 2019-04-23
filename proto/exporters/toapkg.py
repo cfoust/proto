@@ -3,11 +3,12 @@ try:
 except:
     raise Exception('anki package not installed.')
 
+import os
 from anki.storage import Collection
 from anki.importing import TextImporter
 from anki.exporting import AnkiPackageExporter
-from tocsv import CSVExporter
 import shutil, os, string
+from proto.exporters.tocsv import CSVExporter
 
 ################################################
 # Taken from http://stackoverflow.com/questions/1868714/how-do-i-copy-an-entire-directory-of-files-into-an-existing-directory-using-pyth
@@ -29,7 +30,6 @@ class APKGExporter:
         wdir = os.getcwd()
 
         def cleanFolder():
-            os.chdir(wdir)
             # Cleans out the old tmp collection
             if os.path.exists(tmpPath + 'tmp.media'):
                 shutil.rmtree(tmpPath + 'tmp.media')
@@ -46,12 +46,12 @@ class APKGExporter:
         # Makes a new one
         tcol = Collection(tmpPath + 'tmp.anki2')
 
-        os.chdir(wdir)
-
         # Copies media over
 
+        media_path = os.path.join(tmpPath, 'tmp.media')
         if not ignoreMedia:
-            copytree(mediaPath, tmpPath + 'tmp.media')
+            os.chdir(wdir)
+            copytree(mediaPath, media_path)
 
         os.chdir(wdir)
 
@@ -59,10 +59,10 @@ class APKGExporter:
 
         def makeDeck(parent, prefix, deck):
             name = deck.csvname
-            csvfile = "%s%s%s.csv" % (tmpPath,prefix,name)
+            csvfile = "%s%s%s.csv" % (tmpPath, prefix, name)
 
             if not os.path.exists(csvfile) and deck.cardType != None:
-                print 'Skipping deck "%s" because no file "%s" was found.' % (name, csvfile)
+                print('Skipping deck "%s" because no file "%s" was found.' % (name, csvfile))
                 return
 
             did = tcol.decks.id(parent + deck.name)
@@ -138,9 +138,9 @@ class APKGExporter:
 
         makeDeck('','',deck)
 
-        os.chdir(wdir)
         apkge = AnkiPackageExporter(tcol)
         apkge.includeSched = True
+        os.chdir(wdir)
         apkge.exportInto(filename)
 
         cleanFolder()

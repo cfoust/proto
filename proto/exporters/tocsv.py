@@ -6,7 +6,7 @@ class CSVExporter:
         if not deck.cardType:
             raise Exception('Deck has no card type.')
 
-        with open(filename,'wb') as f:
+        with open(filename, 'w') as f:
             writer = csv.writer(f, dialect='excel-tab')
 
             for card in deck.cardType.cards:
@@ -14,9 +14,7 @@ class CSVExporter:
                 for field in card:
                     if field is None:
                         field = ""
-                    
-                    try:
-                        fixed.append(field.encode('utf-8'))
-                    except:
-                        fixed.append(field)
+
+                    fixed.append(field)
+
                 writer.writerow(fixed)
