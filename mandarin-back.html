@@ -24,6 +24,8 @@ if (!window.proto) {
 
 			var text = "";
 
+      text += `<a href="plecoapi://x-callback-url/s?q=${data[0]}">Pleco</a>`;
+
 			// Parse over each definition
 			for (let j = 0; j < defs.length; j++) {
 				let definition = defs[j], meaning = "";
@@ -59,6 +61,18 @@ if (!window.proto) {
         .join('');
 		},
 
+    getData: function(dataString) {
+      const deFormat = a => a.split("'").join('"')
+      if (!dataString.includes('"')) {
+        return JSON.parse(deFormat(dataString))
+      }
+
+      const parts = dataString.split('"')
+      const definition = parts[1]
+      const rest = JSON.parse(deFormat(parts[0].slice(0, -2) + ']'))
+      return rest.concat([definition])
+    },
+
 		/**
 		 * Renders information on a word to the DOM, prioritizing the most
 		 * common reading.
@@ -70,7 +84,7 @@ if (!window.proto) {
 			const stroke = document.getElementById("stroke");
 		  const def    = document.getElementById("def");
       def.innerHTML = dataString;
-			const data   = JSON.parse(dataString.split("'").join('"'));
+			const data   = this.getData(dataString);
 
       head.innerHTML = this.renderPinYin(data);
       stroke.innerHTML = data[0];
