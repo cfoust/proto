@@ -1,24 +1,24 @@
 .card {
-    font-family: lucida sans unicode;
-    font-size: 20px;
-    text-align: center;
-    color: black;
-    background-color: #f5f5f5;
-    margin-left: 10%;
-    margin-right: 10%;
+  font-family: lucida sans unicode;
+  font-size: 20px;
+  text-align: center;
+  color: black;
+  background-color: #f5f5f5;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 .content {
-    width: 100%;
-    padding-top: 5%;
-    margin-top: 2%;
-    margin-bottom: 2%;
-    text-align: left;
-    color: #0c0201;
-    font-size: 2vh;
-    display: block;
-    content: "";
-    clear: both;
+  width: 100%;
+  padding-top: 5%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  text-align: left;
+  color: #0c0201;
+  font-size: 2vh;
+  display: block;
+  content: "";
+  clear: both;
 }
 
 @font-face {
@@ -27,28 +27,28 @@
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .headword {
-    margin-top: 10%;
-    margin-bottom: 5%;
-    font-family: sans-serif;
-    color: #0c0201;
-    font-size: 8vh;
+  margin-top: 10%;
+  margin-bottom: 5%;
+  font-family: sans-serif;
+  color: #0c0201;
+  font-size: 8vh;
 }
 
 .stroke {
-    margin-top: 10%;
-    margin-bottom: 5%;
-    font-family: strokefont;
-    color: #0c0201;
-    font-size: 18vh;
-    height: 20vh;
-    width: 100%;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
+  margin-top: 10%;
+  margin-bottom: 5%;
+  font-family: strokefont;
+  color: #0c0201;
+  font-size: 18vh;
+  height: 20vh;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
 
 .redbutton {
@@ -60,23 +60,22 @@
   font-size: 3.5vh;
 }
 
-
 .strokeBar {
-    color: #f5f5f5;
-    background-color: #be3513;
-    border-radius: 10px;
-    height: 1vh;
+  color: #f5f5f5;
+  background-color: #be3513;
+  border-radius: 10px;
+  height: 1vh;
 }
 
 .playButton {
-    color: #f5f5f5;
-    background-color: #be3513;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    margin-left: 30%;
-    margin-right: 30%;
+  color: #f5f5f5;
+  background-color: #be3513;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-left: 30%;
+  margin-right: 30%;
 }
 
 .play {
@@ -87,8 +86,9 @@
   margin-top: 4%;
   margin-left: 42%;
 }
+
 .play:after {
-    content: '';
+  content: '';
   display: inline-block;
   position: relative;
   top: 1px;
