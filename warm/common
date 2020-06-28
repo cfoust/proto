@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Mount in `anki` correctly
-ankipath="${SCRIPT_DIR}/../vendor/anki"
-echo "-e PYTHONPATH=/usr/local/lib/python3.9/dist-packages:${ankipath}"
+# Mount in `anki` and `proto` correctly
+top_path="${SCRIPT_DIR}/.."
+echo "-e PYTHONPATH=/usr/local/lib/python3.9/dist-packages:${top_path}:${top_path}/vendor/anki"
 echo "-e MYPYPATH=${SCRIPT_DIR}/../mypy"
