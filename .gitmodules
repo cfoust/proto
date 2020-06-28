@@ -1,6 +1,3 @@
 [submodule "vendor/anki"]
 	path = vendor/anki
 	url = git@github.com:dae/anki.git
-[submodule "vendor/genanki"]
-	path = vendor/genanki
-	url = git@github.com:kerrickstaley/genanki.git
