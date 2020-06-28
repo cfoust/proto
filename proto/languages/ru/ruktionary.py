@@ -10,19 +10,21 @@ import requests, urllib, random, os
 
 wiktionary_en_raw = "http://ru.wiktionary.org/wiki/{0}?printable=yes"
 
+
 class RuktionaryField(CacheableFieldType):
     """Grabs data from ru.wiktionary.org for Russian definitions."""
-    db_name = 'conruktion'
-    anki_name = 'Meaning'
 
-    def __init__(self,db):
-        CacheableFieldType.__init__(self,db)
+    db_name = "conruktion"
+    anki_name = "Meaning"
 
-        self.wikiCache = Cacher(db,'conwiktion-ru-wikistore')
+    def __init__(self, db):
+        CacheableFieldType.__init__(self, db)
 
-    def generate(self,word):
+        self.wikiCache = Cacher(db, "conwiktion-ru-wikistore")
+
+    def generate(self, word):
         try:
-            word = word.encode('utf-8')
+            word = word.encode("utf-8")
         except:
             pass
 
@@ -33,26 +35,26 @@ class RuktionaryField(CacheableFieldType):
         else:
             url = wiktionary_en_raw.format(urllib.quote(word))
             wikiText = requests.get(url).text
-            self.wikiCache.store(word,wikiText.encode('utf-8'))
+            self.wikiCache.store(word, wikiText.encode("utf-8"))
 
         # Source of the wiki page
         text = wikiText
 
-        if text == '':
+        if text == "":
             return None
 
         # Create a beautifulsoup for the page
         page = soup(text)
 
         # Look for the meaning subsection
-        zna = page.find(text='Значение')
+        zna = page.find(text="Значение")
 
         # If we couldn't find it, return nothing
         if zna == None:
             return None
 
         # Otherwise, look for the next definition list
-        ol = zna.findNext('ol')
+        ol = zna.findNext("ol")
 
         # If we couldn't find it, return nothing
         if not ol:
@@ -61,7 +63,7 @@ class RuktionaryField(CacheableFieldType):
         """ Create a provincial list of definitions by iterating over child
             elements"""
         defs = []
-        for defi in ol.findAll('li'):
+        for defi in ol.findAll("li"):
             defs.append(defi.text)
 
         # If we have no definitions, return None
@@ -69,44 +71,44 @@ class RuktionaryField(CacheableFieldType):
             return None
 
         # Stores the formatted definition text
-        total = ''
+        total = ""
 
         """Iterate over all the definitions and pack it into a nice-looking
            numbered definition. """
-        for i,defi in enumerate(defs):
-            
-            defi = defi.encode('utf-8')
+        for i, defi in enumerate(defs):
+
+            defi = defi.encode("utf-8")
 
             # If we find no definition there, continue
-            if defi == '':
+            if defi == "":
                 continue
-            
+
             # Checks if a symbol indicating an example of usage is present
-            if '◆' in defi:
+            if "◆" in defi:
                 # Gets a list of examples for this sub-definition.
-                examples = defi.split('◆')
-                
+                examples = defi.split("◆")
+
                 """examples[0] will be the actual definition, and all other list
                    elements are examples. If examples[0] is empty, we skip this
                    sub-definition."""
-                if examples[0].strip() == '':
+                if examples[0].strip() == "":
                     continue
 
                 # Append the actual sub-definition
-                total += '%d. %s ' % ((i+1), examples[0])
+                total += "%d. %s " % ((i + 1), examples[0])
 
                 # Append all the examples, skipping the first element
                 for example in examples[1:]:
-                    if example != '' and 'указан' not in example:
-                        total += '◆ <i>%s</i> ' % example
+                    if example != "" and "указан" not in example:
+                        total += "◆ <i>%s</i> " % example
             # Since we have no examples, just add the definition.
             else:
-                if 'указан' not in defi:
-                    total += '%d. %s ' % ((i+1), defi)
+                if "указан" not in defi:
+                    total += "%d. %s " % ((i + 1), defi)
 
         """Return None if total has nothing, otherwise just return the formatted
           definition"""
-        if total != '':
+        if total != "":
             return total
         else:
             return None

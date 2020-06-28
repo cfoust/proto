@@ -3,6 +3,7 @@ import os
 from progressbar import Bar, ProgressBar, Percentage, ETA
 from proto.exporters.toapkg import APKGExporter
 
+
 def Progress(data):
     """Iterates over a dataset normally, but prints a progress bar to the 
         command line with an ETA."""
@@ -31,21 +32,20 @@ class PathHelper:
     def __init__(self, code):
         """Takes in a ISO-639-1 language code and creates 
            the directory structure."""
-        
+
         self.code = code
 
-        self._output = 'output/%s/' % code
+        self._output = "output/%s/" % code
 
-        self._input = 'input/%s/' % code
+        self._input = "input/%s/" % code
 
-        self._media = 'media/%s/' % code
+        self._media = "media/%s/" % code
 
-        self._db = self._input + self.code + '.db'
+        self._db = self._input + self.code + ".db"
 
         for folder in [self._media, self._input, self._output]:
             if not os.path.exists(folder):
                 os.makedirs(folder)
-
 
     def db(self):
         return self._db
@@ -64,12 +64,12 @@ class PathHelper:
         if os.path.exists(p):
             return p
         else:
-            raise Exception('File %s not found in input directory.' % fileName)
+            raise Exception("File %s not found in input directory." % fileName)
 
     def output(self, fileName):
         """Returns the relative path of the requested output file. 
            See ifile(fileName) for details."""
-        
+
         if not fileName:
             return self._output
 
@@ -89,13 +89,16 @@ class PathHelper:
         into an .apkg file that can be directly imported into Anki and includes 
         all media files. You must have generated all of the needed files before 
         calling this. See method neededFiles(deck)."""
-        deckPath = self._output + self.code + '.apkg'
+        deckPath = self._output + self.code + ".apkg"
 
-        APKGExporter.export(deck, deckPath, self._output, self._media, ignoreMedia=ignoreMedia)
+        APKGExporter.export(
+            deck, deckPath, self._output, self._media, ignoreMedia=ignoreMedia
+        )
 
     def neededFiles(self, deck):
         """Returns a list of files that still need to be present before we can 
         generate a deck. Recursively works through all the decks and subdecks."""
+
         def _neededFiles(pname, deck):
             needed = []
             if deck.cardType:
@@ -107,17 +110,19 @@ class PathHelper:
                 # todo: check if the csv file has the right number of fields
 
             for subdeck in deck.subdecks:
-                needed += _neededFiles(pname + '-' + deck.csvname if pname != '' else deck.csvname, subdeck)
+                needed += _neededFiles(
+                    pname + "-" + deck.csvname if pname != "" else deck.csvname, subdeck
+                )
 
             return needed
 
-        return _neededFiles('', deck)
+        return _neededFiles("", deck)
 
 
 def fileLines(fn):
     """Gets the lines of a file with the given filename as a list of strings."""
     if os.path.isfile(fn):
-        op = open(fn, 'r')
+        op = open(fn, "r")
         lines = op.readlines()
         op.close()
         return [x.rstrip() for x in lines]
@@ -127,15 +132,22 @@ def fileLines(fn):
 
 def loadTemplate(tname):
     """Loads a template from the templates directory and returns its contents."""
-    p = 'templates/%s' % tname
+    p = "templates/%s" % tname
 
     if os.path.exists(p):
-        return open(p, 'r').read()
+        return open(p, "r").read()
     else:
-        raise Exception('Template %s not found in template directory.' % tname)
+        raise Exception("Template %s not found in template directory." % tname)
 
 
-def applyDefaultTemplate(deck, recursive=True, css='proto.css', js='proto.js', header='proto.header.html', footer='proto.footer.html'):
+def applyDefaultTemplate(
+    deck,
+    recursive=True,
+    css="proto.css",
+    js="proto.js",
+    header="proto.header.html",
+    footer="proto.footer.html",
+):
     """Applies proto's default CSS, JS, and HTML template to a deck with 
        optional recursion."""
 

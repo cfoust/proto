@@ -16,6 +16,7 @@ from urllib.parse import quote
 
 from bs4 import BeautifulSoup as soup
 
+
 def get_data_from_url(url_in):
     times = 0
     sec = 5
@@ -39,28 +40,34 @@ def get_data_from_url(url_in):
         else:
             break
 
+
 def get_soup_from_url(url_in):
-    return soup(get_data_from_url(url_in), 'html.parser')
+    return soup(get_data_from_url(url_in), "html.parser")
+
 
 BASE_URL = "https://audio00.forvo.com/"
 
 """Grabs audio for a given word in a target language from Forvo, a crowdsourced
 pronunciation database."""
+
+
 class ForvoField(CacheableFieldType):
     db_name = "forvocate"
     anki_name = "Audio"
     html = """%s"""
 
-    def __init__(self,
-            db,
-            languageCode,
-            storagePath = None,
-            outputPath = None,
-            throttle=True,
-            soundCap=1,
-            randomSound=False,
-            limitUsers=[],
-            limitCountries=[]):
+    def __init__(
+        self,
+        db,
+        languageCode,
+        storagePath=None,
+        outputPath=None,
+        throttle=True,
+        soundCap=1,
+        randomSound=False,
+        limitUsers=[],
+        limitCountries=[],
+    ):
         """db: database
            languageCode: ISO-639-1 language code
            outputPath: folder to put the media files (.mp3) in
@@ -73,11 +80,11 @@ class ForvoField(CacheableFieldType):
                            from the English name of the given countr(y/ies)"""
 
         # Separate words from different languages in the database
-        self.db_name = self.db_name + '-' + languageCode
+        self.db_name = self.db_name + "-" + languageCode
 
         self.optional = True
 
-        CacheableFieldType.__init__(self,db)
+        CacheableFieldType.__init__(self, db)
 
         self.code = languageCode
 
@@ -88,7 +95,7 @@ class ForvoField(CacheableFieldType):
         self.limitUsers = limitUsers
 
         if not storagePath:
-            self.storage_path = 'forvocate/' + languageCode + '/'
+            self.storage_path = "forvocate/" + languageCode + "/"
         else:
             self.storage_path = storagePath
 
@@ -96,7 +103,7 @@ class ForvoField(CacheableFieldType):
             os.makedirs(self.storage_path)
 
         if not outputPath:
-            self.output_path = 'media/' + languageCode + '/'
+            self.output_path = "media/" + languageCode + "/"
         else:
             self.output_path = outputPath
 
@@ -104,9 +111,8 @@ class ForvoField(CacheableFieldType):
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
-
     def pull(self, word):
-        result = CacheableFieldType.pull(self,word)
+        result = CacheableFieldType.pull(self, word)
 
         if not result:
             """It doesn't matter if this field has nothing, so we return a blank
@@ -116,16 +122,16 @@ class ForvoField(CacheableFieldType):
 
         # Deal with fucking Python encoding
         try:
-            word = word.encode('utf-8')
+            word = word.encode("utf-8")
         except:
             pass
 
         """Generates the resulting file paths based on the number of sounds we stored.
            We don't really care about using hash here as even big decks have only
            30k or so cards. Not worth worrying about conflicts. """
-        results = [hashlib.md5(word).hexdigest()
-                  + str(x) + '.mp3'
-                  for x in range(int(result))]
+        results = [
+            hashlib.md5(word).hexdigest() + str(x) + ".mp3" for x in range(int(result))
+        ]
 
         if len(results) == 0:
             return None
@@ -138,11 +144,10 @@ class ForvoField(CacheableFieldType):
 
         # Only copy in the file if it's not already there
         if not os.path.exists(self.output_path + choice):
-            shutil.copyfile(self.storage_path + choice,self.output_path + choice)
+            shutil.copyfile(self.storage_path + choice, self.output_path + choice)
 
         # This is the format Anki understands to play a sound
-        return '[sound:%s]' % choice
-
+        return "[sound:%s]" % choice
 
     def generate(self, word):
         """This code used to be way worse, trust me.
@@ -150,7 +155,7 @@ class ForvoField(CacheableFieldType):
         downloads_list = []
 
         try:
-            word = word.encode('utf-8')
+            word = word.encode("utf-8")
         except:
             pass
 
@@ -158,14 +163,14 @@ class ForvoField(CacheableFieldType):
 
         language = "en"
         target = self.code
-        url = 'http://www.forvo.com/word/%s/#%s' % (u_word,target)
+        url = "http://www.forvo.com/word/%s/#%s" % (u_word, target)
 
         word_soup = get_soup_from_url(url)
 
-        languages = word_soup.findAll(attrs={'class': 'pronunciations'})
+        languages = word_soup.findAll(attrs={"class": "pronunciations"})
 
         for language in languages:
-            abbrs = language.findAll('abbr')
+            abbrs = language.findAll("abbr")
 
             if len(abbrs) == 0:
                 continue
@@ -176,13 +181,13 @@ class ForvoField(CacheableFieldType):
             if not abbr == target:
                 continue
 
-            pronunciations = language.findAll('ul')[0].findAll('li')
+            pronunciations = language.findAll("ul")[0].findAll("li")
 
             # Iterate through all pronunciations
             for pron in pronunciations:
                 if len(self.limitCountries) > 0:
                     # Check to see where the speaker is from
-                    loc = pron.findAll(attrs={'class': 'from'})
+                    loc = pron.findAll(attrs={"class": "from"})
 
                     if not loc:
                         continue
@@ -199,7 +204,7 @@ class ForvoField(CacheableFieldType):
                 if len(self.limitUsers) > 0:
                     # Find the username of this pronunciation
                     try:
-                        usr = pron.findAll(attrs={'class': 'uLink'})[0].contents[0]
+                        usr = pron.findAll(attrs={"class": "uLink"})[0].contents[0]
                     except:
                         continue
 
@@ -208,23 +213,22 @@ class ForvoField(CacheableFieldType):
                         continue
 
                 # Grab the sound
-                a_list = pron.findAll('span', attrs={'class': 'play'})
+                a_list = pron.findAll("span", attrs={"class": "play"})
                 for a in a_list:
                     try:
-                        href = a['onclick']
+                        href = a["onclick"]
                     except KeyError:
                         continue
 
                     # construct the url again
-                    parts = href.split(',')
+                    parts = href.split(",")
 
                     if not "Play" in parts[0]:
                         continue
 
                     mp3_64 = parts[1][1:-1]
-                    mp3_url = (
-                        (BASE_URL + 'mp3/{0}')
-                        .format(base64.b64decode(mp3_64).decode('utf-8'))
+                    mp3_url = (BASE_URL + "mp3/{0}").format(
+                        base64.b64decode(mp3_64).decode("utf-8")
                     )
                     downloads_list.append(mp3_url)
                     break
@@ -232,21 +236,21 @@ class ForvoField(CacheableFieldType):
         # Clear out old downloads
         hashed = hashlib.md5(word).hexdigest()
         index = 0
-        while os.path.isfile(self.storage_path + hashed + str(index) + '.mp3'):
-            os.remove(self.storage_path + hashed + str(index) + '.mp3')
+        while os.path.isfile(self.storage_path + hashed + str(index) + ".mp3"):
+            os.remove(self.storage_path + hashed + str(index) + ".mp3")
             index += 1
 
         # Download the new sounds
-        for i,url in enumerate(downloads_list):
+        for i, url in enumerate(downloads_list):
             if i == self.soundCap:
                 break
             r = requests.get(url)
-            with open(self.storage_path + hashed + str(i) + '.mp3','wb') as code:
+            with open(self.storage_path + hashed + str(i) + ".mp3", "wb") as code:
                 code.write(r.content)
             if self.throttle:
                 time.sleep(1.0)
 
-        numSounds = min(len(downloads_list),self.soundCap)
+        numSounds = min(len(downloads_list), self.soundCap)
         if numSounds == 0:
             return None
         else:

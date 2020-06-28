@@ -12,11 +12,11 @@ class SpanishVerbsDeck(Deck):
     a specific deck type for them."""
 
     name = "Verbs"
-    csvname = 'verbs'
+    csvname = "verbs"
     cardType = None
 
     def __init__(self, db, pathToSdict):
-        self.cardType = SpanishVerbCard(db,pathToSdict)
+        self.cardType = SpanishVerbCard(db, pathToSdict)
 
 
 class SpanishDeck(Deck):
@@ -25,7 +25,7 @@ class SpanishDeck(Deck):
     name = "Spanish"
 
     # This is the base CSV name we use to hold data to be imported into Anki
-    csvname = 'es'
+    csvname = "es"
 
     cardType = None
 
@@ -37,17 +37,13 @@ class SpanishDeck(Deck):
         nouns.name = "Nouns"
         """ The csvname here is a short (and lowercase) name that we use to 
             generate CSVs."""
-        nouns.csvname = 'nouns'
-        nouns.cardType = RussianSoundCard(db,pathToSdict)
+        nouns.csvname = "nouns"
+        nouns.cardType = RussianSoundCard(db, pathToSdict)
 
         # Creates the adjectives deck
         adjectives = Deck()
         adjectives.name = "Adjectives"
-        adjectives.csvname = 'adjectives'
-        adjectives.cardType = RussianSoundCard(db,pathToSdict)
+        adjectives.csvname = "adjectives"
+        adjectives.cardType = RussianSoundCard(db, pathToSdict)
 
-        self.subdecks = [
-            nouns,
-            adjectives,
-            SpanishVerbsDeck(db,pathToSdict)
-        ]
+        self.subdecks = [nouns, adjectives, SpanishVerbsDeck(db, pathToSdict)]

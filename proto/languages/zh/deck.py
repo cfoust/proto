@@ -7,7 +7,7 @@ from proto.cards import BasicCardType
 
 
 class WordCard(BasicCardType):
-    name = 'zh-word'
+    name = "zh-word"
 
     def __init__(self, db, partOfSpeech):
         headword = ComposedField(FieldType())
@@ -20,7 +20,7 @@ class WordCard(BasicCardType):
         data.anki_name = "Data"
 
         sound = ComposedField(
-            ForvoField(db, 'zh', limitCountries=['China', 'Taiwan', 'United States'])
+            ForvoField(db, "zh", limitCountries=["China", "Taiwan", "United States"])
         )
         sound.accessor = lambda a: a[0]
         sound.anki_name = "Sound"
@@ -29,47 +29,38 @@ class WordCard(BasicCardType):
         pos.anki_name = "POS"
         pos.html = "<div style='display: none'>%s</div>"
 
-        self.fields = [
-            headword,
-            data,
-            sound,
-            pos
-        ]
+        self.fields = [headword, data, sound, pos]
 
         self.cards = []
 
 
 class MandarinDeck(Deck):
-	"""Deck for studying/learning radicals."""
+    """Deck for studying/learning radicals."""
 
-	name = "Mandarin"
+    name = "Mandarin"
 
-	csvname = 'zh'
+    csvname = "zh"
 
-	cardType = None
+    cardType = None
 
-	subdecks = []
+    subdecks = []
 
-	def __init__(self, db):
-		Deck.__init__(self)
+    def __init__(self, db):
+        Deck.__init__(self)
 
-		nouns = Deck()
-		nouns.name = "Nouns"
-		nouns.csvname = 'nouns'
-		nouns.cardType = WordCard(db, 'noun')
+        nouns = Deck()
+        nouns.name = "Nouns"
+        nouns.csvname = "nouns"
+        nouns.cardType = WordCard(db, "noun")
 
-		verbs = Deck()
-		verbs.name = "Verbs"
-		verbs.csvname = 'verbs'
-		verbs.cardType = WordCard(db, 'verb')
+        verbs = Deck()
+        verbs.name = "Verbs"
+        verbs.csvname = "verbs"
+        verbs.cardType = WordCard(db, "verb")
 
-		adjectives = Deck()
-		adjectives.name = "Adjectives"
-		adjectives.csvname = 'adj'
-		adjectives.cardType = WordCard(db, 'adj')
+        adjectives = Deck()
+        adjectives.name = "Adjectives"
+        adjectives.csvname = "adj"
+        adjectives.cardType = WordCard(db, "adj")
 
-		self.subdecks = [
-			nouns,
-			verbs,
-			adjectives
-		]
+        self.subdecks = [nouns, verbs, adjectives]

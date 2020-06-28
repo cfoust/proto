@@ -4,6 +4,7 @@ that we need to generate a valid deck for Anki. """
 from proto.fields.basic import FieldType
 import string
 
+
 class BasicCardType:
     # Card type as it shows up in Anki
     name = "Default Card Type"
@@ -60,7 +61,7 @@ class BasicCardType:
                 return None
             # if the card was optional, just put in a blank string
             elif result is None:
-                result = ''
+                result = ""
 
             card.append(result)
 
@@ -79,7 +80,7 @@ class BasicCardType:
 
         # Ensures we have the same number of fields.
         if not len(card) == len(self.fields):
-            raise Exception('Invalid number of fields.')
+            raise Exception("Invalid number of fields.")
 
         for i, field in enumerate(card):
             if not field:
@@ -95,7 +96,9 @@ class BasicCardType:
         card itself, but are unrelated to the order they appear in the CardType's list of fields."""
 
         # All the fields that have the order property defined get precedence. They are sorted in ascending order.
-        numericFields = sorted([f for f in self.fields if f.order != -1], key=lambda f: f.order)
+        numericFields = sorted(
+            [f for f in self.fields if f.order != -1], key=lambda f: f.order
+        )
 
         # The rest are filtered out and appended at the end.
         normalFields = [f for f in self.fields if f.order == -1]
@@ -114,7 +117,7 @@ class BasicCardType:
 
         # Appends all of the fields.
         for field in self._sortFields():
-            fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
+            fieldHtml = field.html.replace("%s", "{{%s}}" % field.anki_name)
             if field.front:
                 front += fieldHtml
 
@@ -130,15 +133,15 @@ class BasicCardType:
 
         # Puts the word at the top of the back.
         wordField = self.fields[0]
-        wordHtml = wordField.html.replace('%s','{{%s}}' % wordField.anki_name)
+        wordHtml = wordField.html.replace("%s", "{{%s}}" % wordField.anki_name)
         back += wordHtml
 
         # Appends the back header.
         back += self._bheader
 
         # Appends all the fields' html.
-        for i,field in enumerate(self._sortFields()):
-            fieldHtml = field.html.replace('%s','{{%s}}' % field.anki_name)
+        for i, field in enumerate(self._sortFields()):
+            fieldHtml = field.html.replace("%s", "{{%s}}" % field.anki_name)
             if not field.front:
                 back += fieldHtml
 
@@ -149,24 +152,26 @@ class BasicCardType:
 
     def css(self):
         """Returns the combined CSS needed by each field."""
-        return self._css + '\n'.join([field.css for field in self.fields])
+        return self._css + "\n".join([field.css for field in self.fields])
 
     def js(self):
         """Returns the combined JavaScript needed by each field."""
-        return self._js + '\n'.join([field.js for field in self.fields])
+        return self._js + "\n".join([field.js for field in self.fields])
 
     def shortName(self):
         """Gets this CardType's shortname."""
-        return string.replace(self.name.lower(),' ','-')
+        return string.replace(self.name.lower(), " ", "-")
+
 
 class DefaultWikiSoundCard(BasicCardType):
     """This card takes a headword and gets its definition from English Wiktionary and its sound from Forvo."""
+
     name = "Sound and Wiktionary"
 
     # Just our static model ID we use for this card type
     mid = 1376518451077
 
-    def __init__(self,pathToDb,languageFullName,languageCode):
+    def __init__(self, pathToDb, languageFullName, languageCode):
         """Creates an instance of DefaultWikiSoundCard.
 
         pathToDb is the path to a sqlite database where cacheable information will be stored.
@@ -175,11 +180,11 @@ class DefaultWikiSoundCard(BasicCardType):
         front = FieldType(True)
         front.anki_name = "Front"
 
-        back = WiktionaryField(pathToDb,languageFullName,languageCode)
+        back = WiktionaryField(pathToDb, languageFullName, languageCode)
         back.anki_name = "Back"
         back.html = """<div class="content"\>%s</div>"""
 
-        sound = ForvoField(pathToDb,languageCode)
+        sound = ForvoField(pathToDb, languageCode)
         sound.anki_name = "Audio"
 
         # This field has no purpose (i.e won't be displayed but here for legacy)
@@ -187,4 +192,4 @@ class DefaultWikiSoundCard(BasicCardType):
         type.anki_name = "Type"
         type.html = """<div class="content" style="display: none;">%s</div>"""
 
-        self.fields = [front,back,sound,type]
+        self.fields = [front, back, sound, type]

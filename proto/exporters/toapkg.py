@@ -1,7 +1,7 @@
 try:
     import anki
 except:
-    raise Exception('anki package not installed.')
+    raise Exception("anki package not installed.")
 
 import os
 from anki.storage import Collection
@@ -22,19 +22,22 @@ def copytree(src, dst, symlinks=False, ignore=None):
             shutil.copytree(s, d, symlinks, ignore)
         else:
             shutil.copy2(s, d)
+
+
 ################################################
+
 
 class APKGExporter:
     @staticmethod
-    def export(deck, filename, tmpPath = '', mediaPath = '', ignoreMedia = False):
+    def export(deck, filename, tmpPath="", mediaPath="", ignoreMedia=False):
         wdir = os.getcwd()
 
         def cleanFolder():
             # Cleans out the old tmp collection
-            if os.path.exists(tmpPath + 'tmp.media'):
-                shutil.rmtree(tmpPath + 'tmp.media')
+            if os.path.exists(tmpPath + "tmp.media"):
+                shutil.rmtree(tmpPath + "tmp.media")
 
-            for f in ['tmp.media.db2','tmp.anki2','tmp.anki2-journal']:
+            for f in ["tmp.media.db2", "tmp.anki2", "tmp.anki2-journal"]:
                 if os.path.exists(tmpPath + f):
                     try:
                         os.remove(tmpPath + f)
@@ -44,11 +47,11 @@ class APKGExporter:
         cleanFolder()
 
         # Makes a new one
-        tcol = Collection(tmpPath + 'tmp.anki2')
+        tcol = Collection(tmpPath + "tmp.anki2")
 
         # Copies media over
 
-        media_path = os.path.join(tmpPath, 'tmp.media')
+        media_path = os.path.join(tmpPath, "tmp.media")
         if not ignoreMedia:
             os.chdir(wdir)
             copytree(mediaPath, media_path)
@@ -62,7 +65,10 @@ class APKGExporter:
             csvfile = "%s%s%s.csv" % (tmpPath, prefix, name)
 
             if not os.path.exists(csvfile) and deck.cardType != None:
-                print('Skipping deck "%s" because no file "%s" was found.' % (name, csvfile))
+                print(
+                    'Skipping deck "%s" because no file "%s" was found.'
+                    % (name, csvfile)
+                )
                 return
 
             did = tcol.decks.id(parent + deck.name)
@@ -73,41 +79,41 @@ class APKGExporter:
 
             if not deck.cardType:
                 conf = tcol.decks.getConf(confId)
-                conf['new']['perDay'] = 999
+                conf["new"]["perDay"] = 999
                 tcol.decks.updateConf(conf)
             elif deck.perDay:
                 conf = tcol.decks.getConf(confId)
-                conf['new']['perDay'] = deck.perDay
+                conf["new"]["perDay"] = deck.perDay
                 tcol.decks.updateConf(conf)
 
-            tcol.decks.setConf(d,confId)
+            tcol.decks.setConf(d, confId)
 
             if deck.cardType:
                 ct = deck.cardType
 
                 if not tcol.models.byName(ct.name):
                     m = tcol.models.new(ct.name)
-                    m['req'] = [[0, 'all', [0]]]
-                    m['css'] = ct.css()
-                    m['tmpls'] = [
+                    m["req"] = [[0, "all", [0]]]
+                    m["css"] = ct.css()
+                    m["tmpls"] = [
                         {
-                            'name': 'Card 1',
-                            'qfmt': ct.front(),
-                            'afmt': ct.back(),
-                            'bfont': 'Lucida Sans Unicode',
-                            'bamft': '',
-                            'bqmft': '',
-                            'ord': 0,
-                            'did': None,
-                            'bsize': 12
+                            "name": "Card 1",
+                            "qfmt": ct.front(),
+                            "afmt": ct.back(),
+                            "bfont": "Lucida Sans Unicode",
+                            "bamft": "",
+                            "bqmft": "",
+                            "ord": 0,
+                            "did": None,
+                            "bsize": 12,
                         }
                     ]
                     tcol.models.add(m)
 
-                    for i,field in enumerate(ct.fields):
+                    for i, field in enumerate(ct.fields):
                         f = tcol.models.newField(field.anki_name)
-                        f['ord'] = i
-                        tcol.models.addField(m,f)
+                        f["ord"] = i
+                        tcol.models.addField(m, f)
                 else:
                     m = tcol.models.byName(ct.name)
 
@@ -121,7 +127,7 @@ class APKGExporter:
 
                 tcol.save()
 
-                m['did'] = did
+                m["did"] = did
                 tcol.decks.select(did)
                 ti = TextImporter(tcol, csvfile)
                 ti.model = m
@@ -134,9 +140,9 @@ class APKGExporter:
                 tcol.save()
 
             for sd in deck.subdecks:
-                makeDeck(parent + deck.name + '::',prefix + name + '-', sd)
+                makeDeck(parent + deck.name + "::", prefix + name + "-", sd)
 
-        makeDeck('','',deck)
+        makeDeck("", "", deck)
 
         apkge = AnkiPackageExporter(tcol)
         apkge.includeSched = True

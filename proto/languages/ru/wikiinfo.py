@@ -15,23 +15,24 @@ sdict_template = "несовер\. \- ([^\s-]+)<br>совер\. \- ([^\s-]+)"
 
 # Strips stress marks from Wiktionary's pages
 def strip_stress(word):
-    word = word.replace(u"\u0301","")
-    word = word.replace('"','')
-    word = word.replace('\n','')
+    word = word.replace(u"\u0301", "")
+    word = word.replace('"', "")
+    word = word.replace("\n", "")
     return word
 
+
 class WikiInfo:
-    def __init__(self,db,sdictPath):
+    def __init__(self, db, sdictPath):
         # Caches the lines that mentions a verb's aspect, pair, and stress
-        self.stringCache = Cacher(db,'wiki-string-ru')
+        self.stringCache = Cacher(db, "wiki-string-ru")
 
         # Caches the entire raw page
-        self.pageCache = Cacher(db,'wiki-raw-page-ru')
+        self.pageCache = Cacher(db, "wiki-raw-page-ru")
 
         # Reference to the sDict dictionary
         self.sdict = SDictField(sdictPath)
 
-    def getVerbLine(self,word):
+    def getVerbLine(self, word):
         """Wiktionary has a particular line on the raw page for a Russian verb
            that has some really useful information about it. This function gets
            that line from the cache or from the raw page if necessary."""
@@ -56,7 +57,7 @@ class WikiInfo:
         # Grabs the page if we don't have it
         if not pageText:
             try:
-                word = word.encode('utf-8')
+                word = word.encode("utf-8")
             except:
                 pass
             url = wiktionary_en_raw.format(urllib.quote(word))
@@ -66,16 +67,16 @@ class WikiInfo:
                 return None
 
             # Stores the page in the cache
-            self.pageCache.store(word,pageText.encode('utf-8'))
+            self.pageCache.store(word, pageText.encode("utf-8"))
 
         # The raw text source
         text = pageText
 
-        if text == '':
+        if text == "":
             return None
 
         # Split the page into lines
-        lines = string.split(text,"\n")
+        lines = string.split(text, "\n")
 
         for line in lines:
             if not "ru-verb" in line:
@@ -86,13 +87,12 @@ class WikiInfo:
             line = re.compile("{{([^\s]+)}}").search(line).group(1)
             # Got the line, store it
             # todo: might not have gotten the line
-            self.stringCache.store(word,line)
-
+            self.stringCache.store(word, line)
 
             return line
         return None
 
-    def getAspect(self,word):
+    def getAspect(self, word):
         """Gets the aspect of a verb."""
         if not word:
             return None
@@ -101,7 +101,7 @@ class WikiInfo:
         if not line:
             # If we didn't find the line from Wiktionary, try with Starling
             try:
-                word = word.encode('utf-8')
+                word = word.encode("utf-8")
             except:
                 pass
             definition = self.sdict.pull(word)
@@ -109,7 +109,7 @@ class WikiInfo:
                 return None
 
             if "несовер.<br>" in definition:
-                return 'impf'
+                return "impf"
             impf = "несовер. - " + word
             pf = "совер. - " + word
 
@@ -119,35 +119,35 @@ class WikiInfo:
                 return "pf"
         else:
             # We have a verb line, split by the pipe char
-            fields = string.split(line,"|")
+            fields = string.split(line, "|")
 
             # Return the third entry
             return fields[2].strip()
 
-    def getStress(self,word):
+    def getStress(self, word):
         """Gets the stress of a verb."""
 
         line = self.getVerbLine(word)
         if not line:
             return word
-        fields = string.split(line,"|")
+        fields = string.split(line, "|")
         return fields[1]
 
-    def getAspectualPair(self,word):
+    def getAspectualPair(self, word):
         """Gets the aspectual pair for the verb."""
-        
+
         line = self.getVerbLine(word)
 
         if not line:
             return None
 
-        fields = string.split(line,"|")
+        fields = string.split(line, "|")
         if len(fields) > 3:
             part = fields[3]
             if "impf=" in part:
-                return strip_stress(part[5:]).encode('utf-8')
+                return strip_stress(part[5:]).encode("utf-8")
             else:
-                return strip_stress(part[3:]).encode('utf-8')
+                return strip_stress(part[3:]).encode("utf-8")
 
         definition = self.sdict.pull(word)
 
@@ -167,5 +167,3 @@ class WikiInfo:
                     return perfective
                 else:
                     return imperfective
-
-        

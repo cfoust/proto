@@ -3,8 +3,9 @@ import datetime
 import zlib
 import base64
 
+
 class FieldType:
-    def __init__(self, front = False):
+    def __init__(self, front=False):
         """ Name as it will show up in Anki for this field. 
             Does not need to be unique."""
         self.anki_name = "Basic Field"
@@ -31,6 +32,7 @@ class FieldType:
     """Always generated for the basic class, no caching. The pull method just 
        takes the word input and returns the formatted output for the desired 
        field."""
+
     def pull(self, word):
         return word
 
@@ -53,22 +55,25 @@ class ComposedField(FieldType):
 """This makes it so you can use multiple field generators for a given field.
    The fields are iterated over in the order added. If a field returns a
    value, the PriorityFieldType returns that value and stops iteration."""
-class PriorityFieldType(FieldType):
 
-    def __init__(self,fields):
+
+class PriorityFieldType(FieldType):
+    def __init__(self, fields):
         FieldType.__init__(self)
         assert len(fields) > 0
         self.fields = fields
 
-    def pull(self,word):
+    def pull(self, word):
         for subfield in self.fields:
             result = subfield.pull(word)
             if result != None:
                 return result
         return None
 
+
 # Standin proxy for a potential peewee database
 dbproxy = peewee.Proxy()
+
 
 class CachedInfo(peewee.Model):
     """This is the model that we use so peewee can store cached information
@@ -80,11 +85,15 @@ class CachedInfo(peewee.Model):
     lemma = peewee.CharField()
     data = peewee.TextField()
     compressed = peewee.BooleanField()
+
     class Meta:
         database = dbproxy
 
+
 """ Number of characters after which we compress. """
 COMPRESSION_CUTOFF = 1024
+
+
 class Cacher:
     def __init__(self, db, identifier):
         """Makes a connection to the provided peewee db."""
@@ -94,18 +103,20 @@ class Cacher:
         self.db = db
 
         # Create the tables if they don't exist
-        self.db.create_tables([CachedInfo],safe=True)
+        self.db.create_tables([CachedInfo], safe=True)
 
         """The identifier is a unique string that all data cached by this
            instance uses to differentiate from other caches in the database."""
         self.identifier = identifier
 
-    def _getRow(self,word):
-        return CachedInfo.get(CachedInfo.db_name == self.identifier,
-                              CachedInfo.lemma == word)
+    def _getRow(self, word):
+        return CachedInfo.get(
+            CachedInfo.db_name == self.identifier, CachedInfo.lemma == word
+        )
 
     """ Checks whether some data exists for a word. """
-    def exists(self,word):
+
+    def exists(self, word):
         try:
             info = self._getRow(word)
             return True
@@ -116,7 +127,8 @@ class Cacher:
 
         Returns a tuple of (timestamp, data) if the word exists and None if
         it does not."""
-    def retrieve(self,word):
+
+    def retrieve(self, word):
         try:
             # Grab the word from the database
             info = self._getRow(word)
@@ -135,7 +147,8 @@ class Cacher:
             return None
 
     """ This can create new entries or update old ones."""
-    def store(self,word,data):
+
+    def store(self, word, data):
 
         compressed = len(data) > COMPRESSION_CUTOFF
         if compressed:
@@ -150,47 +163,56 @@ class Cacher:
             info.save()
         # Otherwise create a new entry
         else:
-            info = CachedInfo.create(db_name = self.identifier,
-                                     timestamp = datetime.datetime.now(),
-                                     lemma = word,
-                                     data = data,
-                                     compressed = compressed)
+            info = CachedInfo.create(
+                db_name=self.identifier,
+                timestamp=datetime.datetime.now(),
+                lemma=word,
+                data=data,
+                compressed=compressed,
+            )
 
     """Convenience method that imports data en masse. Each entry in the 'data'
        parameter is a tuple such that (input,output)."""
-    def storeMany(self,data):
+
+    def storeMany(self, data):
         transformed = []
 
         # We create a provincial array to add all our metadata
         # todo: is this actually being compressed? no
-        for word,datum in data:
+        for word, datum in data:
             compressed = len(datum) > COMPRESSION_CUTOFF
-            transformed.append({
-                'compressed': compressed,
-                'data': datum,
-                'timestamp': datetime.datetime.now(),
-                'db_name': self.identifier,
-                'lemma': word
-            })
+            transformed.append(
+                {
+                    "compressed": compressed,
+                    "data": datum,
+                    "timestamp": datetime.datetime.now(),
+                    "db_name": self.identifier,
+                    "lemma": word,
+                }
+            )
 
         # db.atomic is much faster for many writes
         with self.db.atomic():
             CachedInfo.insert_many(transformed).execute()
 
-
     """Deletes all data for a given word/lemma."""
-    def delete(self,word):
+
+    def delete(self, word):
         info = self._getRow(word)
         info.delete_instance()
 
     """Wipes all of the rows with this Cacher's identifier."""
+
     def clear(self):
         CachedInfo.delete().where(CachedInfo.db_name == self.identifier).execute()
 
     """Renames the identifier used by this Cacher. Does not check for conflicts
        on purpose, as we occasionally want to combine datasets."""
-    def rename(self,newname):
-        CachedInfo.update(db_name=newname).where(CachedInfo.db_name == self.identifier).execute()
+
+    def rename(self, newname):
+        CachedInfo.update(db_name=newname).where(
+            CachedInfo.db_name == self.identifier
+        ).execute()
         self.identifier = newname
 
 
@@ -198,17 +220,20 @@ class Cacher:
    Very good for pulling data from websites or sources that require a lot of
    time for each word. Remembers the last time that the method returned None
    and does not call generate again until after a certain timedelta."""
+
+
 class CacheableFieldType(FieldType):
     """ Just for cached fields, how the name will show up in the DB. 
         Needs to be unique or will conflict with other data."""
+
     db_name = "cacheable-default"
 
-    def __init__(self, pathToDb, delta = datetime.timedelta(weeks=2)):
+    def __init__(self, pathToDb, delta=datetime.timedelta(weeks=2)):
         FieldType.__init__(self)
         self.cacher = Cacher(pathToDb, self.db_name)
         self.delta = delta
 
-    def pull(self,word):
+    def pull(self, word):
         if self.cacher.exists(word):
             result = self.cacher.retrieve(word)
 
@@ -217,7 +242,7 @@ class CacheableFieldType(FieldType):
 
             # If the call originally returned nothing
             # I recognize this is a terrible idea, but it's just not a big deal
-            if data == '[nothing]':
+            if data == "[nothing]":
                 # If we've passed the cache date, we can try again
                 if (timestamp + self.delta) < datetime.datetime.now():
                     # Delete the cache
@@ -228,7 +253,7 @@ class CacheableFieldType(FieldType):
 
                 # Otherwise return None
                 return None
-            
+
             return data
         else:
             result = self.generate(word)
@@ -236,27 +261,30 @@ class CacheableFieldType(FieldType):
             # Make a note if the generator returned None so we don't pull again
             # for awhile
             if not result:
-                self.cacher.store(word, '[nothing]')
+                self.cacher.store(word, "[nothing]")
                 return None
 
-            self.cacher.store(word,result)
+            self.cacher.store(word, result)
             return result
 
     """ Generates the resulting string given the input. 
         May be computationally expensive because this is cacheable.
 
         Normally this method hits another resource."""
-    def generate(self,word):
+
+    def generate(self, word):
         return word
 
 
 """Field type that just returns the string provided to it on
 initialization. Useful for generic card types that need some data
 affixed to eery card."""
+
+
 class StaticFieldType(FieldType):
     def __init__(self, staticString):
         FieldType.__init__(self)
         self.staticString = staticString
 
-    def pull(self,word):
+    def pull(self, word):
         return self.staticString

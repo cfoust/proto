@@ -2,30 +2,30 @@ from ...fields import *
 from ...cards import *
 from fields import *
 
-class SymbolToSoundCard(BasicCardType):
-    name = 'ja-character-to-sound'
 
-    def __init__(self,db):
+class SymbolToSoundCard(BasicCardType):
+    name = "ja-character-to-sound"
+
+    def __init__(self, db):
         front = FieldType(True)
         front.anki_name = "Front"
         front.html = '<div class="content" style="font-size: 1200%; text-align: center;">%s</div>'
 
-        sound = ForvoField(db, 'ja')
+        sound = ForvoField(db, "ja")
         sound.anki_name = "Audio"
 
         self.fields = [front, sound]
 
         self.cards = []
 
-class SoundToStrokeCard(BasicCardType):
-    name = 'ja-sound-to-stroke'
 
-    def __init__(self,db):
-        sound = ForvoField(db, 'ja')
+class SoundToStrokeCard(BasicCardType):
+    name = "ja-sound-to-stroke"
+
+    def __init__(self, db):
+        sound = ForvoField(db, "ja")
         sound.front = True
         sound.anki_name = "Audio"
-
-
 
         # The stroke order goes on the back
         stroke = FieldType()
@@ -42,7 +42,7 @@ class SoundToStrokeCard(BasicCardType):
 
 
 class RadicalInfo(BasicCardType):
-    name = 'ja-radical-meaning'
+    name = "ja-radical-meaning"
 
     def __init__(self):
         front = FieldType(True)
@@ -61,17 +61,12 @@ class RadicalInfo(BasicCardType):
         examples = FieldType()
         examples.anki_name = "Examples"
 
-        self.fields = [
-            front,
-            meaning,
-            name,
-            examples
-        ]
+        self.fields = [front, meaning, name, examples]
 
         self.cards = []
 
-    def generate(self,word):
-        card = ['' for x in range(4)]
+    def generate(self, word):
+        card = ["" for x in range(4)]
 
         parts = word.split("\t")
 
@@ -82,8 +77,9 @@ class RadicalInfo(BasicCardType):
 
         self.cards.append(card)
 
+
 class RadicalStroke(BasicCardType):
-    name = 'ja-radical-stroke'
+    name = "ja-radical-stroke"
 
     def __init__(self):
         radical = FieldType(True)
@@ -103,8 +99,8 @@ class RadicalStroke(BasicCardType):
 
         self.cards = []
 
-    def generate(self,word):
-        card = ['' for x in range(2)]
+    def generate(self, word):
+        card = ["" for x in range(2)]
 
         parts = word.split("\t")
 
@@ -115,17 +111,18 @@ class RadicalStroke(BasicCardType):
 
 
 restrictedUsers = [
-    'strawberrybrown',
-    'skent',
-    'akiko',
-    'Emmacaron',
-    'yasuo',
-    'kaoring',
-    'akitomo'
+    "strawberrybrown",
+    "skent",
+    "akiko",
+    "Emmacaron",
+    "yasuo",
+    "kaoring",
+    "akitomo",
 ]
 
+
 class WordCard(BasicCardType):
-    name = 'ja-word'
+    name = "ja-word"
 
     def __init__(self, db, dictFile, furiFile, partOfSpeech):
         global restrictedUsers
@@ -138,7 +135,7 @@ class WordCard(BasicCardType):
         reading.anki_name = "Reading"
         reading.html = "<div style='display: none'>%s</div>"
 
-        sound = ForvoField(db, 'ja', limitUsers=restrictedUsers)
+        sound = ForvoField(db, "ja", limitUsers=restrictedUsers)
         sound.anki_name = "Sound"
 
         definition = JMDictField(dictFile)
@@ -149,12 +146,6 @@ class WordCard(BasicCardType):
         pos.anki_name = "POS"
         pos.html = "<div style='display: none'>%s</div>"
 
-        self.fields = [
-            headword,
-            reading,
-            sound,
-            definition,
-            pos
-        ]
+        self.fields = [headword, reading, sound, definition, pos]
 
         self.cards = []

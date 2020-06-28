@@ -1,25 +1,25 @@
 from ...fields import *
 from ...cards import *
 
-class SpanishSoundCard(DefaultWikiSoundCard):
-    name = 'Spanish Basic'
 
-    def __init__(self,db,pathToSdict):
+class SpanishSoundCard(DefaultWikiSoundCard):
+    name = "Spanish Basic"
+
+    def __init__(self, db, pathToSdict):
         front = FieldType(True)
         front.anki_name = "Front"
 
-        enmeaning = PriorityFieldType([
-            SDictField(pathToSdict),
-            WiktionaryField(db,'Spanish','es')
-        ]) # A priority setup
+        enmeaning = PriorityFieldType(
+            [SDictField(pathToSdict), WiktionaryField(db, "Spanish", "es")]
+        )  # A priority setup
         enmeaning.anki_name = "En_Meaning"
 
         rumeaning = RuktionaryField(db)
         rumeaning.anki_name = "Ru_Meaning"
 
-        Switchable('ru','en',rumeaning, enmeaning)
+        Switchable("ru", "en", rumeaning, enmeaning)
 
-        sound = ForvoField(db,'ru')
+        sound = ForvoField(db, "ru")
         sound.anki_name = "Audio"
 
         # This field has no purpose (i.e won't be displayed but here for legacy)
@@ -27,7 +27,7 @@ class SpanishSoundCard(DefaultWikiSoundCard):
         type.anki_name = "Type"
         type.html = """<div class="content" style="display: none;">%s</div>"""
 
-        self.fields = [front,enmeaning,rumeaning,sound,type]
+        self.fields = [front, enmeaning, rumeaning, sound, type]
 
         self.cards = []
 

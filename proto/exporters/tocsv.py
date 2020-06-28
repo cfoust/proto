@@ -1,13 +1,14 @@
 import csv
 
+
 class CSVExporter:
     @staticmethod
-    def export(deck,filename,delimiter = '\t'):
+    def export(deck, filename, delimiter="\t"):
         if not deck.cardType:
-            raise Exception('Deck has no card type.')
+            raise Exception("Deck has no card type.")
 
-        with open(filename, 'w') as f:
-            writer = csv.writer(f, dialect='excel-tab')
+        with open(filename, "w") as f:
+            writer = csv.writer(f, dialect="excel-tab")
 
             for card in deck.cardType.cards:
                 fixed = []

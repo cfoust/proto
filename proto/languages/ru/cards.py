@@ -4,56 +4,55 @@ from fields import *
 from wikiinfo import WikiInfo
 
 
-
 class RussianVerbCard(BasicCardType):
     name = "Russian Verb"
 
     fields = []
 
-    def __init__(self,db,pathToSdict):
-        self.info = WikiInfo(db,pathToSdict)
+    def __init__(self, db, pathToSdict):
+        self.info = WikiInfo(db, pathToSdict)
         imperfective = FieldType(True)
         imperfective.anki_name = "Imperfective"
         imperfective.order = 0
 
-
         perfective = FieldType(False)
         perfective.anki_name = "Perfective"
         perfective.order = 1
-        perfective.html = '{{^Imperfective}}<div class="content">%s</div>{{/Imperfective}}'
+        perfective.html = (
+            '{{^Imperfective}}<div class="content">%s</div>{{/Imperfective}}'
+        )
 
-        enmeaning = PriorityFieldType([
-            SDictField(pathToSdict),
-            WiktionaryField(db,'Russian','ru')
-        ]) # A priority setup
+        enmeaning = PriorityFieldType(
+            [SDictField(pathToSdict), WiktionaryField(db, "Russian", "ru")]
+        )  # A priority setup
         enmeaning.anki_name = "En_Meaning"
         enmeaning.order = 4
 
         rumeaning = RuktionaryField(db)
         rumeaning.anki_name = "Ru_Meaning"
 
-        Switchable('ru','en',rumeaning, enmeaning)
+        Switchable("ru", "en", rumeaning, enmeaning)
 
-        audio = ForvoField(db,'ru')
+        audio = ForvoField(db, "ru")
         audio.anki_name = "Audio"
 
         imperfectiveConj = StarlingVerbField(db)
-        imperfectiveConj.anki_name = 'Imperfective_Conj'
+        imperfectiveConj.anki_name = "Imperfective_Conj"
         imperfectiveConj.html = '<div style="display: none">%s</div>'
 
         perfectiveConj = StarlingVerbField(db)
-        perfectiveConj.anki_name = 'Perfective_Conj'
+        perfectiveConj.anki_name = "Perfective_Conj"
         perfectiveConj.html = '<div style="display: none">%s</div>'
 
-        imperfectiveStress = RussianVerbStressField(db,pathToSdict)
-        imperfectiveStress.anki_name = 'Imperfective_Stress'
+        imperfectiveStress = RussianVerbStressField(db, pathToSdict)
+        imperfectiveStress.anki_name = "Imperfective_Stress"
         imperfectiveStress.html = """{{#Imperfective_Stress}}
 <div class='content' id = 'impf'><b>Imperfective: </b>{{Imperfective_Stress}}<br></div>
 {{/Imperfective_Stress}}"""
         imperfectiveStress.order = 2
 
-        perfectiveStress = RussianVerbStressField(db,pathToSdict)
-        perfectiveStress.anki_name = 'Perfective_Stress'
+        perfectiveStress = RussianVerbStressField(db, pathToSdict)
+        perfectiveStress.anki_name = "Perfective_Stress"
         perfectiveStress.html = """{{#Perfective_Stress}}
 <div class='content' id = 'pf'><b>Perfective: </b>{{Perfective_Stress}}<br></div>
 {{/Perfective_Stress}}"""
@@ -73,12 +72,12 @@ class RussianVerbCard(BasicCardType):
             perfectiveConj,
             imperfectiveStress,
             perfectiveStress,
-            ctype
+            ctype,
         ]
 
         self.cards = []
 
-    def generate(self,word):
+    def generate(self, word):
         card = [None for x in range(9)]
 
         # Get the aspect, pair, and the pair's aspect
@@ -89,27 +88,27 @@ class RussianVerbCard(BasicCardType):
         imperfective = None
         perfective = None
 
-        if wordAspect == 'both':
-            wordAspect = 'impf'
+        if wordAspect == "both":
+            wordAspect = "impf"
 
         # If we have both a perfective and imperfective form
-        if wordAspect == 'impf' and wordPairAspect == 'pf':
+        if wordAspect == "impf" and wordPairAspect == "pf":
             imperfective = word
             perfective = wordPair
-        elif wordAspect == 'pf' and wordPairAspect == 'impf':
+        elif wordAspect == "pf" and wordPairAspect == "impf":
             imperfective = wordPair
             perfective = word
         # If we have just an imperfective form
-        elif wordAspect == 'impf':
+        elif wordAspect == "impf":
             imperfective = word
         # If we have just a perfective form
-        elif wordAspect == 'pf':
+        elif wordAspect == "pf":
             perfective = word
 
         # If the imperfective form exists
         if imperfective:
             try:
-                imperfective = imperfective.encode('utf-8')
+                imperfective = imperfective.encode("utf-8")
             except:
                 pass
 
@@ -132,7 +131,7 @@ class RussianVerbCard(BasicCardType):
         # If the perfective form exists
         if perfective:
             try:
-                perfective = perfective.encode('utf-8')
+                perfective = perfective.encode("utf-8")
             except:
                 pass
 
@@ -156,34 +155,34 @@ class RussianVerbCard(BasicCardType):
 
         if imperfective and not perfective:
             # Make these not None, just empty
-            card[1] = ''
-            card[6] = ''
-            card[8] = ''
+            card[1] = ""
+            card[6] = ""
+            card[8] = ""
 
         if not (card[0] == None and card[1] == None) and not card[2] == None:
             self.cards.append(card)
 
         return card
 
-class RussianSoundCard(DefaultWikiSoundCard):
-    name = 'Sound and Wiktionary'
 
-    def __init__(self,db,pathToSdict):
+class RussianSoundCard(DefaultWikiSoundCard):
+    name = "Sound and Wiktionary"
+
+    def __init__(self, db, pathToSdict):
         front = FieldType(True)
         front.anki_name = "Front"
 
-        enmeaning = PriorityFieldType([
-            SDictField(pathToSdict),
-            WiktionaryField(db,'Russian','ru')
-        ]) # A priority setup
+        enmeaning = PriorityFieldType(
+            [SDictField(pathToSdict), WiktionaryField(db, "Russian", "ru")]
+        )  # A priority setup
         enmeaning.anki_name = "En_Meaning"
 
         rumeaning = RuktionaryField(db)
         rumeaning.anki_name = "Ru_Meaning"
 
-        Switchable('ru','en',rumeaning, enmeaning)
+        Switchable("ru", "en", rumeaning, enmeaning)
 
-        sound = ForvoField(db,'ru')
+        sound = ForvoField(db, "ru")
         sound.anki_name = "Audio"
 
         # This field has no purpose (i.e won't be displayed but here for legacy)
@@ -191,7 +190,7 @@ class RussianSoundCard(DefaultWikiSoundCard):
         type.anki_name = "Type"
         type.html = """<div class="content" style="display: none;">%s</div>"""
 
-        self.fields = [front,enmeaning,rumeaning,sound,type]
+        self.fields = [front, enmeaning, rumeaning, sound, type]
 
         self.cards = []
 

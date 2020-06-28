@@ -16,7 +16,7 @@ class JapaneseDeck(Deck):
     name = "Japanese"
 
     # This is the base CSV name we use to hold data to be imported into Anki
-    csvname = 'ja'
+    csvname = "ja"
 
     cardType = None
 
@@ -29,8 +29,4 @@ class JapaneseDeck(Deck):
 
         words = WordsDeck(db, dictFile, furiFile)
 
-        self.subdecks = [
-            alphabets,
-            words
-        ]
-        
+        self.subdecks = [alphabets, words]
