@@ -4,5 +4,3 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Mount in `anki` correctly
 ankipath="${SCRIPT_DIR}/../vendor/anki"
 echo "-e PYTHONPATH=/usr/local/lib/python3.9/dist-packages:${ankipath}"
-
-echo 'proto:dev'

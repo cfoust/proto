@@ -3,4 +3,4 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 "$SCRIPT_DIR/common"
 
-echo '/bin/sh'
+echo 'proto:dev /bin/bash'

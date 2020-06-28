@@ -3,3 +3,4 @@ requests==2.24.0
 peewee==3.13.3
 progressbar==2.5
 decorator==4.4.2
+mypy==0.782
