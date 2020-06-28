@@ -1,18 +1,19 @@
 """Parses a JMDict file into a .csv file."""
 
-from ...butils import *
-import json, codecs
+from proto.butils import get_file_lines
 
-# Need some beautfiul soup for this
+import json
+import codecs
+
+# Need some beautiful soup for this
 from bs4 import BeautifulSoup as soup
 
-
-def parseEntry(entryString):
+def parse_entry(entry_string):
     # Parse the entry from its HTML
-    entrySoup = soup(entryString, "html.parser")
+    entrySoup = soup(entry_string, "html.parser")
 
     # Look for all the kanji readings
-    kanjiReadings = []
+    kanji_readings = []
     for r in entrySoup.findAll("k_ele"):
         obj = {}
 
@@ -29,10 +30,10 @@ def parseEntry(entryString):
         for pri in r.findAll("ke_inf"):
             obj["info"].append(pri.contents[0])
 
-        kanjiReadings.append(obj)
+        kanji_readings.append(obj)
 
     # Look for all the kana readings
-    kanaReadings = []
+    kana_readings = []
     for r in entrySoup.findAll("r_ele"):
         obj = {}
 
@@ -53,14 +54,14 @@ def parseEntry(entryString):
         for pri in r.findAll("re_inf"):
             obj["info"].append(pri.contents[0])
 
-        kanaReadings.append(obj)
+        kana_readings.append(obj)
 
     # Now we have to parse through and combine the readings to make the
     # ultimate list of them.
     readings = []
     # If we have no kanji readings, this just a word written in kana
-    if len(kanjiReadings) == 0:
-        for r_read in kanaReadings:
+    if len(kanji_readings) == 0:
+        for r_read in kana_readings:
 
             # Calculate the reading's score, or its pertinence based on
             # the various frequency indicators jmdict provides
@@ -86,8 +87,8 @@ def parseEntry(entryString):
 
     # Otherwise we go through and assign readings
     else:
-        for k_read in kanjiReadings:
-            for r_read in kanaReadings:
+        for k_read in kanji_readings:
+            for r_read in kana_readings:
                 # Deal with restricted readings
                 if "restrict" in r_read and r_read["restrict"] != k_read["reading"]:
                     continue
@@ -148,9 +149,9 @@ def parseEntry(entryString):
     return obj
 
 
-def parseToFile(jmDict, out):
+def parse_to_file(jm_dict, out):
     # Gets the lines of the dictionary
-    dictLines = fileLines(jmDict)
+    dictLines = get_file_lines(jm_dict)
 
     outFile = codecs.open(out, "w", "utf-8")
 
@@ -196,7 +197,7 @@ def parseToFile(jmDict, out):
             continue
 
         entry = "\n".join(dictLines[index : endIndex + 1])
-        parsed = parseEntry(entry)
+        parsed = parse_entry(entry)
 
         outFile.write(json.dumps(parsed) + "\n")
 

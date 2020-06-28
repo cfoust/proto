@@ -25,11 +25,11 @@ bd = Builder("de", gd)
 if bd.needAnyData():
 
     # Bind data if we do
-    words = fileLines(ph.ifile("words.txt"))
+    words = get_file_lines(ph.ifile("words.txt"))
 
     filtered = {"Adjectives": [], "Nouns": [], "Verbs": []}
 
-    print "Filtering out frequencies."
+    print("Filtering out frequencies.")
     for word in Progress(words):
         if len(word.split(" ")) > 1:
             continue
@@ -42,7 +42,7 @@ if bd.needAnyData():
         elif info[1] == "VB" and word[-1] == "n":
             filtered["Verbs"].append(word)
 
-    print "Filtering out duplicates."
+    print("Filtering out duplicates.")
     for key in ["Adjectives", "Nouns", "Verbs"]:
         old = filtered[key]
         filtered[key] = []

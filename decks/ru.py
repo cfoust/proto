@@ -23,11 +23,11 @@ bd = Builder("ru", rd)
 
 if bd.needAnyData():
 
-    words = fileLines(ph.ifile("lemma.num"))
+    words = get_file_lines(ph.ifile("lemma.num"))
 
     filtered = {"Adjectives": [], "Nouns": [], "Verbs": []}
 
-    print "Filtering out words."
+    print("Filtering out words.")
     for word in Progress(words):
         info = word.split(" ")
         pos = info[3]
@@ -40,7 +40,7 @@ if bd.needAnyData():
         elif pos == "adj":
             filtered["Adjectives"].append(lemma)
 
-    print "Filtering out duplicates."
+    print("Filtering out duplicates.")
     for key in ["Adjectives", "Nouns", "Verbs"]:
         old = filtered[key]
         filtered[key] = []
@@ -48,7 +48,7 @@ if bd.needAnyData():
             if not word in filtered[key] and word != None:
                 filtered[key].append(word)
 
-    print "Filtering out paired verbs."
+    print("Filtering out paired verbs.")
     info = WikiInfo(sqlite("proto.db"), ph.ifile("rus_eng_full2.dct"))
     skip = {}
 

@@ -1,5 +1,5 @@
 from proto.db import sqlite
-from proto.butils import fileLines
+from proto.butils import get_file_lines
 from proto.builder import PathHelper, Builder
 
 from proto.languages.zh.deck import MandarinDeck
@@ -17,7 +17,7 @@ builder = Builder("zh", deck)
 
 
 def get_word_data(filename):
-    lines = fileLines(ph.input(filename))
+    lines = get_file_lines(ph.input(filename))
     return list(map(lambda a: a.split("\t"), lines))
 
 
