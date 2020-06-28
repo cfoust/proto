@@ -1,5 +1,5 @@
-from proto.db import *
-from proto.builder import *
+import proto
+from proto.butils import PathHelper
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
@@ -24,15 +24,19 @@ WordCard = proto.Model(
 )
 
 words = {
-    "verb": get_file_lines(ph.input("verb-base.csv")),
-    "noun": get_file_lines(ph.input("noun-base.csv")),
-    "adj": get_file_lines(ph.input("adj-base.csv")),
+    "verb": get_file_lines(ph.input("verb-base.csv")),
+    "noun": get_file_lines(ph.input("noun-base.csv")),
+    "adj": get_file_lines(ph.input("adj-base.csv")),
 }
 
 deck = Deck(
     # The name of the deck
     "Japanese",
-    [Deck("Nouns", Model, words["noun"],)],
+    [
+        Deck("Adjectives", WordCard, words["adj"]),
+        Deck("Nouns", WordCard, words["noun"]),
+        Deck("Verbs", WordCard, words["verb"]),
+    ],
 )
 
 deck.build()

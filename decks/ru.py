@@ -23,7 +23,7 @@ bd = Builder("ru", rd)
 
 if bd.needAnyData():
 
-    words = get_file_lines(ph.ifile("lemma.num"))
+    words = get_file_lines(ph.ifile("lemma.num"))
 
     filtered = {"Adjectives": [], "Nouns": [], "Verbs": []}
 

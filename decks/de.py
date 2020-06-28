@@ -25,7 +25,7 @@ bd = Builder("de", gd)
 if bd.needAnyData():
 
     # Bind data if we do
-    words = get_file_lines(ph.ifile("words.txt"))
+    words = get_file_lines(ph.ifile("words.txt"))
 
     filtered = {"Adjectives": [], "Nouns": [], "Verbs": []}
 
