@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup as soup
 
 from proto.building import get_file_lines
 
+
 def parse_entry(entry_string):
     # Parse the entry from its HTML
     entrySoup = soup(entry_string, "html.parser")

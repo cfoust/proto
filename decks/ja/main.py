@@ -1,10 +1,12 @@
 import proto
 
 from proto.building import PathHelper, get_file_lines
+from proto.fields import Forvo
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
-def generate_main():
+
+def generate_main(forvo):
     """
     Generate the primary Japanese deck.
     """
@@ -15,9 +17,11 @@ def generate_main():
         "ja-word",
         guid=lambda data: data[0],
         fields=[
-            proto.Field("Headword", lambda data: data[0],),
+            proto.Field("Headword", lambda data: data[0]),
             proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
             proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            proto.Field("Sound", forvo),
+            Forvo("Sound", lambda data: data[0]),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
@@ -31,35 +35,67 @@ def generate_main():
     deck = proto.Deck(
         "Japanese",
         [
-            Deck("Adjectives", WordCard, adjectives),
-            Deck("Nouns", WordCard, nouns),
-            Deck("Verbs", WordCard, verbs),
+            proto.Deck("Adjectives", WordCard, adjectives),
+            proto.Deck("Nouns", WordCard, nouns),
+            proto.Deck("Verbs", WordCard, verbs),
         ],
     )
 
-    if ph.target('ja.apkg'): deck.build('ja.apkg')
-    if ph.target('ja-nomedia.apkg'): deck.build('ja-nomedia.apkg', media=False)
+    if ph.target("ja.apkg"):
+        deck.build("ja.apkg")
+    if ph.target("ja-nomedia.apkg"):
+        deck.build("ja-nomedia.apkg", media=False)
 
 
-def generate_alphabets():
+def generate_alphabets(forvo):
     ph = PathHelper("ja")
 
-    WordCard = proto.Model(
+    CharacterCard = proto.Model(
         1116319754,
-        "ja-stroke",
+        "ja-character",
         guid=lambda data: data[0],
         fields=[
-            proto.Field("Headword", lambda data: data[0],),
-            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
-            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
-            # The part of speech
-            proto.Field("POS", lambda data: data[-1],),
+            proto.Field("Character", lambda data: data[0]),
+            proto.Field("Sound", forvo),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
-    pass
+
+    katakana = get_file_lines(ph.input("katakana.txt"))
+    hiragana = get_file_lines(ph.input("hiragana.txt"))
+
+    deck = proto.Deck(
+        "Japanese-Kana",
+        [
+            proto.Deck("Katakana", WordCard, katakana),
+            proto.Deck("Hiragana", WordCard, hiragana),
+        ],
+    )
+
+    if ph.target("ja-kana.apkg"):
+        deck.build("ja-kana.apkg")
+    if ph.target("ja-kana-nomedia.apkg"):
+        deck.build("ja-kana-nomedia.apkg", media=False)
 
 
-if __name__ == '__main__':
-    generate_main()
-    generate_alphabets()
+if __name__ == "__main__":
+    ph = PathHelper("ja")
+
+    db = sqlite(ph.db)
+
+    forvo = Forvo(
+        db,
+        "ja",
+        limit_users=[
+            "strawberrybrown",
+            "skent",
+            "akiko",
+            "Emmacaron",
+            "yasuo",
+            "kaoring",
+            "akitomo",
+        ],
+    )
+
+    generate_main(forvo)
+    generate_alphabets(forvo)
