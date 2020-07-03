@@ -3,7 +3,17 @@ import datetime
 import zlib
 import base64
 
-from typing import Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union, Tuple
+from typing import (
+    Callable,
+    Dict,
+    Generic,
+    Iterable,
+    List,
+    Optional,
+    TypeVar,
+    Union,
+    Tuple,
+)
 
 Data = TypeVar("Data")
 
@@ -11,6 +21,7 @@ Data = TypeVar("Data")
 FieldData = Union[str, bytes]
 FieldResult = Optional[FieldData]
 FieldFunction = Callable[[Data], FieldResult]
+
 
 class Field(Generic[Data]):
     """
@@ -60,6 +71,7 @@ class PriorityField(Field[Data]):
 # Standin proxy for a potential peewee database
 dbproxy = peewee.Proxy()
 
+
 class CachedInfo(peewee.Model):
     """This is the model that we use so peewee can store cached information
        in the database. We automatically compress when above a certain size
@@ -78,9 +90,10 @@ class CachedInfo(peewee.Model):
 """ Number of characters after which we compress. """
 COMPRESSION_CUTOFF = 1024
 
+
 def pack_data(data: FieldData) -> bytes:
     if isinstance(data, str):
-        data = data.encode('utf-8')
+        data = data.encode("utf-8")
 
     return zlib.compress(data)
 
@@ -89,7 +102,7 @@ def unpack_data(data: bytes, is_string: bool) -> FieldData:
     blob = zlib.decompress(data)
     if not is_string:
         return blob
-    return blob.decode('utf-8')
+    return blob.decode("utf-8")
 
 
 class Cacher:
@@ -113,7 +126,6 @@ class Cacher:
             CachedInfo.db_name == self.identifier, CachedInfo.lemma == key
         )
 
-
     def exists(self, key: str) -> bool:
         """
         Checks whether some data exists for a key.
@@ -124,7 +136,6 @@ class Cacher:
             return True
         except peewee.DoesNotExist:
             return False
-
 
     def retrieve(self, key: str) -> Optional[Tuple[datetime.datetime, FieldData]]:
         """
@@ -142,7 +153,6 @@ class Cacher:
             return (info.timestamp, value)
         except peewee.DoesNotExist:
             return None
-
 
     def store(self, key: str, data: FieldData) -> None:
         """
@@ -168,7 +178,6 @@ class Cacher:
                 is_string=is_string,
             )
 
-
     def store_many(self, data: List[Tuple[str, FieldResult]]) -> None:
         """
         Convenience method that imports data en masse. Each entry in the 'data'
@@ -178,7 +187,7 @@ class Cacher:
 
         # We create a temporary array to add all our metadata
         for key, datum in data:
-            datum = '[nothing]' if datum is None else datum
+            datum = "[nothing]" if datum is None else datum
             blob = pack_data(datum)
             is_string = type(datum) is str
             transformed.append(
@@ -195,7 +204,6 @@ class Cacher:
         with self.db.atomic():
             CachedInfo.insert_many(transformed).execute()
 
-
     def delete(self, key: str) -> None:
         """
         Deletes all data for a given key.
@@ -203,13 +211,11 @@ class Cacher:
         info = self._get_row(key)
         info.delete_instance()
 
-
     def clear(self) -> None:
         """
         Wipes all of the rows with this Cacher's identifier.
         """
         CachedInfo.delete().where(CachedInfo.db_name == self.identifier).execute()
-
 
     def rename(self, new_name: str) -> None:
         """
@@ -249,7 +255,6 @@ class CacheableField(Field[Data]):
         self.transformer = transformer
         self.field = field
 
-
     def run(self, data: Data):
         key = self.transformer(data)
 
@@ -268,7 +273,8 @@ class CacheableField(Field[Data]):
         row = self.cacher.retrieve(key)
 
         # Should never happen
-        if not row: return None
+        if not row:
+            return None
 
         timestamp, result = row
 
