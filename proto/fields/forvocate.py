@@ -1,7 +1,9 @@
-"""Forvo isn't very forthcoming in offering a good, free API. (With good reason!)
+"""
+Forvo isn't very forthcoming in offering a good, free API. (With good reason!)
 This bypasses the need by parsing their site for audio files. I'd like to add
 geolocation support someday (as they provide GPS coordinates for samples) to
-deal with accents."""
+deal with accents.
+"""
 from proto.fields.basic import CacheableFieldType
 
 import base64
@@ -15,7 +17,6 @@ import time
 from urllib.parse import quote
 
 from bs4 import BeautifulSoup as soup
-
 
 def get_data_from_url(url_in):
     times = 0

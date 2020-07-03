@@ -1,42 +1,65 @@
 import proto
-from proto.butils import PathHelper
+
+from proto.building import PathHelper, get_file_lines
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
-# Helps us with all of the pathing
-ph = PathHelper("ja")
+def generate_main():
+    """
+    Generate the primary Japanese deck.
+    """
+    ph = PathHelper("ja")
 
-# The actual deck structure
-jd = JapaneseDeck(sqlite(ph.db()), ph.input("JMdict_e"))
+    WordCard = proto.Model(
+        1527532200,
+        "ja-word",
+        guid=lambda data: data[0],
+        fields=[
+            proto.Field("Headword", lambda data: data[0],),
+            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
+            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            # The part of speech
+            proto.Field("POS", lambda data: data[-1],),
+        ],
+        templates=[{"name": "Card 1", "front": "", "back": "",}],
+    )
 
-WordCard = proto.Model(
-    1527532200,
-    "ja-word",
-    guid=lambda data: data[0],
-    fields=[
-        Field("Headword", lambda data: data[0],),
-        Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
-        Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
-        # The part of speech
-        Field("POS", lambda data: data[-1],),
-    ],
-    templates=[{"name": "Card 1", "front": "", "back": "",}],
-)
+    verbs = get_file_lines(ph.input("verb-base.csv"))
+    nouns = get_file_lines(ph.input("noun-base.csv"))
+    adjectives = get_file_lines(ph.input("adj-base.csv"))
 
-words = {
-    "verb": get_file_lines(ph.input("verb-base.csv")),
-    "noun": get_file_lines(ph.input("noun-base.csv")),
-    "adj": get_file_lines(ph.input("adj-base.csv")),
-}
+    deck = proto.Deck(
+        "Japanese",
+        [
+            Deck("Adjectives", WordCard, adjectives),
+            Deck("Nouns", WordCard, nouns),
+            Deck("Verbs", WordCard, verbs),
+        ],
+    )
 
-deck = Deck(
-    # The name of the deck
-    "Japanese",
-    [
-        Deck("Adjectives", WordCard, words["adj"]),
-        Deck("Nouns", WordCard, words["noun"]),
-        Deck("Verbs", WordCard, words["verb"]),
-    ],
-)
+    if ph.target('ja.apkg'): deck.build('ja.apkg')
+    if ph.target('ja-nomedia.apkg'): deck.build('ja-nomedia.apkg', media=False)
 
-deck.build()
+
+def generate_alphabets():
+    ph = PathHelper("ja")
+
+    WordCard = proto.Model(
+        1116319754,
+        "ja-stroke",
+        guid=lambda data: data[0],
+        fields=[
+            proto.Field("Headword", lambda data: data[0],),
+            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
+            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            # The part of speech
+            proto.Field("POS", lambda data: data[-1],),
+        ],
+        templates=[{"name": "Card 1", "front": "", "back": "",}],
+    )
+    pass
+
+
+if __name__ == '__main__':
+    generate_main()
+    generate_alphabets()
