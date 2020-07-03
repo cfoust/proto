@@ -1,0 +1,51 @@
+<div class="headword">{{Imperfective}}</div>
+
+<div class='content' id='impf'><b>несовр.: </b>{{Imperfective_Stress}}<br></div>
+
+{{#Perfective_Stress}}
+<div class='content' id='pf'><b>совр.: </b>{{Perfective_Stress}}<br></div>
+{{/Perfective_Stress}}
+
+<script>
+  const fixConjugation = function(id, string) {
+    const conjugations = string.split(",");
+    let final = ""
+    for (let i = 0; i < conjugations.length; i++) {
+      if (i == conjugations.length-1) {
+        final = final + conjugations[i];
+      } else {
+        final = final + conjugations[i] + ", ";
+      }
+    }
+    const element = document.getElementById(id)
+    if (!element) return
+    const current = element.innerHTML
+    element.innerHTML = current + final;
+  }
+
+  fixConjugation('impf',"{{Imperfective_Conj}}")
+  fixConjugation('pf',"{{Perfective_Conj}}")
+</script>
+
+{{Audio}}
+
+<div class="content">
+  <a href="http://en.wiktionary.org/wiki/{{Imperfective}}#Russian">Wiktionary</a>
+</div>
+
+<div class="content">
+  <div class="tabs">
+    <input name="tabs" type="radio" id="tab-1" checked="checked" class="input"/>
+    <label for="tab-1" class="label">русский</label>
+    <div class="panel">
+      {{Ru_Meaning}}
+    </div>
+
+    <input name="tabs" type="radio" id="tab-2" class="input"/>
+    <label for="tab-2" class="label">английский</label>
+    <div class="panel">
+      {{En_Meaning}}
+    </div>
+  </div>
+</div>
+
