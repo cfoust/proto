@@ -3,6 +3,7 @@ Common utilities for building decks.
 """
 import os
 from typing import List
+from peewee import SqliteDatabase
 
 class PathHelper(object):
     """
@@ -56,3 +57,7 @@ def get_file_lines(path: str) -> List[str]:
     lines = op.readlines()
     op.close()
     return [x.rstrip() for x in lines]
+
+
+def sqlite(path):
+    return SqliteDatabase(path)

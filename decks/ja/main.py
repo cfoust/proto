@@ -1,10 +1,9 @@
 import proto
 
-from proto.building import PathHelper, get_file_lines
+from proto.building import PathHelper, get_file_lines, sqlite
 from proto.fields import Forvo
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
-
 
 def generate_main(forvo):
     """
@@ -21,7 +20,6 @@ def generate_main(forvo):
             proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
             proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
             proto.Field("Sound", forvo),
-            Forvo("Sound", lambda data: data[0]),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
@@ -67,8 +65,8 @@ def generate_alphabets(forvo):
     deck = proto.Deck(
         "Japanese-Kana",
         [
-            proto.Deck("Katakana", WordCard, katakana),
-            proto.Deck("Hiragana", WordCard, hiragana),
+            proto.Deck("Katakana", CharacterCard, katakana),
+            proto.Deck("Hiragana", CharacterCard, hiragana),
         ],
     )
 
