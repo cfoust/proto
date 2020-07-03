@@ -4,8 +4,6 @@ This bypasses the need by parsing their site for audio files. I'd like to add
 geolocation support someday (as they provide GPS coordinates for samples) to
 deal with accents.
 """
-from proto.fields.basic import CacheableFieldType
-
 import base64
 import hashlib
 import os
@@ -18,6 +16,7 @@ from urllib.parse import quote
 
 from bs4 import BeautifulSoup as soup
 
+from proto import Field
 
 def get_data_from_url(url_in):
     times = 0
@@ -53,7 +52,7 @@ BASE_URL = "https://audio00.forvo.com/"
 pronunciation database."""
 
 
-class ForvoField(CacheableFieldType):
+class Forvo(Field[str]):
     db_name = "forvocate"
     anki_name = "Audio"
     html = """%s"""
@@ -67,7 +66,7 @@ class ForvoField(CacheableFieldType):
         throttle=True,
         soundCap=1,
         randomSound=False,
-        limitUsers=[],
+        limit_users=[],
         limitCountries=[],
     ):
         """db: database
@@ -77,7 +76,7 @@ class ForvoField(CacheableFieldType):
            soundCap: number of sounds to grab (usually 1)
            randomSound: if there are many sounds on the page for the word,
                         grab one randomly
-           limitUsers: If array is non-empty, limit sounds to the list of users
+           limit_users: If array is non-empty, limit sounds to the list of users
            limitCountries: If array is non-empty, limit sounds to pronouncers
                            from the English name of the given countr(y/ies)"""
 
@@ -94,7 +93,7 @@ class ForvoField(CacheableFieldType):
         self.soundCap = soundCap
         self.randomSound = randomSound
         self.limitCountries = limitCountries
-        self.limitUsers = limitUsers
+        self.limit_users = limit_users
 
         if not storagePath:
             self.storage_path = "forvocate/" + languageCode + "/"
@@ -203,7 +202,7 @@ class ForvoField(CacheableFieldType):
                     if not loc in self.limitCountries:
                         continue
 
-                if len(self.limitUsers) > 0:
+                if len(self.limit_users) > 0:
                     # Find the username of this pronunciation
                     try:
                         usr = pron.findAll(attrs={"class": "uLink"})[0].contents[0]
@@ -211,7 +210,7 @@ class ForvoField(CacheableFieldType):
                         continue
 
                     # Skip the pronunciation if the name is not in the users list
-                    if not usr in self.limitUsers:
+                    if not usr in self.limit_users:
                         continue
 
                 # Grab the sound

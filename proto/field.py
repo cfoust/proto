@@ -22,55 +22,21 @@ FieldData = Union[str, bytes]
 FieldResult = Optional[FieldData]
 FieldFunction = Callable[[Data], FieldResult]
 
-
 class Field(Generic[Data]):
     """
     Base class that manages transforming card data for a field.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, name: str, transform: Callable[[Data], FieldResult]) -> None:
+        self.name = name
+        self.transform = transform
         pass
 
     def run(self, data: Data) -> FieldResult:
-        raise Exception("`run` not implemented. It must be overridden.")
-
-
-class FunctionField(Field[Data]):
-    """
-    Turns a data-ingesting function into a Field.
-    """
-
-    def __init__(self, transformer: FieldFunction) -> None:
-        super().__init__()
-        self.transformer: FieldFunction = transformer
-
-    def run(self, data: Data) -> FieldResult:
-        return self.transformer(data)
-
-
-"""This makes it so you can use multiple field generators for a given field.
-   The fields are iterated over in the order added. If a field returns a
-   value, the PriorityField returns that value and stops iteration."""
-
-
-class PriorityField(Field[Data]):
-    def __init__(self, fields: List[Field[Data]]):
-        super().__init__()
-        assert len(fields) > 0
-        self.fields: List[Field[Data]] = fields
-
-    def run(self, data):
-        for subfield in self.fields:
-            result = subfield.run(data)
-            if result != None:
-                return result
-
-        return None
-
+        return self.transform(data)
 
 # Standin proxy for a potential peewee database
 dbproxy = peewee.Proxy()
-
 
 class CachedInfo(peewee.Model):
     """This is the model that we use so peewee can store cached information
@@ -228,7 +194,7 @@ class Cacher:
         self.identifier = new_name
 
 
-class CacheableField(Field[Data]):
+class CacheableField(Generic[Data]):
     """
     This field type automatically caches the results of its 'generate'
     function.  Very good for pulling data from websites or sources that require

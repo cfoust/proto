@@ -5,6 +5,7 @@ import os
 from typing import List
 from peewee import SqliteDatabase
 
+
 class PathHelper(object):
     """
     Simple pathing logic.
@@ -28,7 +29,6 @@ class PathHelper(object):
     def db(self) -> str:
         return self._db
 
-
     def input(self, path: str) -> str:
         """
         Returns the relative path of the requested input file. For example,
@@ -37,7 +37,6 @@ class PathHelper(object):
         """
 
         return os.path.join(self._input, path)
-
 
     def output(self, path: str) -> str:
         """
