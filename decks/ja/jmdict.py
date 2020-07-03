@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup as soup
 
 from proto.building import get_file_lines
 
+
 def parse_entry(entry_string):
     # Parse the entry from its HTML
     entrySoup = soup(entry_string, "html.parser")
@@ -231,13 +232,11 @@ class JMReadingGetter(object):
             else:
                 self.readingDict[reading] = [line]
 
-
     def get_readings(self, word):
         if word in self.readingDict:
             return self.readingDict[word]
 
         return []
-
 
     def run(self, data):
         defs = self.get_readings(data)
@@ -274,7 +273,6 @@ class JMDictGetter(object):
         for line in lines:
             self.dictionary.append(json.loads(line))
 
-
     def get_definitions(self, word):
         results = []
 
@@ -292,7 +290,6 @@ class JMDictGetter(object):
         results = sorted(results, key=lambda d: d["score"], reverse=True)
 
         return results
-
 
     def run(self, word):
         """The code that looks through the dictionary is a little bit odd, but

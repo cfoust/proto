@@ -1,27 +1,33 @@
+from typing import Tuple, List
+
 import proto
 
 from proto.building import PathHelper, get_file_lines, sqlite
-from proto.fields import Forvo
+from proto.transforms import Forvo
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
-def generate_main(forvo):
+# Headword, POS
+WordData = Tuple[str, str]
+
+
+def generate_main(forvo: Forvo) -> None:
     """
     Generate the primary Japanese deck.
     """
     ph = PathHelper("ja")
 
-    WordCard = proto.Model(
+    WordCard = proto.Model[WordData](
         1527532200,
         "ja-word",
         guid=lambda data: data[0],
         fields=[
-            proto.Field("Headword", lambda data: data[0]),
-            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
-            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
-            proto.Field("Sound", forvo),
+            proto.Field[WordData]("Headword", lambda data: data[0]),
+            proto.Field[WordData]("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
+            proto.Field[WordData]("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            proto.Field[WordData]("Sound", forvo),
             # The part of speech
-            proto.Field("POS", lambda data: data[-1],),
+            proto.Field[WordData]("POS", lambda data: data[-1],),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
@@ -30,12 +36,12 @@ def generate_main(forvo):
     nouns = get_file_lines(ph.input("noun-base.csv"))
     adjectives = get_file_lines(ph.input("adj-base.csv"))
 
-    deck = proto.Deck(
+    deck = proto.Deck[WordData](
         "Japanese",
         [
-            proto.Deck("Adjectives", WordCard, adjectives),
-            proto.Deck("Nouns", WordCard, nouns),
-            proto.Deck("Verbs", WordCard, verbs),
+            proto.Deck[WordData]("Adjectives", WordCard, adjectives),
+            proto.Deck[WordData]("Nouns", WordCard, nouns),
+            proto.Deck[WordData]("Verbs", WordCard, verbs),
         ],
     )
 
@@ -45,7 +51,7 @@ def generate_main(forvo):
         deck.build("ja-nomedia.apkg", media=False)
 
 
-def generate_alphabets(forvo):
+def generate_alphabets(forvo: Forvo) -> None:
     ph = PathHelper("ja")
 
     CharacterCard = proto.Model(
