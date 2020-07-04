@@ -69,7 +69,7 @@ class Deck(Generic[Data]):
         name: str,
         model: Optional[Model] = None,
         data: Optional[List[Data]] = None,
-        subdecks: Optional[List[Deck]] = None,
+        subdecks: Optional[List["Deck"]] = None,
     ) -> None:
         self.name = name
         self.model = model

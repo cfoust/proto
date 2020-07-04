@@ -14,8 +14,10 @@ WordData = Tuple[str, str]
 def get_headword(data: WordData) -> str:
     return data[0]
 
+
 def append_str(data: List[str], col: str) -> List[Tuple[str, str]]:
     return list(map(lambda v: (v, col), data))
+
 
 def generate_main(forvo: Forvo) -> None:
     """
@@ -31,7 +33,12 @@ def generate_main(forvo: Forvo) -> None:
             proto.Field("Headword", get_headword),
             proto.Field(
                 "Reading",
-                pipe((get_headword, wrap_class(JMReadingGetter(ph.input("JmdictFurigana.txt"))))),
+                pipe(
+                    (
+                        get_headword,
+                        wrap_class(JMReadingGetter(ph.input("JmdictFurigana.txt"))),
+                    )
+                ),
             ),
             proto.Field(
                 "Definition",
@@ -44,9 +51,9 @@ def generate_main(forvo: Forvo) -> None:
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
 
-    verbs = append_str(get_file_lines(ph.input("verb-base.csv")), 'verb')
-    nouns = append_str(get_file_lines(ph.input("noun-base.csv")), 'noun')
-    adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), 'adj')
+    verbs = append_str(get_file_lines(ph.input("verb-base.csv")), "verb")
+    nouns = append_str(get_file_lines(ph.input("noun-base.csv")), "noun")
+    adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), "adj")
 
     deck = proto.Deck[WordData](
         "Japanese",

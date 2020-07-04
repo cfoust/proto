@@ -13,15 +13,19 @@ import shutil
 import string
 import time
 from urllib.parse import quote
+from typing import List, Optional
 
 from bs4 import BeautifulSoup as soup
+from peewee import SqliteDatabase
 
 from proto.transforms.base import Transform
 from proto.field import FieldResult
 
-def get_data_from_url(url_in):
+
+def get_data_from_url(url_in: str) -> Optional[str]:
     times = 0
     sec = 5
+
     while True:
         text = ""
         failed = False
@@ -42,6 +46,8 @@ def get_data_from_url(url_in):
         else:
             break
 
+    return None
+
 
 def get_soup_from_url(url_in):
     return soup(get_data_from_url(url_in), "html.parser")
@@ -54,66 +60,33 @@ pronunciation database."""
 
 
 class Forvo(Transform[str]):
-    db_name = "forvocate"
-    anki_name = "Audio"
-    html = """%s"""
-
     def __init__(
         self,
-        db,
-        languageCode,
-        storagePath=None,
-        outputPath=None,
-        throttle=True,
-        soundCap=1,
-        randomSound=False,
-        limit_users=[],
-        limitCountries=[],
+        db: SqliteDatabase,
+        # ISO-639-1 language code
+        language_code: str,
+        # sleeps a little bit so that we don't ddos them
+        throttle: bool = True,
+        # number of sounds to grab (usually 1)
+        sound_cap: int = 1,
+        # if there are many sounds on the page for the word, grab one randomly
+        random_sound: bool = False,
+        # If array is non-empty, limit sounds to the list of users
+        limit_users: List[str] = [],
+        # If array is non-empty, limit sounds to pronouncers from the English
+        # name of the given countr(y/ies)"""
+        limit_countries: List[str] = [],
     ):
-        """db: database
-           languageCode: ISO-639-1 language code
-           outputPath: folder to put the media files (.mp3) in
-           throttle: sleeps a little bit so that we don't ddos them
-           soundCap: number of sounds to grab (usually 1)
-           randomSound: if there are many sounds on the page for the word,
-                        grab one randomly
-           limit_users: If array is non-empty, limit sounds to the list of users
-           limitCountries: If array is non-empty, limit sounds to pronouncers
-                           from the English name of the given countr(y/ies)"""
-
         # Separate words from different languages in the database
-        self.db_name = self.db_name + "-" + languageCode
-
-        self.optional = True
-
-        CacheableFieldType.__init__(self, db)
-
-        self.code = languageCode
-
+        self.db_name = "forvo-" + language_code
+        self.code = language_code
         self.throttle = throttle
-        self.soundCap = soundCap
-        self.randomSound = randomSound
-        self.limitCountries = limitCountries
+        self.sound_cap = sound_cap
+        self.random_sound = random_sound
+        self.limit_countries = limit_countries
         self.limit_users = limit_users
 
-        if not storagePath:
-            self.storage_path = "forvocate/" + languageCode + "/"
-        else:
-            self.storage_path = storagePath
-
-        if not os.path.exists(self.storage_path):
-            os.makedirs(self.storage_path)
-
-        if not outputPath:
-            self.output_path = "media/" + languageCode + "/"
-        else:
-            self.output_path = outputPath
-
-        # Create the output dir if it doesn't exist
-        if not os.path.exists(self.output_path):
-            os.makedirs(self.output_path)
-
-    def pull(self, word):
+    def pull(self, word: str) -> FieldResult:
         result = CacheableFieldType.pull(self, word)
 
         if not result:
@@ -133,22 +106,19 @@ class Forvo(Transform[str]):
             return None
 
         # Choose a random sound, otherwise just grab the first one
-        if self.randomSound:
+        if self.random_sound:
             choice = random.choice(results)
         else:
             choice = results[0]
 
-        # Only copy in the file if it's not already there
-        if not os.path.exists(self.output_path + choice):
-            shutil.copyfile(self.storage_path + choice, self.output_path + choice)
-
         # This is the format Anki understands to play a sound
         return "[sound:%s]" % choice
 
-
     def call(self, word: str) -> FieldResult:
-        """This code used to be way worse, trust me.
-           This pulls the audio files."""
+        """
+        This code used to be way worse, trust me.
+        This pulls the audio files.
+        """
         downloads_list = []
 
         u_word = quote(word)
@@ -176,7 +146,7 @@ class Forvo(Transform[str]):
 
             # Iterate through all pronunciations
             for pron in pronunciations:
-                if len(self.limitCountries) > 0:
+                if len(self.limit_countries) > 0:
                     # Check to see where the speaker is from
                     loc = pron.findAll(attrs={"class": "from"})
 
@@ -189,7 +159,7 @@ class Forvo(Transform[str]):
                     loc = loc.split()[-1][:-1]
 
                     # Skip the pronunciation
-                    if not loc in self.limitCountries:
+                    if not loc in self.limit_countries:
                         continue
 
                 if len(self.limit_users) > 0:
@@ -225,15 +195,12 @@ class Forvo(Transform[str]):
                     break
 
         # Clear out old downloads
-        hashed = hashlib.md5(bytes(word, 'utf-8')).hexdigest()
+        hashed = hashlib.md5(bytes(word, "utf-8")).hexdigest()
         index = 0
-        while os.path.isfile(self.storage_path + hashed + str(index) + ".mp3"):
-            os.remove(self.storage_path + hashed + str(index) + ".mp3")
-            index += 1
 
         # Download the new sounds
         for i, url in enumerate(downloads_list):
-            if i == self.soundCap:
+            if i == self.sound_cap:
                 break
             r = requests.get(url)
             with open(self.storage_path + hashed + str(i) + ".mp3", "wb") as code:
@@ -241,8 +208,8 @@ class Forvo(Transform[str]):
             if self.throttle:
                 time.sleep(1.0)
 
-        numSounds = min(len(downloads_list), self.soundCap)
-        if numSounds == 0:
+        num_sounds = min(len(downloads_list), self.sound_cap)
+        if num_sounds == 0:
             return None
         else:
-            return str(numSounds)
+            return str(num_sounds)
