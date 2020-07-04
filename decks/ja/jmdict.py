@@ -7,6 +7,8 @@ from typing import Dict, List
 # Need some beautiful soup for this
 from bs4 import BeautifulSoup as soup
 
+from proto.transforms import Transform
+from proto.field import FieldResult
 from proto.building import get_file_lines
 
 
@@ -206,7 +208,7 @@ def parse_to_file(jm_dict, out):
         index += 1
 
 
-class JMReadingGetter(object):
+class JMReadingGetter(Transform[str]):
     """
     Gets readings of words from JMDict.
     """
@@ -238,7 +240,7 @@ class JMReadingGetter(object):
 
         return []
 
-    def run(self, data):
+    def call(self, data: str) -> FieldResult:
         defs = self.get_readings(data)
 
         if len(defs) == 0:
@@ -247,7 +249,7 @@ class JMReadingGetter(object):
             return json.dumps(defs)
 
 
-class JMDictGetter(object):
+class JMDictGetter(Transform[str]):
     def __init__(self, dictFile: str):
         if not os.path.exists(dictFile):
             raise Exception("JMDict file '%s' does not exist." % dictFile)
@@ -291,7 +293,7 @@ class JMDictGetter(object):
 
         return results
 
-    def run(self, word):
+    def call(self, word: str) -> FieldResult:
         """The code that looks through the dictionary is a little bit odd, but
         the efficiency is definitely better than O(n). Just looks strange."""
         defs = self.get_definitions(word)

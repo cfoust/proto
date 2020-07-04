@@ -3,12 +3,16 @@ from typing import Tuple, List
 import proto
 
 from proto.building import PathHelper, get_file_lines, sqlite
-from proto.transforms import Forvo
+from proto.transforms import wrap_class, Forvo, pipe
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
 # Headword, POS
 WordData = Tuple[str, str]
+
+
+def get_headword(data: WordData) -> str:
+    return data[0]
 
 
 def generate_main(forvo: Forvo) -> None:
@@ -23,8 +27,14 @@ def generate_main(forvo: Forvo) -> None:
         guid=lambda data: data[0],
         fields=[
             proto.Field("Headword", lambda data: data[0]),
-            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
-            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            proto.Field(
+                "Reading",
+                pipe((get_headword, wrap_class(JMReadingGetter(ph.input("JmdictFurigana.txt"))))),
+            ),
+            proto.Field(
+                "Definition",
+                pipe((get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e"))))),
+            ),
             proto.Field("Sound", forvo),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),

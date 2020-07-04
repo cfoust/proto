@@ -15,14 +15,16 @@ def get_soup_from_url(url_in):
     return soup(get_data_from_url(url_in))
 
 
-"""The secret to parsing wiktionary (or Wikipedia) is to never parse it at all.
-As you can tell, the code below is pretty messy but works. It's a relic from
-my first attempts at generating flash cards in 8/13."""
-
 wiktionary_en_raw = "http://en.wiktionary.org/wiki/{0}?printable=yes"
 
 
 class WiktionaryField(CacheableFieldType):
+    """
+    The secret to parsing wiktionary (or Wikipedia) is to never parse it at
+    all.  As you can tell, the code below is pretty messy but works. It's a
+    relic from my first attempts at generating flash cards in 8/13.
+    """
+
     db_name = "conwiktion"
     anki_name = "Meaning"
 

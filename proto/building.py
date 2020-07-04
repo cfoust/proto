@@ -37,7 +37,6 @@ class PathHelper(object):
     def db(self) -> str:
         return self._db
 
-
     def input(self, path: str) -> str:
         """
         Returns the relative path of the requested input file. For example,
@@ -49,19 +48,19 @@ class PathHelper(object):
         self._inputs.add(result)
         return result
 
-
     def output(self, path: str) -> str:
         """
         Returns the relative path of the requested output file.
         """
         return os.path.join(self._output, path)
 
-
     def target(self, path: str) -> bool:
         """
         If the target is older than the newest input, return true.
         """
-        inputs = filter(lambda x: x is not None, [get_mod_time(x) for x in self._inputs])
+        inputs = filter(
+            lambda x: x is not None, [get_mod_time(x) for x in self._inputs]
+        )
 
         if not inputs:
             return False

@@ -31,7 +31,6 @@ class Field(Generic[Data]):
     def __init__(self, name: str, transform: Callable[[Data], FieldResult]) -> None:
         self.name = name
         self.transform = transform
-        pass
 
     def run(self, data: Data) -> FieldResult:
         return self.transform(data)
