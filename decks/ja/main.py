@@ -22,12 +22,12 @@ def generate_main(forvo: Forvo) -> None:
         "ja-word",
         guid=lambda data: data[0],
         fields=[
-            proto.Field[WordData]("Headword", lambda data: data[0]),
-            proto.Field[WordData]("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
-            proto.Field[WordData]("Definition", JMDictGetter(ph.input("JMdict_e"))),
-            proto.Field[WordData]("Sound", forvo),
+            proto.Field("Headword", lambda data: data[0]),
+            proto.Field("Reading", JMReadingGetter(ph.input("JmdictFurigana.txt"))),
+            proto.Field("Definition", JMDictGetter(ph.input("JMdict_e"))),
+            proto.Field("Sound", forvo),
             # The part of speech
-            proto.Field[WordData]("POS", lambda data: data[-1],),
+            proto.Field("POS", lambda data: data[-1],),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
@@ -51,10 +51,13 @@ def generate_main(forvo: Forvo) -> None:
         deck.build("ja-nomedia.apkg", media=False)
 
 
+KanaData = str
+
+
 def generate_alphabets(forvo: Forvo) -> None:
     ph = PathHelper("ja")
 
-    CharacterCard = proto.Model(
+    CharacterCard = proto.Model[KanaData](
         1116319754,
         "ja-character",
         guid=lambda data: data[0],
@@ -68,7 +71,7 @@ def generate_alphabets(forvo: Forvo) -> None:
     katakana = get_file_lines(ph.input("katakana.txt"))
     hiragana = get_file_lines(ph.input("hiragana.txt"))
 
-    deck = proto.Deck(
+    deck = proto.Deck[KanaData](
         "Japanese-Kana",
         [
             proto.Deck("Katakana", CharacterCard, katakana),

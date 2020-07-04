@@ -18,6 +18,7 @@ from bs4 import BeautifulSoup as soup
 
 from proto import Field
 
+
 def get_data_from_url(url_in):
     times = 0
     sec = 5

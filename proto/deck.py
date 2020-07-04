@@ -75,3 +75,6 @@ class Deck(Generic[Data]):
         self.model = model
         self.subdecks = subdecks
         self.conf = copy.deepcopy(defaultStudyConf)
+
+    def build(self, path: str):
+        pass

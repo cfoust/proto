@@ -22,6 +22,7 @@ FieldData = Union[str, bytes]
 FieldResult = Optional[FieldData]
 FieldFunction = Callable[[Data], FieldResult]
 
+
 class Field(Generic[Data]):
     """
     Base class that manages transforming card data for a field.
@@ -35,8 +36,10 @@ class Field(Generic[Data]):
     def run(self, data: Data) -> FieldResult:
         return self.transform(data)
 
+
 # Standin proxy for a potential peewee database
 dbproxy = peewee.Proxy()
+
 
 class CachedInfo(peewee.Model):
     """This is the model that we use so peewee can store cached information

@@ -6,11 +6,8 @@ from proto.field import Field
 
 Data = TypeVar("Data")
 
-Template = TypedDict('Template', {
-    "name": str,
-    "front": str,
-    "back": str,
-})
+Template = TypedDict("Template", {"name": str, "front": str, "back": str,})
+
 
 class Model(Generic[Data]):
     """
