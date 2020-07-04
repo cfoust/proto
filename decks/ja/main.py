@@ -71,10 +71,10 @@ def generate_alphabets(forvo: Forvo) -> None:
 
     CharacterCard = proto.Model[KanaData](
         1116319754,
-        "ja-character",
-        guid=lambda data: data[0],
+        "ja-kana-character",
+        guid=lambda data: data,
         fields=[
-            proto.Field("Character", lambda data: data[0]),
+            proto.Field("Character", lambda data: data),
             proto.Field("Sound", wrap_class(forvo)),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
