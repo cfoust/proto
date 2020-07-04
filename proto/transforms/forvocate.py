@@ -122,12 +122,6 @@ class Forvo(Transform[str]):
                no sound."""
             return None
 
-        # Deal with fucking Python encoding
-        try:
-            word = word.encode("utf-8")
-        except:
-            pass
-
         """Generates the resulting file paths based on the number of sounds we stored.
            We don't really care about using hash here as even big decks have only
            30k or so cards. Not worth worrying about conflicts. """
@@ -159,7 +153,6 @@ class Forvo(Transform[str]):
 
         u_word = quote(word)
 
-        language = "en"
         target = self.code
         url = "http://www.forvo.com/word/%s/#%s" % (u_word, target)
 
@@ -232,7 +225,7 @@ class Forvo(Transform[str]):
                     break
 
         # Clear out old downloads
-        hashed = hashlib.md5(word).hexdigest()
+        hashed = hashlib.md5(bytes(word, 'utf-8')).hexdigest()
         index = 0
         while os.path.isfile(self.storage_path + hashed + str(index) + ".mp3"):
             os.remove(self.storage_path + hashed + str(index) + ".mp3")

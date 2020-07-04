@@ -91,7 +91,7 @@ class Cacher:
 
     def _get_row(self, key: str):
         return CachedInfo.get(
-            CachedInfo.db_name == self.identifier, CachedInfo.lemma == key
+            CachedInfo.db_name == self.identifier, CachedInfo.key == key
         )
 
     def exists(self, key: str) -> bool:
