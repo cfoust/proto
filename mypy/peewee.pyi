@@ -2,11 +2,8 @@ import itertools
 import logging
 import threading
 from collections import namedtuple
-from pysqlite2 import dbapi2 as pysq3
+import sqlite3
 from typing import Any, Optional
-
-sqlite3 = pysq3
-sqlite3 = pysq3
 
 class NullHandler(logging.Handler):
     def emit(self, record: Any) -> None: ...
