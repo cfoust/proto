@@ -76,5 +76,5 @@ class Deck(Generic[Data]):
         self.subdecks = subdecks
         self.conf = copy.deepcopy(defaultStudyConf)
 
-    def build(self, path: str):
+    def build(self, path: str, media: bool = True):
         pass

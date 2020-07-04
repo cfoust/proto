@@ -14,6 +14,8 @@ WordData = Tuple[str, str]
 def get_headword(data: WordData) -> str:
     return data[0]
 
+def append_str(data: List[str], col: str) -> List[Tuple[str, str]]:
+    return list(map(lambda v: (v, col), data))
 
 def generate_main(forvo: Forvo) -> None:
     """
@@ -26,7 +28,7 @@ def generate_main(forvo: Forvo) -> None:
         "ja-word",
         guid=lambda data: data[0],
         fields=[
-            proto.Field("Headword", lambda data: data[0]),
+            proto.Field("Headword", get_headword),
             proto.Field(
                 "Reading",
                 pipe((get_headword, wrap_class(JMReadingGetter(ph.input("JmdictFurigana.txt"))))),
@@ -35,20 +37,20 @@ def generate_main(forvo: Forvo) -> None:
                 "Definition",
                 pipe((get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e"))))),
             ),
-            proto.Field("Sound", forvo),
+            proto.Field("Sound", pipe((get_headword, wrap_class(forvo)))),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
 
-    verbs = get_file_lines(ph.input("verb-base.csv"))
-    nouns = get_file_lines(ph.input("noun-base.csv"))
-    adjectives = get_file_lines(ph.input("adj-base.csv"))
+    verbs = append_str(get_file_lines(ph.input("verb-base.csv")), 'verb')
+    nouns = append_str(get_file_lines(ph.input("noun-base.csv")), 'noun')
+    adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), 'adj')
 
     deck = proto.Deck[WordData](
         "Japanese",
-        [
+        subdecks=[
             proto.Deck[WordData]("Adjectives", WordCard, adjectives),
             proto.Deck[WordData]("Nouns", WordCard, nouns),
             proto.Deck[WordData]("Verbs", WordCard, verbs),
@@ -73,7 +75,7 @@ def generate_alphabets(forvo: Forvo) -> None:
         guid=lambda data: data[0],
         fields=[
             proto.Field("Character", lambda data: data[0]),
-            proto.Field("Sound", forvo),
+            proto.Field("Sound", wrap_class(forvo)),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
@@ -83,7 +85,7 @@ def generate_alphabets(forvo: Forvo) -> None:
 
     deck = proto.Deck[KanaData](
         "Japanese-Kana",
-        [
+        subdecks=[
             proto.Deck("Katakana", CharacterCard, katakana),
             proto.Deck("Hiragana", CharacterCard, hiragana),
         ],

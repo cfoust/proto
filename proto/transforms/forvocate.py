@@ -16,8 +16,8 @@ from urllib.parse import quote
 
 from bs4 import BeautifulSoup as soup
 
-from proto import Field
-
+from proto.transforms.base import Transform
+from proto.field import FieldResult
 
 def get_data_from_url(url_in):
     times = 0
@@ -53,7 +53,7 @@ BASE_URL = "https://audio00.forvo.com/"
 pronunciation database."""
 
 
-class Forvo(Field[str]):
+class Forvo(Transform[str]):
     db_name = "forvocate"
     anki_name = "Audio"
     html = """%s"""
@@ -151,15 +151,11 @@ class Forvo(Field[str]):
         # This is the format Anki understands to play a sound
         return "[sound:%s]" % choice
 
-    def generate(self, word):
+
+    def call(self, word: str) -> FieldResult:
         """This code used to be way worse, trust me.
            This pulls the audio files."""
         downloads_list = []
-
-        try:
-            word = word.encode("utf-8")
-        except:
-            pass
 
         u_word = quote(word)
 
