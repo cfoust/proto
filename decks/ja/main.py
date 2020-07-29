@@ -42,7 +42,9 @@ def generate_main(forvo: Forvo) -> None:
             ),
             proto.Field(
                 "Definition",
-                pipe((get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e.xml"))))),
+                pipe(
+                    (get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e.xml"))))
+                ),
             ),
             proto.Field("Sound", pipe((get_headword, wrap_class(forvo)))),
             # The part of speech
