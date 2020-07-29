@@ -2,6 +2,11 @@ import datetime
 import zlib
 import peewee
 
+from typing import (
+    Union, Optional, Tuple, List, Callable
+)
+from proto.field import FieldResult
+
 # Standin proxy for a potential peewee database
 dbproxy = peewee.Proxy()
 
