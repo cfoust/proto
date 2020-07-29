@@ -142,7 +142,6 @@ class Cache:
 
         # We create a temporary array to add all our metadata
         for key, datum in data:
-            datum = "[nothing]" if datum is None else datum
             blob = pack_data(datum)
             is_string = type(datum) is str
             transformed.append(
@@ -205,7 +204,6 @@ class TimeCache(object):
         self.cacher: Cache = Cache(db_path, identifier)
         self.retry = retry
         self.generator = generator
-        self.field = field
 
     def call(self, data: str) -> FieldResult:
         if not self.cacher.exists(data):
@@ -228,7 +226,7 @@ class TimeCache(object):
                 self.cacher.delete(data)
 
                 # We just pull again
-                return self.run(data)
+                return self.call(data)
 
             # Otherwise return None
             return None
