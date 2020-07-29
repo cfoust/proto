@@ -45,7 +45,7 @@ def unpack_data(data: Optional[bytes], is_string: bool) -> CacheData:
     return blob.decode("utf-8")
 
 
-class Cacher:
+class Cache:
     """
     Simple SQlite caching mechanism.
     """
@@ -163,13 +163,13 @@ class Cacher:
 
     def clear(self) -> None:
         """
-        Wipes all of the rows with this Cacher's identifier.
+        Wipes all of the rows with this Cache's identifier.
         """
         CachedInfo.delete().where(CachedInfo.db_name == self.identifier).execute()
 
     def rename(self, new_name: str) -> None:
         """
-        Renames the identifier used by this Cacher. Does not check for
+        Renames the identifier used by this Cache. Does not check for
         conflicts on purpose, as we occasionally want to combine datasets.
         """
         CachedInfo.update(db_name=new_name).where(
@@ -197,7 +197,7 @@ class TimeCache(object):
         retry: datetime.timedelta = datetime.timedelta(weeks=2),
     ):
         super().__init__()
-        self.cacher: Cacher = Cacher(db_path, identifier)
+        self.cacher: Cache = Cache(db_path, identifier)
         self.retry = retry
         self.generator = generator
         self.field = field

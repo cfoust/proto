@@ -20,6 +20,7 @@ from peewee import SqliteDatabase
 
 from proto.transforms.base import Transform
 from proto.field import FieldResult
+from proto.caching import TimeCache
 
 
 def get_data_from_url(url_in: str) -> Optional[str]:
