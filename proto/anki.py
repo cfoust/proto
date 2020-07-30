@@ -11,7 +11,7 @@ import tempfile
 import os
 import re
 
-from typing import List, Dict, Optional, Generic, TypeVar, Tuple
+from typing import List, Dict, Optional, Generic, TypeVar, Tuple, Callable
 
 from proto.field import FieldFunction, Data, FieldResult
 
@@ -134,3 +134,16 @@ def use_cached_field(anki: AnkiDeck, mid: int, field: int) -> FieldFunction[str]
     Transformer that can grab arbitary fields from an existing Anki deck.
     """
     return lambda sort_field: lookup_field(anki, mid, field, sort_field)
+
+
+def lookup_guid(anki: AnkiDeck, mid: int, sort_field: str) -> Optional[str]:
+    result = anki.find_note(mid, sort_field)
+
+    if result is None:
+        return None
+
+    guid, _ = result
+    return guid
+
+def use_cached_guid(anki: AnkiDeck, mid: int) -> Callable[[str], Optional[str]]:
+    return lambda a: lookup_guid(anki, mid, a)
