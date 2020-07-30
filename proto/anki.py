@@ -9,11 +9,22 @@ import sqlite3
 import json
 import tempfile
 import os
+import re
 
 from typing import List, Optional, Generic, TypeVar, Tuple
 
 # guid, fields
 NoteResult = Tuple[str, List[str]]
+
+SOUND_REGEX = re.compile('\[sound:(.+)\]')
+
+def normalize_media(file: str) -> str:
+    sound = SOUND_REGEX.match(file)
+
+    if sound is not None:
+        return sound.group(1)
+
+    return file
 
 class AnkiDeck(object):
 
@@ -65,10 +76,12 @@ class AnkiDeck(object):
 
 
     def get_media(self, file: str) -> Optional[bytes]:
-        if not file in self.media:
+        normalized = normalize_media(file)
+
+        if not normalized in self.media:
             return None
 
-        real_file = self.media[file]
+        real_file = self.media[normalized]
 
         if not self.exists(real_file):
             return None
