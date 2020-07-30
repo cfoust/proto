@@ -138,6 +138,9 @@ class Deck(Generic[Data]):
             decks.append(deck)
             media = media + files
 
+        cursor.executescript(genanki.apkg_schema.APKG_SCHEMA)
+        cursor.executescript(genanki.apkg_col.APKG_COL)
+
         for deck in decks:
             deck.write_to_db(cursor, now_ts)
 

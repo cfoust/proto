@@ -36,7 +36,7 @@ class PathHelper(object):
     def db(self) -> str:
         return self._db
 
-    def input(self, path: str) -> str:
+    def input(self, path: str, ignore: bool = False) -> str:
         """
         Returns the relative path of the requested input file. For example,
         if you pass in 'asd.txt' and your language code is 'de', you would get
@@ -44,7 +44,10 @@ class PathHelper(object):
         """
 
         result = os.path.join(self._input, path)
-        self._inputs.add(result)
+
+        if not ignore:
+            self._inputs.add(result)
+
         return result
 
     def output(self, path: str) -> str:

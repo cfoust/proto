@@ -3,8 +3,9 @@ from typing import Tuple, List
 import proto
 
 from proto.building import PathHelper, get_file_lines
-from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer
-from proto.model import use_first_guid
+from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priority
+from proto.model import use_first_guid, default_guid
+from proto.anki import AnkiDeck, use_cached_guid, use_cached_field
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
@@ -46,10 +47,17 @@ def generate_main() -> None:
 
     forvo = wrap_class(CachedTransformer[str](ph.db, "forvo", FORVO, identity))
 
+    anki = AnkiDeck(ph.input("ja-original.apkg", ignore=True))
+
     WordCard = proto.Model[WordData](
         1527532200,
         "ja-word",
-        guid=lambda data: data[0],
+        guid=pipe(
+            (
+                get_headword,
+                priority([use_cached_guid(anki, 1527532200), default_guid], ""),
+            )
+        ),
         fields=[
             proto.Field("Headword", get_headword),
             proto.Field(
@@ -67,7 +75,16 @@ def generate_main() -> None:
                     (get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e.xml"))))
                 ),
             ),
-            proto.Field("Sound", pipe((get_headword, forvo))),
+            proto.Field(
+                "Sound",
+                priority(
+                    [
+                        pipe((get_headword, use_cached_field(anki, 1527532200, 2))),
+                        pipe((get_headword, forvo)),
+                    ],
+                    None,
+                ),
+            ),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
@@ -77,6 +94,10 @@ def generate_main() -> None:
     verbs = append_str(get_file_lines(ph.input("verb-base.csv")), "verb")
     nouns = append_str(get_file_lines(ph.input("noun-base.csv")), "noun")
     adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), "adj")
+
+    verbs = verbs[:10]
+    nouns = []
+    adjectives = []
 
     deck = proto.Deck[WordData](
         1475079952775,
@@ -136,4 +157,4 @@ if __name__ == "__main__":
     ph = PathHelper("ja")
 
     generate_main()
-    generate_alphabets()
+    # generate_alphabets()

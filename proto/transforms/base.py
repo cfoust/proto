@@ -97,20 +97,26 @@ _G = TypeVar("_G")
 _H = TypeVar("_H")
 
 
-def _priority(steps: List[Callable[[_A], Optional[_B]]], value: _A) -> Optional[_B]:
+def _priority(
+    steps: List[Union[Callable[[_A], Optional[_B]], Callable[[_A], _B]]],
+    value: _A,
+    default: _B,
+) -> _B:
     for step in steps:
         result = step(value)
         if result is not None:
             return result
 
-    return None
+    return default
 
 
-def priority(steps: List[Callable[[_A], Optional[_B]]]) -> Callable[[_A], Optional[_B]]:
+def priority(
+    steps: List[Callable[[_A], Optional[_B]]], default: _B
+) -> Callable[[_A], _B]:
     """
     Return the first result that is defined.
     """
-    return lambda a: _priority(steps, a)
+    return lambda a: _priority(steps, a, default)
 
 
 # One
