@@ -3,7 +3,7 @@
 We want to be able to regenerate decks on the fly and bring all of our old
 decks up to par.
 
-* [ ] Fix the generalized caching mechanism
+* [X] Fix the generalized caching mechanism
 * [ ] Ensure old common generators are working
   - [ ] Forvo
   - [ ] Wiktionary

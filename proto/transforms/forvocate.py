@@ -20,7 +20,10 @@ from peewee import SqliteDatabase
 
 from proto.transforms.base import Transform
 from proto.field import FieldResult
-from proto.caching import TimeCache
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"
+
+HEADERS = {"User-Agent": UA}
 
 
 def get_data_from_url(url_in: str) -> Optional[str]:
@@ -31,7 +34,7 @@ def get_data_from_url(url_in: str) -> Optional[str]:
         text = ""
         failed = False
         try:
-            text = requests.get(url_in).text
+            text = requests.get(url_in, headers=HEADERS).text
         except:
             failed = True
 
@@ -63,15 +66,10 @@ pronunciation database."""
 class Forvo(Transform[str]):
     def __init__(
         self,
-        db: SqliteDatabase,
         # ISO-639-1 language code
         language_code: str,
         # sleeps a little bit so that we don't ddos them
         throttle: bool = True,
-        # number of sounds to grab (usually 1)
-        sound_cap: int = 1,
-        # if there are many sounds on the page for the word, grab one randomly
-        random_sound: bool = False,
         # If array is non-empty, limit sounds to the list of users
         limit_users: List[str] = [],
         # If array is non-empty, limit sounds to pronouncers from the English
@@ -82,38 +80,8 @@ class Forvo(Transform[str]):
         self.db_name = "forvo-" + language_code
         self.code = language_code
         self.throttle = throttle
-        self.sound_cap = sound_cap
-        self.random_sound = random_sound
         self.limit_countries = limit_countries
         self.limit_users = limit_users
-
-    def pull(self, word: str) -> FieldResult:
-        result = CacheableFieldType.pull(self, word)
-
-        if not result:
-            """It doesn't matter if this field has nothing, so we return a blank
-               string. We do this because it's not a dealbreaker if a card has
-               no sound."""
-            return None
-
-        """Generates the resulting file paths based on the number of sounds we stored.
-           We don't really care about using hash here as even big decks have only
-           30k or so cards. Not worth worrying about conflicts. """
-        results = [
-            hashlib.md5(word).hexdigest() + str(x) + ".mp3" for x in range(int(result))
-        ]
-
-        if len(results) == 0:
-            return None
-
-        # Choose a random sound, otherwise just grab the first one
-        if self.random_sound:
-            choice = random.choice(results)
-        else:
-            choice = results[0]
-
-        # This is the format Anki understands to play a sound
-        return "[sound:%s]" % choice
 
     def call(self, word: str) -> FieldResult:
         """
@@ -197,20 +165,19 @@ class Forvo(Transform[str]):
 
         # Clear out old downloads
         hashed = hashlib.md5(bytes(word, "utf-8")).hexdigest()
-        index = 0
 
-        # Download the new sounds
-        for i, url in enumerate(downloads_list):
-            if i == self.sound_cap:
-                break
-            r = requests.get(url)
-            with open(self.storage_path + hashed + str(i) + ".mp3", "wb") as code:
-                code.write(r.content)
-            if self.throttle:
-                time.sleep(1.0)
-
-        num_sounds = min(len(downloads_list), self.sound_cap)
-        if num_sounds == 0:
+        if not downloads_list:
             return None
-        else:
-            return str(num_sounds)
+
+        first = downloads_list[0]
+        filename = "%s.mp3" % (hashed)
+        response = requests.get(first, headers=HEADERS)
+
+        if self.throttle:
+            time.sleep(1.0)
+
+        return {
+            "filename": filename,
+            "field": "[sound:%s]" % filename,
+            "data": response.content,
+        }
