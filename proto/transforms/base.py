@@ -17,8 +17,10 @@ from typing import (
     Tuple,
     overload,
 )
+import datetime
 
 from proto.field import FieldResult
+from proto.caching import Cache
 
 Data = TypeVar("Data")
 
@@ -36,6 +38,53 @@ def wrap_class(instance: Transform[Data],) -> Callable[[Data], FieldResult]:
     Wrap a class instance into a transform function.
     """
     return lambda data: instance.call(data)
+
+
+class CachedTransformer(Transform[Data]):
+    def __init__(
+        self,
+        # The database file to use
+        database: str,
+        # The `type` field that isolates transformers from each other
+        identifier: str,
+        # The underlying transformer that will be cached
+        transformer: Transform[Data],
+        # Given Data, gives a unique string key for the input
+        key: Callable[[Data], str],
+        # If this is set, the cache will be cleared after this amount of time
+        # and we will re-pull
+        retry_timeout: Optional[datetime.timedelta] = None,
+        # Whether to only retry if the outcome was None
+        retry_only_on_none: bool = True,
+    ) -> None:
+        self.transformer = transformer
+        self.key = key
+        self.cache = Cache(database, identifier)
+        self.retry_timeout = retry_timeout
+        self.retry_only_on_none = retry_only_on_none
+
+    def call(self, data: Data) -> FieldResult:
+        key = self.key(data)
+        result = self.cache.retrieve(key)
+
+        if result:
+            time, stored = result
+
+            if (
+                self.retry_timeout is not None
+                and (time + self.retry_timeout) < datetime.datetime.now()
+            ):
+                if stored is not None and self.retry_only_on_none:
+                    return stored
+
+                self.cache.delete(key)
+                return self.call(data)
+
+            return stored
+
+        computed = self.transformer.call(data)
+        self.cache.store(key, computed)
+        return computed
 
 
 _A = TypeVar("_A")

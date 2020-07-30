@@ -202,7 +202,6 @@ INSERT OR REPLACE INTO proto_cache (
 
         self._upsert(transformed)
 
-
     def delete(self, key: str) -> None:
         """
         Deletes all data for a given key.
@@ -211,10 +210,9 @@ INSERT OR REPLACE INTO proto_cache (
             """
 DELETE FROM proto_cache WHERE type = ? AND key = ?
         """,
-            (self.identifier, key,)
+            (self.identifier, key,),
         )
         self.db.commit()
-
 
     def clear(self) -> None:
         """
@@ -224,66 +222,13 @@ DELETE FROM proto_cache WHERE type = ? AND key = ?
             """
 DELETE FROM proto_cache WHERE type = ?
         """,
-            (self.identifier,)
+            (self.identifier,),
         )
         self.db.commit()
-
 
     def rename(self, new_name: str) -> None:
         """
         Renames the identifier used by this Cache. Does not check for
         conflicts on purpose, as we occasionally want to combine datasets.
         """
-        raise Exception('todo')
-
-
-class TimeCache(object):
-    """
-    This field type automatically caches the results of its 'generate'
-    function.  Very good for pulling data from websites or sources that require
-    a lot of time for each word. Remembers the last time that the method
-    returned None and does not call generate again until after a certain
-    timedelta.
-   """
-
-    def __init__(
-        self,
-        db_path: str,
-        identifier: str,
-        generator: Callable[[str], FieldResult],
-        # The amount of time we should wait before trying to call
-        # the field again after it returns None initially.
-        retry: datetime.timedelta = datetime.timedelta(weeks=2),
-    ):
-        super().__init__()
-        self.cacher: Cache = Cache(db_path, identifier)
-        self.retry = retry
-        self.generator = generator
-
-    def call(self, data: str) -> FieldResult:
-        if not self.cacher.exists(data):
-            result = self.generator(data)
-            self.cacher.store(data, result)
-            return result
-
-        row = self.cacher.retrieve(data)
-
-        # Should never happen
-        if not row:
-            return None
-
-        timestamp, result = row
-
-        if result is None:
-            # If we've passed the cache date, we can try again
-            if (timestamp + self.retry) < datetime.datetime.now():
-                # Delete the cache
-                self.cacher.delete(data)
-
-                # We just pull again
-                return self.call(data)
-
-            # Otherwise return None
-            return None
-
-        return result
+        raise Exception("todo")
