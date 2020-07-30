@@ -78,11 +78,12 @@ def generate_main() -> None:
     adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), "adj")
 
     deck = proto.Deck[WordData](
+        1475079952775,
         "Japanese",
         subdecks=[
-            proto.Deck[WordData]("Adjectives", WordCard, adjectives),
-            proto.Deck[WordData]("Nouns", WordCard, nouns),
-            proto.Deck[WordData]("Verbs", WordCard, verbs),
+            proto.Deck[WordData](1475079978856, "Adjectives", WordCard, adjectives),
+            proto.Deck[WordData](1473292781966, "Nouns", WordCard, nouns),
+            proto.Deck[WordData](1475079952775, "Verbs", WordCard, verbs),
         ],
     )
 
@@ -116,10 +117,11 @@ def generate_alphabets() -> None:
     hiragana = get_file_lines(ph.input("hiragana.txt"))
 
     deck = proto.Deck[KanaData](
+        1312855852,
         "Japanese-Kana",
         subdecks=[
-            proto.Deck("Katakana", CharacterCard, katakana),
-            proto.Deck("Hiragana", CharacterCard, hiragana),
+            proto.Deck(1592761634, "Katakana", CharacterCard, katakana),
+            proto.Deck(1403083956, "Hiragana", CharacterCard, hiragana),
         ],
     )
 

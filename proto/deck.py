@@ -3,6 +3,8 @@ generation calls down to its CardType (if it has one) and thus to the FieldTypes
 the deck will be studied in Anki, how frequently, etc."""
 import string
 import copy
+import functools
+import genanki
 
 from typing import List, Optional, Generic, TypeVar
 
@@ -59,6 +61,11 @@ defaultStudyConf = {
 Data = TypeVar("Data")
 
 
+def prefix_deck(name: str, deck: genanki.Deck) -> genanki.Deck:
+    deck.name = "%s::%s" % (name, deck.name)
+    return deck
+
+
 class Deck(Generic[Data]):
     """
     Representation of an Anki deck which can either contain cards or subdecks.
@@ -66,15 +73,31 @@ class Deck(Generic[Data]):
 
     def __init__(
         self,
+        _id: int,
         name: str,
         model: Optional[Model] = None,
         data: Optional[List[Data]] = None,
         subdecks: Optional[List["Deck"]] = None,
     ) -> None:
+        self.id = _id
         self.name = name
         self.model = model
-        self.subdecks = subdecks
+        self.subdecks = subdecks or []
         self.conf = copy.deepcopy(defaultStudyConf)
+        self.data = data or []
+
+    def to_genanki(self) -> List[genanki.Deck]:
+        """
+        Recursively build the Deck and create input to genanki.
+        """
+        main = genanki.Deck(self.id, self.name,)
+
+        return functools.reduce(
+            lambda a, v: a
+            + list(map(lambda b: prefix_deck(self.name, b), v.to_genanki())),
+            self.subdecks,
+            [main],
+        )
 
     def build(self, path: str, media: bool = True):
         pass
