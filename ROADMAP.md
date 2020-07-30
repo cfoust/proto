@@ -9,7 +9,7 @@ decks up to par.
   - [ ] Wiktionary
 * [ ] Make it so we can use media or other fields from existing .apkg files
 * [ ] Also allow for pulling note guids from existing .apkg files
-* [ ] Dump new .apkg files with `genanki`
+* [X] Dump new .apkg files with `genanki`
 * [ ] Refactor all of the deck builders to support the new API
   - [ ] es
   - [ ] ru

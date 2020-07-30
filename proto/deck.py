@@ -103,6 +103,10 @@ class Deck(Generic[Data]):
         media: List[Media] = []
         if model is not None:
             notes, files = model.to_genanki(self.data)
+
+            for note in notes:
+                main.add_note(note)
+
             media = media + files
 
         return functools.reduce(
