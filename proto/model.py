@@ -5,6 +5,7 @@ from mypy_extensions import TypedDict
 
 
 from proto.field import Field, FieldResult, Media
+from proto.transforms import pipe
 
 Data = TypeVar("Data")
 
@@ -20,6 +21,27 @@ def normalize(data: FieldResult) -> Optional[str]:
 
     # media
     return data["field"]
+
+
+def filter_rows(
+    discard_none: bool,
+) -> Callable[[List[List[Optional[str]]]], List[List[Optional[str]]]]:
+    return lambda rows: list(
+        filter(
+            lambda row: not any(map(lambda field: field is None, row))
+            or not discard_none,
+            rows,
+        )
+    )
+
+
+def stringify_rows(rows: List[List[Optional[str]]]) -> List[List[str]]:
+    return list(
+        map(
+            lambda row: list(map(lambda col: col if col is not None else "", row)),
+            rows,
+        )
+    )
 
 
 class Model(Generic[Data]):
@@ -50,7 +72,9 @@ class Model(Generic[Data]):
             map(lambda row: list(map(lambda field: field.run(row), fields or [])), data)
         )
 
-    def to_genanki(self, data: List[Data]) -> Tuple[List[genanki.Note], List[Media]]:
+    def to_genanki(
+        self, data: List[Data], discard_none: bool = True
+    ) -> Tuple[List[genanki.Note], List[Media]]:
         results = self.build(data)
 
         if not results:
@@ -69,6 +93,12 @@ class Model(Generic[Data]):
                     continue
                 media.append(field)
 
+        # Coerce all fields to strings, filtering out any that came back None
+        # (if `discard_none` is true)
+        stringified: List[List[str]] = pipe(
+            (filter_rows(discard_none), stringify_rows,)
+        )(normalized)
+
         model = genanki.Model(
             self.id,
             self.name,
@@ -86,6 +116,6 @@ class Model(Generic[Data]):
         )
 
         return (
-            list(map(lambda v: genanki.Note(model=model, fields=v), normalized)),
+            list(map(lambda v: genanki.Note(model=model, fields=v), stringified)),
             media,
         )

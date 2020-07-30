@@ -16,7 +16,6 @@ from urllib.parse import quote
 from typing import List, Optional
 
 from bs4 import BeautifulSoup as soup
-from peewee import SqliteDatabase
 
 from proto.transforms.base import Transform
 from proto.field import FieldResult
