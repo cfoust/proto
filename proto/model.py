@@ -12,6 +12,12 @@ Data = TypeVar("Data")
 Template = TypedDict("Template", {"name": str, "front": str, "back": str,})
 
 
+def default_guid(value: str) -> str:
+    return genanki.util.guid_for(value)
+
+def use_first_guid(value: List[str]) -> str:
+    return default_guid(value[0])
+
 def normalize(data: FieldResult) -> Optional[str]:
     if data is None:
         return None
@@ -53,7 +59,7 @@ class Model(Generic[Data]):
         self,
         id: int,
         name: str,
-        guid: Optional[Callable[[Data], str]] = None,
+        guid: Callable[[Data], str],
         fields: Optional[List[Field[Data]]] = None,
         templates: Optional[List[Template]] = None,
     ):
@@ -115,7 +121,15 @@ class Model(Generic[Data]):
             ),
         )
 
+        notes: List[genanki.Note] = list(
+            map(lambda v: genanki.Note(model=model, fields=v), stringified)
+        )
+
+        # To keep guids stable
+        for n, value in zip(notes, data):
+            n.guid = self.guid(value)
+
         return (
-            list(map(lambda v: genanki.Note(model=model, fields=v), stringified)),
+            notes,
             media,
         )

@@ -4,6 +4,7 @@ import proto
 
 from proto.building import PathHelper, get_file_lines
 from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer
+from proto.model import default_guid
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 

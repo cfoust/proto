@@ -145,5 +145,6 @@ def lookup_guid(anki: AnkiDeck, mid: int, sort_field: str) -> Optional[str]:
     guid, _ = result
     return guid
 
+
 def use_cached_guid(anki: AnkiDeck, mid: int) -> Callable[[str], Optional[str]]:
     return lambda a: lookup_guid(anki, mid, a)
