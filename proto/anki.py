@@ -13,6 +13,8 @@ import re
 
 from typing import List, Dict, Optional, Generic, TypeVar, Tuple
 
+from proto.field import FieldFunction, Data, FieldResult
+
 # guid, fields
 NoteResult = Tuple[str, List[str]]
 
@@ -91,3 +93,44 @@ class AnkiDeck(object):
             os.unlink(self.db_path)
         except:
             pass
+
+
+def lookup_field(anki: AnkiDeck, mid: int, field: int, sort_field: str) -> FieldResult:
+    """
+    Grab an existing field from an Anki deck.
+    """
+    row = anki.find_note(mid, sort_field)
+
+    if row is None:
+        return None
+
+    _, fields = row
+
+    if field >= len(fields):
+        return None
+
+    value = fields[field]
+
+    if not SOUND_REGEX.match(value):
+        return value
+
+    normalized = normalize_media(value)
+
+    # This is a media file
+    data = anki.get_media(normalized)
+
+    if data is None:
+        return None
+
+    return {
+        "filename": normalized,
+        "field": value,
+        "data": data,
+    }
+
+
+def use_cached_field(anki: AnkiDeck, mid: int, field: int) -> FieldFunction[str]:
+    """
+    Transformer that can grab arbitary fields from an existing Anki deck.
+    """
+    return lambda sort_field: lookup_field(anki, mid, field, sort_field)

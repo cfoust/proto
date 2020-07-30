@@ -7,7 +7,7 @@ decks up to par.
 * [ ] Ensure old common generators are working
   - [X] Forvo
   - [ ] Wiktionary
-* [ ] Make it so we can use media or other fields from existing .apkg files
+* [X] Make it so we can use media or other fields from existing .apkg files
 * [ ] Also allow for pulling note guids from existing .apkg files
 * [X] Dump new .apkg files with `genanki`
 * [ ] Refactor all of the deck builders to support the new API
