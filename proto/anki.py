@@ -32,6 +32,22 @@ class AnkiDeck(object):
 
         self.db = sqlite3.connect(dbfilename)
 
+        # Mapping from filename -> index
+        self.media: Dict[str, str] = {}
+
+        if self.exists('media'):
+            with self.zip.open('media') as f:
+                mapping = json.loads(f.read())
+                self.media = {v: k for k, v in mapping.items()}
+
+
+    def exists(self, path: str) -> bool:
+        try:
+            self.zip.open(path)
+            return True
+        except KeyError:
+            return False
+
 
     def find_note(self, mid: int, sort_field: str) -> Optional[NoteResult]:
         results = self.db.execute(
@@ -46,6 +62,18 @@ class AnkiDeck(object):
             return None
 
         return (row[1], row[6].split('\x1f'))
+
+
+    def get_media(self, file: str) -> Optional[bytes]:
+        if not file in self.media:
+            return None
+
+        real_file = self.media[file]
+
+        if not self.exists(real_file):
+            return None
+
+        return self.zip.open(real_file).read()
 
 
     def __del__(self) -> None:
