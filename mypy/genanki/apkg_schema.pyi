@@ -1,0 +1,1 @@
+APKG_SCHEMA: str
