@@ -144,12 +144,12 @@ class Deck(Generic[Data]):
         conn.commit()
         conn.close()
 
-        with zipfile.ZipFile(file, 'w') as outzip:
-            outzip.write(dbfilename, 'collection.anki2')
+        with zipfile.ZipFile(file, "w") as outzip:
+            outzip.write(dbfilename, "collection.anki2")
 
             media_file_idx = dict(enumerate(media))
             media_json = {idx: obj["filename"] for idx, obj in media_file_idx.items()}
-            outzip.writestr('media', json.dumps(media_json))
+            outzip.writestr("media", json.dumps(media_json))
 
             for idx, obj in media_file_idx.items():
                 outzip.writestr(str(idx), obj["data"])
