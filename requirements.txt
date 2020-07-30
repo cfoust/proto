@@ -6,3 +6,8 @@ mypy==0.782
 peewee==3.13.3
 progressbar==2.5
 requests==2.24.0
+
+cached_property==1.5.1
+frozendict==1.2
+pystache==0.5.4
+PyYAML==5.3.1
