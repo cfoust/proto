@@ -19,7 +19,7 @@ from typing import (
 )
 import datetime
 
-from proto.field import FieldResult
+from proto.field import FieldResult, FieldFunction
 from proto.caching import Cache
 
 Data = TypeVar("Data")
@@ -48,12 +48,12 @@ class CachedTransformer(Transform[Data]):
         # The `type` field that isolates transformers from each other
         identifier: str,
         # The underlying transformer that will be cached
-        transformer: Transform[Data],
+        transformer: Callable[[Data], FieldResult],
         # Given Data, gives a unique string key for the input
         key: Callable[[Data], str],
         # If this is set, the cache will be cleared after this amount of time
         # and we will re-pull
-        retry_timeout: Optional[datetime.timedelta] = None,
+        retry_timeout: Optional[datetime.timedelta] = datetime.timedelta(weeks=2),
         # Whether to only retry if the outcome was None
         retry_only_on_none: bool = True,
     ) -> None:
@@ -82,7 +82,7 @@ class CachedTransformer(Transform[Data]):
 
             return stored
 
-        computed = self.transformer.call(data)
+        computed = self.transformer(data)
         self.cache.store(key, computed)
         return computed
 

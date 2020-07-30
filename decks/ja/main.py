@@ -2,8 +2,8 @@ from typing import Tuple, List
 
 import proto
 
-from proto.building import PathHelper, get_file_lines, sqlite
-from proto.transforms import wrap_class, Forvo, pipe
+from proto.building import PathHelper, get_file_lines
+from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
@@ -19,11 +19,31 @@ def append_str(data: List[str], col: str) -> List[Tuple[str, str]]:
     return list(map(lambda v: (v, col), data))
 
 
-def generate_main(forvo: Forvo) -> None:
+FORVO = wrap_class(
+    Forvo(
+        "ja",
+        limit_users=[
+            "strawberrybrown",
+            "skent",
+            "akiko",
+            "Emmacaron",
+            "yasuo",
+            "kaoring",
+            "akitomo",
+        ],
+    )
+)
+
+identity = lambda a: a
+
+
+def generate_main() -> None:
     """
     Generate the primary Japanese deck.
     """
     ph = PathHelper("ja")
+
+    forvo = wrap_class(CachedTransformer[str](ph.db, "forvo", FORVO, identity))
 
     WordCard = proto.Model[WordData](
         1527532200,
@@ -46,7 +66,7 @@ def generate_main(forvo: Forvo) -> None:
                     (get_headword, wrap_class(JMDictGetter(ph.input("JMdict_e.xml"))))
                 ),
             ),
-            proto.Field("Sound", pipe((get_headword, wrap_class(forvo)))),
+            proto.Field("Sound", pipe((get_headword, forvo))),
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
@@ -75,8 +95,10 @@ def generate_main(forvo: Forvo) -> None:
 KanaData = str
 
 
-def generate_alphabets(forvo: Forvo) -> None:
+def generate_alphabets() -> None:
     ph = PathHelper("ja")
+
+    forvo = wrap_class(CachedTransformer[str](ph.db, "forvo-kana", FORVO, identity))
 
     CharacterCard = proto.Model[KanaData](
         1116319754,
@@ -84,7 +106,7 @@ def generate_alphabets(forvo: Forvo) -> None:
         guid=lambda data: data,
         fields=[
             proto.Field("Character", lambda data: data),
-            proto.Field("Sound", wrap_class(forvo)),
+            proto.Field("Sound", forvo),
         ],
         templates=[{"name": "Card 1", "front": "", "back": "",}],
     )
@@ -109,21 +131,5 @@ def generate_alphabets(forvo: Forvo) -> None:
 if __name__ == "__main__":
     ph = PathHelper("ja")
 
-    db = sqlite(ph.db)
-
-    forvo = Forvo(
-        db,
-        "ja",
-        limit_users=[
-            "strawberrybrown",
-            "skent",
-            "akiko",
-            "Emmacaron",
-            "yasuo",
-            "kaoring",
-            "akitomo",
-        ],
-    )
-
-    generate_main(forvo)
-    generate_alphabets(forvo)
+    generate_main()
+    generate_alphabets()

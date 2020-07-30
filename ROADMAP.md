@@ -5,7 +5,7 @@ decks up to par.
 
 * [X] Fix the generalized caching mechanism
 * [ ] Ensure old common generators are working
-  - [ ] Forvo
+  - [X] Forvo
   - [ ] Wiktionary
 * [ ] Make it so we can use media or other fields from existing .apkg files
 * [ ] Refactor all of the deck builders to support the new API
@@ -13,5 +13,6 @@ decks up to par.
   - [ ] ru
   - [ ] zh
   - [X] ja
+* [ ] Actually get the new API working
 * [ ] Make it so the uids are stable with the current decks
 * [ ] Centralize card styling logic

@@ -25,7 +25,7 @@ class PathHelper(object):
 
         self._output = os.path.join("output", code)
         self._input = os.path.join("input", code)
-        self._db = os.path.join(self._input, code, ".db")
+        self._db = os.path.join(self._input, "%s.db" % code)
         self._inputs: Set[str] = set()
 
         for folder in [self._input, self._output]:

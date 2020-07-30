@@ -1,2 +1,2 @@
-from proto.transforms.base import Transform, wrap_class, pipe
-from proto.transforms.forvocate import Forvo
+from proto.transforms.base import Transform, wrap_class, pipe, CachedTransformer
+from proto.transforms.forvo import Forvo
