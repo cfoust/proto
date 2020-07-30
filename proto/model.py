@@ -15,8 +15,10 @@ Template = TypedDict("Template", {"name": str, "front": str, "back": str,})
 def default_guid(value: str) -> str:
     return genanki.util.guid_for(value)
 
+
 def use_first_guid(value: List[str]) -> str:
     return default_guid(value[0])
+
 
 def normalize(data: FieldResult) -> Optional[str]:
     if data is None:

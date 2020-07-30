@@ -4,7 +4,7 @@ import proto
 
 from proto.building import PathHelper, get_file_lines
 from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer
-from proto.model import default_guid
+from proto.model import use_first_guid
 
 from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
@@ -92,7 +92,7 @@ def generate_main() -> None:
         deck.build("ja.apkg")
 
     if ph.target("ja-nomedia.apkg"):
-        deck.build("ja-nomedia.apkg", media=False)
+        deck.build("ja-nomedia.apkg", include_media=False)
 
 
 KanaData = str
@@ -129,7 +129,7 @@ def generate_alphabets() -> None:
     if ph.target("ja-kana.apkg"):
         deck.build("ja-kana.apkg")
     if ph.target("ja-kana-nomedia.apkg"):
-        deck.build("ja-kana-nomedia.apkg", media=False)
+        deck.build("ja-kana-nomedia.apkg", include_media=False)
 
 
 if __name__ == "__main__":
