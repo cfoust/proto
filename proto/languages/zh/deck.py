@@ -2,7 +2,7 @@
 
 from proto.deck import Deck
 from proto.fields.basic import ComposedField, FieldType, StaticFieldType
-from proto.fields.forvocate import ForvoField
+from proto.fields.forvo import ForvoField
 from proto.cards import BasicCardType
 
 

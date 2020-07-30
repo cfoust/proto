@@ -1,10 +1,20 @@
-"""Conwiktion is a field type that parses wiktionary for results."""
+"""
+A transformer that parses wiktionary for results.
+"""
 
-import requests, os, urllib, urllib2, string, base64, hashlib, time, random, re
-from peewee import *
+import requests
+import os
+import urllib
+import urllib2
+import string
+import base64
+import hashlib
+import time
+import random
+import re
+
 from bs4 import BeautifulSoup as soup
 import bs4
-from basic import CacheableFieldType, Cacher
 
 
 def get_data_from_url(url_in):
