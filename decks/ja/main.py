@@ -88,6 +88,7 @@ def generate_main() -> None:
 
     if ph.target("ja.apkg"):
         deck.build("ja.apkg")
+
     if ph.target("ja-nomedia.apkg"):
         deck.build("ja-nomedia.apkg", media=False)
 

@@ -67,8 +67,12 @@ class PathHelper(object):
         max_input: Optional[float] = max(inputs)
         target: Optional[float] = get_mod_time(self.output(path))
 
+        # Always build in this case
+        if not target:
+            return True
+
         # I don't think this can happen but okay
-        if not max_input or not target:
+        if not max_input:
             return False
 
         return target < max_input

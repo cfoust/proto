@@ -2,7 +2,7 @@ from typing import List, Optional, Generic, TypeVar, Callable
 
 from mypy_extensions import TypedDict
 
-from proto.field import Field
+from proto.field import Field, FieldResult
 
 Data = TypeVar("Data")
 
@@ -27,3 +27,12 @@ class Model(Generic[Data]):
         self.guid = guid
         self.fields = fields
         self.templates = templates
+
+    def build(self, data: List[Data]) -> Optional[List[List[FieldResult]]]:
+        fields = self.fields
+        if not fields:
+            return None
+
+        return list(
+            map(lambda row: list(map(lambda field: field.run(row), fields or [])), data)
+        )
