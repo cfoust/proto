@@ -5,9 +5,16 @@ import string
 import copy
 import functools
 import genanki
+import tempfile
+import zipfile
+import time
+import os
+import sqlite3
+import json
 
-from typing import List, Optional, Generic, TypeVar
+from typing import List, Optional, Generic, TypeVar, Tuple
 
+from proto.field import Media
 from proto.model import Model
 
 # This is directly taken from Anki's database.
@@ -86,18 +93,59 @@ class Deck(Generic[Data]):
         self.conf = copy.deepcopy(defaultStudyConf)
         self.data = data or []
 
-    def to_genanki(self) -> List[genanki.Deck]:
+    def to_genanki(self) -> List[Tuple[genanki.Deck, List[Media]]]:
         """
         Recursively build the Deck and create input to genanki.
         """
         main = genanki.Deck(self.id, self.name,)
 
+        model = self.model
+        media: List[Media] = []
+        if model is not None:
+            notes, files = model.to_genanki(self.data)
+            media = media + files
+
         return functools.reduce(
             lambda a, v: a
-            + list(map(lambda b: prefix_deck(self.name, b), v.to_genanki())),
+            + list(map(lambda b: (prefix_deck(self.name, b[0]), b[1]), v.to_genanki())),
             self.subdecks,
-            [main],
+            [(main, media)],
         )
 
-    def build(self, path: str, media: bool = True):
-        pass
+    def build(self, file: str, include_media: bool = True):
+        """
+        This partially reimplements the apkg export from genanki because we
+        don't want to keep our files on the disk itself, rather they come from
+        sqlite.
+        """
+        dbfile, dbfilename = tempfile.mkstemp()
+        os.close(dbfile)
+
+        conn = sqlite3.connect(dbfilename)
+        cursor = conn.cursor()
+
+        now_ts = int(time.time())
+
+        results = self.to_genanki()
+        decks: List[genanki.Deck] = []
+        media: List[Media] = []
+
+        for deck, files in results:
+            decks.append(deck)
+            media = media + files
+
+        for deck in decks:
+            deck.write_to_db(cursor, now_ts)
+
+        conn.commit()
+        conn.close()
+
+        with zipfile.ZipFile(file, 'w') as outzip:
+            outzip.write(dbfilename, 'collection.anki2')
+
+            media_file_idx = dict(enumerate(media))
+            media_json = {idx: obj["filename"] for idx, obj in media_file_idx.items()}
+            outzip.writestr('media', json.dumps(media_json))
+
+            for idx, obj in media_file_idx.items():
+                outzip.writestr(str(idx), obj["data"])
