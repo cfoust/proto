@@ -152,7 +152,5 @@ def generate_alphabets() -> None:
 
 
 if __name__ == "__main__":
-    ph = PathHelper("ja")
-
     generate_main()
     # generate_alphabets()

@@ -2,7 +2,6 @@ forvocate/**
 media/**
 output/**
 .idea/**
-scripts/**
 
 **.db
 **.csv
@@ -18,3 +17,4 @@ verbskip.js
 out.*
 ja-queue.py
 **.pdf
+originals

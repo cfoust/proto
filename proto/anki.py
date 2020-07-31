@@ -11,7 +11,7 @@ import tempfile
 import os
 import re
 
-from typing import List, Dict, Optional, Generic, TypeVar, Tuple, Callable
+from typing import List, Dict, Optional, Generic, TypeVar, Tuple, Callable, Any
 
 from proto.field import FieldFunction, Data, FieldResult
 
@@ -87,6 +87,14 @@ class AnkiDeck(object):
             return None
 
         return self.zip.open(real_file).read()
+
+    def get_models(self) -> Dict[str, Any]:
+        (models_json_str,) = self.db.execute("SELECT models from col").fetchone()
+        return json.loads(models_json_str)
+
+    def get_decks(self) -> Dict[str, Any]:
+        (decks_json_str,) = self.db.execute("SELECT decks from col").fetchone()
+        return json.loads(decks_json_str)
 
     def __del__(self) -> None:
         try:
