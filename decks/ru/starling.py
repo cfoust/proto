@@ -37,21 +37,6 @@ def replaceStress(word):
     return word
 
 
-def Starling_stripStress(word):
-    """Strips all the stress marks from a word."""
-    word = word.replace(u"\u0435''", u"\u0451")
-    word = word.replace(u"\u0435'", u"\u0435")
-    word = word.replace(u"\u0438'", u"\u0438")
-    word = word.replace(u"\u0430'", u"\u0430")
-    word = word.replace(u"\u043E'", u"\u043E")
-    word = word.replace(u"\u0443'", u"\u0443")
-    word = word.replace(u"\u044B'", u"\u044B")
-    word = word.replace(u"\u044D'", u"\u044D")
-    word = word.replace(u"\u044E'", u"\u044E")
-    word = word.replace(u"\u044F'", u"\u044F")
-    return word
-
-
 class StarlingVerbField(CacheableFieldType):
     db_name = "starling-verb-ru"
     anki_name = "Conjugation"

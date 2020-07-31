@@ -40,9 +40,7 @@ class AnkiDeck(object):
 
         self.db_path = dbfilename
 
-        with self.zip.open("collection.anki2") as zipped:
-            with open(dbfilename, "wb") as unzipped:
-                unzipped.write(zipped.read())
+        self.save_db(dbfilename)
 
         self.db = sqlite3.connect(dbfilename)
 
@@ -60,6 +58,13 @@ class AnkiDeck(object):
             return True
         except KeyError:
             return False
+
+
+    def save_db(self, path: str) -> None:
+        with self.zip.open("collection.anki2") as zipped:
+            with open(path, "wb") as unzipped:
+                unzipped.write(zipped.read())
+
 
     def find_note(self, mid: int, sort_field: str) -> Optional[NoteResult]:
         results = self.db.execute(

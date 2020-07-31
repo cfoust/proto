@@ -25,21 +25,44 @@ def grab_column(pos: str, cols: List[List[str]]) -> List[str]:
     """
     return list(set(list(map(lambda row: row[2], filter(lambda row: row[3] == pos, words)))))
 
+CODE = "ru"
 
 def generate_main() -> None:
-    ph = PathHelper("ja")
+    ph = PathHelper(CODE)
 
     forvo = wrap_class(
-        CachedTransformer[str](ph.db, "forvo", wrap_class(Forvo("ru",)), lambda a: a)
+        CachedTransformer[str](ph.db, "forvo", wrap_class(Forvo(CODE)), lambda a: a)
     )
 
-    anki = AnkiDeck(ph.input("originals/ru.apkg", ignore=True))
+    anki = AnkiDeck(ph.input("originals/%s.apkg" % (CODE), ignore=True))
 
     words = get_file_lines(ph.input("lemma.num")).split(' ')
 
     nouns = grab_column('noun', words)
     verbs = grab_column('verb', words)
     adjectives = grab_column('adj', words)
+
+    print("Filtering out paired verbs.")
+    info = WikiInfo(ph.db, ph.input("rus_eng_full2.dct"))
+    skip = {}
+
+    if not os.path.exists("verbskip.js"):
+        for verb in Progress(filtered["Verbs"]):
+            if verb in skip:
+                continue
+            pair = info.getAspectualPair(verb)
+            if pair:
+                skip[pair] = 1
+
+        with open("verbskip.js", "w") as f:
+            f.write(json.dumps(skip))
+    else:
+        with open("verbskip.js", "r") as f:
+            skip = json.loads(f.read())
+
+    filtered["Verbs"] = [
+        verb for verb in filtered["Verbs"] if not verb in skip and verb
+    ]
 
     WordCard = proto.Model[WordData](
         MODELS["WORD"],
@@ -71,50 +94,12 @@ def generate_main() -> None:
         ],
     )
 
-    if ph.target("ru.apkg"):
-        deck.build("ru.apkg")
+    if ph.target("%s.apkg" % CODE):
+        deck.build("%s.apkg" % CODE)
 
-    if ph.target("ru-nomedia.apkg"):
-        deck.build("ru-nomedia.apkg", include_media=False)
+    if ph.target("%s-nomedia.apkg" % CODE):
+        deck.build("%s-nomedia.apkg" % CODE, include_media=False)
 
 
 if __name__ == "__main__":
-
     generate_main()
-    # generate_alphabets()
-
-ph = PathHelper("ru")
-
-rd = RussianDeck(sqlite("proto.db"), ph.ifile("rus_eng_full2.dct"))
-
-bd = Builder("ru", rd)
-
-# Check if we need stuff
-if bd.needAnyData():
-
-    print("Filtering out paired verbs.")
-    info = WikiInfo(sqlite("proto.db"), ph.ifile("rus_eng_full2.dct"))
-    skip = {}
-
-    if not os.path.exists("verbskip.js"):
-        for verb in Progress(filtered["Verbs"]):
-            if verb in skip:
-                continue
-            pair = info.getAspectualPair(verb)
-            if pair:
-                skip[pair] = 1
-
-        with open("verbskip.js", "w") as f:
-            f.write(json.dumps(skip))
-    else:
-        with open("verbskip.js", "r") as f:
-            skip = json.loads(f.read())
-
-    filtered["Verbs"] = [
-        verb for verb in filtered["Verbs"] if not verb in skip and verb
-    ]
-
-    for key in filtered:
-        bd.bindDeckData("Russian::%s" % key, filtered[key])
-
-bd.build(ignoreMedia=False)
