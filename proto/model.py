@@ -2,6 +2,7 @@ from typing import List, Optional, Generic, TypeVar, Callable, Tuple
 import genanki
 
 from mypy_extensions import TypedDict
+import progressbar
 
 
 from proto.field import Field, FieldResult, Media
@@ -76,9 +77,11 @@ class Model(Generic[Data]):
         if not fields:
             return None
 
-        return list(
-            map(lambda row: list(map(lambda field: field.run(row), fields or [])), data)
-        )
+        result = []
+        for row in progressbar.progressbar(data):
+            result.append(list(map(lambda field: field.run(row), fields or [])))
+
+        return result
 
     def to_genanki(
         self, data: List[Data], discard_none: bool = False
