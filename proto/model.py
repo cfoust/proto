@@ -59,13 +59,13 @@ class Model(Generic[Data]):
 
     def __init__(
         self,
-        id: int,
+        _id: int,
         name: str,
         guid: Callable[[Data], str],
         fields: Optional[List[Field[Data]]] = None,
         templates: Optional[List[Template]] = None,
     ):
-        self.id = int
+        self.id = _id
         self.name = name
         self.guid = guid
         self.fields = fields or []

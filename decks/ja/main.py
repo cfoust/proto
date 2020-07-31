@@ -50,12 +50,12 @@ def generate_main() -> None:
     anki = AnkiDeck(ph.input("ja-original.apkg", ignore=True))
 
     WordCard = proto.Model[WordData](
-        1527532200,
+        1473292818572,
         "ja-word",
         guid=pipe(
             (
                 get_headword,
-                priority([use_cached_guid(anki, 1527532200), default_guid], ""),
+                priority([use_cached_guid(anki, 1473292818572), default_guid], ""),
             )
         ),
         fields=[
@@ -79,7 +79,7 @@ def generate_main() -> None:
                 "Sound",
                 priority(
                     [
-                        pipe((get_headword, use_cached_field(anki, 1527532200, 2))),
+                        pipe((get_headword, use_cached_field(anki, 1473292818572, 2))),
                         pipe((get_headword, forvo)),
                     ],
                     None,
@@ -88,7 +88,9 @@ def generate_main() -> None:
             # The part of speech
             proto.Field("POS", lambda data: data[-1],),
         ],
-        templates=[{"name": "Card 1", "front": "", "back": "",}],
+        templates=[
+            {"name": "Card 1", "front": "{{Headword}}", "back": "{{Definition}}",}
+        ],
     )
 
     verbs = append_str(get_file_lines(ph.input("verb-base.csv")), "verb")
