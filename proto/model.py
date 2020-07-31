@@ -81,7 +81,7 @@ class Model(Generic[Data]):
         )
 
     def to_genanki(
-        self, data: List[Data], discard_none: bool = True
+        self, data: List[Data], discard_none: bool = False
     ) -> Tuple[List[genanki.Note], List[Media]]:
         results = self.build(data)
 

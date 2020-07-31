@@ -133,7 +133,7 @@ class Forvo(Transform[str]):
                 if len(self.limit_users) > 0:
                     # Find the username of this pronunciation
                     try:
-                        usr = pron.findAll(attrs={"class": "uLink"})[0].contents[0]
+                        usr = pron.findAll(attrs={"class": "ofLink"})[0].contents[0]
                     except:
                         continue
 

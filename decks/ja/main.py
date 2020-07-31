@@ -97,10 +97,6 @@ def generate_main() -> None:
     nouns = append_str(get_file_lines(ph.input("noun-base.csv")), "noun")
     adjectives = append_str(get_file_lines(ph.input("adj-base.csv")), "adj")
 
-    verbs = verbs[:10]
-    nouns = []
-    adjectives = []
-
     deck = proto.Deck[WordData](
         1475079952775,
         "Japanese",
