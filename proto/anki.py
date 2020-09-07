@@ -20,6 +20,12 @@ NoteResult = Tuple[str, List[str]]
 
 SOUND_REGEX = re.compile("\[sound:(.+)\]")
 
+FIELD_SPLIT = "\x1f"
+
+
+def split_fields(target: str) -> List[str]:
+    return target.split(FIELD_SPLIT)
+
 
 def normalize_media(file: str) -> str:
     sound = SOUND_REGEX.match(file)
@@ -59,12 +65,10 @@ class AnkiDeck(object):
         except KeyError:
             return False
 
-
     def save_db(self, path: str) -> None:
         with self.zip.open("collection.anki2") as zipped:
             with open(path, "wb") as unzipped:
                 unzipped.write(zipped.read())
-
 
     def find_note(self, mid: int, sort_field: str) -> Optional[NoteResult]:
         results = self.db.execute(
@@ -78,7 +82,7 @@ class AnkiDeck(object):
         if row is None:
             return None
 
-        return (row[1], row[6].split("\x1f"))
+        return (row[1], split_fields(row[6]))
 
     def get_media(self, file: str) -> Optional[bytes]:
         normalized = normalize_media(file)

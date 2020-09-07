@@ -9,7 +9,7 @@ if __name__ == "__main__":
     args = sys.argv
 
     if len(args) != 3:
-        print('wat are you doing')
+        print("wat are you doing")
 
     file = args[1]
     ofile = args[2]

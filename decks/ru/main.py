@@ -19,13 +19,9 @@ WordData = str
 
 ph = PathHelper("ru")
 
-def grab_column(pos: str, cols: List[List[str]]) -> List[str]:
-    """
-    Strip off a unique list from the list of words.
-    """
-    return list(set(list(map(lambda row: row[2], filter(lambda row: row[3] == pos, words)))))
 
 CODE = "ru"
+
 
 def generate_main() -> None:
     ph = PathHelper(CODE)
@@ -36,39 +32,20 @@ def generate_main() -> None:
 
     anki = AnkiDeck(ph.input("originals/%s.apkg" % (CODE), ignore=True))
 
-    words = get_file_lines(ph.input("lemma.num")).split(' ')
-
-    nouns = grab_column('noun', words)
-    verbs = grab_column('verb', words)
-    adjectives = grab_column('adj', words)
-
-    print("Filtering out paired verbs.")
-    info = WikiInfo(ph.db, ph.input("rus_eng_full2.dct"))
-    skip = {}
-
-    if not os.path.exists("verbskip.js"):
-        for verb in Progress(filtered["Verbs"]):
-            if verb in skip:
-                continue
-            pair = info.getAspectualPair(verb)
-            if pair:
-                skip[pair] = 1
-
-        with open("verbskip.js", "w") as f:
-            f.write(json.dumps(skip))
-    else:
-        with open("verbskip.js", "r") as f:
-            skip = json.loads(f.read())
-
-    filtered["Verbs"] = [
-        verb for verb in filtered["Verbs"] if not verb in skip and verb
-    ]
+    nouns = get_file_lines(ph.input("RussianNouns.csv"))
+    adjectives = get_file_lines(ph.input("RussianAdjectives.csv"))
+    verbs = get_file_lines(ph.input("RussianVerbs.csv"))
 
     WordCard = proto.Model[WordData](
         MODELS["WORD"],
         "ru-word",
         guid=priority([use_cached_guid(anki, MODELS["WORD"]), default_guid], ""),
-        fields=[],
+        fields=[
+            proto.Field("Headword", identity),
+            proto.Field("En_Meaning", use_cached_field(anki, MODELS["WORD"], 2)),
+            proto.Field("Ru_Meaning", use_cached_field(anki, MODELS["WORD"], 3)),
+            proto.Field("Audio", use_cached_field(anki, MODELS["WORD"], 4)),
+        ],
         templates=[
             {"name": "Card 1", "front": "{{Headword}}", "back": "{{Definition}}",}
         ],
@@ -78,7 +55,13 @@ def generate_main() -> None:
         MODELS["VERB"],
         "ru-verb",
         guid=priority([use_cached_guid(anki, MODELS["VERB"]), default_guid], ""),
-        fields=[],
+        fields=[
+            proto.Field("Imperfective", use_cached_field(anki, MODELS["VERB"], 0)),
+            proto.Field("Perfective", use_cached_field(anki, MODELS["VERB"], 1)),
+            proto.Field("En_Meaning", use_cached_field(anki, MODELS["VERB"], 2)),
+            proto.Field("Ru_Meaning", use_cached_field(anki, MODELS["VERB"], 3)),
+            proto.Field("Audio", use_cached_field(anki, MODELS["VERB"], 4)),
+        ],
         templates=[
             {"name": "Card 1", "front": "{{Headword}}", "back": "{{Definition}}",}
         ],
@@ -88,7 +71,9 @@ def generate_main() -> None:
         DECKS["MAIN"],
         "Russian",
         subdecks=[
-            proto.Deck[WordData](DECKS["ADJECTIVES"], "Adjectives", WordCard, adjectives),
+            proto.Deck[WordData](
+                DECKS["ADJECTIVES"], "Adjectives", WordCard, adjectives
+            ),
             proto.Deck[WordData](DECKS["NOUNS"], "Nouns", WordCard, nouns),
             proto.Deck[WordData](DECKS["VERBS"], "Verbs", WordCard, verbs),
         ],
