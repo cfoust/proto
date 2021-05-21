@@ -25,35 +25,52 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 HEADERS = {"User-Agent": UA}
 
 
-def get_data_from_url(url_in: str) -> Optional[str]:
+def get_response_from_url(url_in: str) -> Optional[requests.Response]:
     times = 0
     sec = 5
 
     while True:
-        text = ""
+        response: Optional[requests.Reponse] = None
         failed = False
         try:
-            text = requests.get(url_in, headers=HEADERS).text
+            response = requests.get(url_in, headers=HEADERS)
         except:
             failed = True
 
         if not failed:
-            return text
+            return response
 
         times += 1
 
-        # Sleep
         if times < 10:
-            print("Call failed to %s." % url_in)
             time.sleep(pow(2, times) * sec)
         else:
+            print("Call failed to %s." % url_in)
             break
 
     return None
 
 
+def get_text_from_url(url_in: str) -> Optional[str]:
+    response = get_response_from_url(url_in)
+
+    if response is not None:
+        return response.text
+
+    return None
+
+
+def get_data_from_url(url_in: str) -> Optional[str]:
+    response = get_response_from_url(url_in)
+
+    if response is not None:
+        return response.content
+
+    return None
+
+
 def get_soup_from_url(url_in):
-    return soup(get_data_from_url(url_in), "html.parser")
+    return soup(get_text_from_url(url_in), "html.parser")
 
 
 BASE_URL = "https://audio00.forvo.com/"
@@ -170,7 +187,10 @@ class Forvo(Transform[str]):
 
         first = downloads_list[0]
         filename = "%s.mp3" % (hashed)
-        response = requests.get(first, headers=HEADERS)
+        response = get_response_from_url(first)
+
+        if not response:
+            return None
 
         if self.throttle:
             time.sleep(1.0)
