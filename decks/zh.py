@@ -1,18 +1,3 @@
-# from proto.db import sqlite
-# from proto.butils import get_file_lines
-# from proto.builder import PathHelper, Builder
-
-# from proto.languages.zh.deck import MandarinDeck
-
-# # Helps us with all of the pathing
-# ph = PathHelper("zh")
-
-# # The actual deck structure
-# deck = MandarinDeck(sqlite(ph.db()))
-
-# builder = Builder("zh", deck)
-
-
 from typing import Tuple, List
 
 import proto
@@ -22,8 +7,6 @@ from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priorit
 from proto.model import use_first_guid, default_guid
 from proto.anki import AnkiDeck, use_cached_guid, use_cached_field
 import json
-
-from decks.ja.jmdict import JMDictGetter, JMReadingGetter
 
 # Headword, POS
 WordData = Tuple[str, str]
