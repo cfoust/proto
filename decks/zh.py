@@ -7,6 +7,7 @@ from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priorit
 from proto.model import use_first_guid, default_guid
 from proto.anki import AnkiDeck, use_cached_guid, use_cached_field
 import json
+import datetime
 
 # Headword, POS
 WordData = Tuple[str, str]
@@ -33,7 +34,13 @@ WORD_MID = 1556075006702
 def generate_main() -> None:
     ph = PathHelper("zh")
 
-    forvo = wrap_class(CachedTransformer[str](ph.db, "forvo", FORVO, identity))
+    forvo = wrap_class(CachedTransformer[str](
+        ph.db,
+        "forvo",
+        FORVO,
+        identity,
+        retry_timeout=datetime.timedelta(weeks=8)
+    ))
 
     anki = AnkiDeck(ph.input("original.apkg", ignore=True))
 
@@ -69,8 +76,8 @@ def generate_main() -> None:
         ],
     )
 
-    verbs = get_word_data(ph.input("verbs"))
-    nouns = get_word_data(ph.input("nouns"))
+    verbs = get_word_data(ph.input("verbs"))[:8000]
+    nouns = get_word_data(ph.input("nouns"))[:10000]
     adjectives = get_word_data(ph.input("adjectives"))
 
     deck = proto.Deck[WordData](
