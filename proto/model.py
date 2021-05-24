@@ -133,9 +133,9 @@ class Model(Generic[Data]):
         if self.css:
             model.css = self.css
 
-        notes: List[genanki.Note] = list(
-            map(lambda v: genanki.Note(model=model, fields=v), stringified)
-        )
+        notes: List[genanki.Note] = [
+            genanki.Note(model=model, fields=v, due=i) for i, v in enumerate(stringified)
+        ]
 
         # To keep guids stable
         for n, value in zip(notes, data):

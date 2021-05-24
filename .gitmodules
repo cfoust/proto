@@ -3,4 +3,4 @@
 	url = git@github.com:dae/anki.git
 [submodule "vendor/genanki"]
 	path = vendor/genanki
-	url = git@github.com:kerrickstaley/genanki.git
+	url = git@github.com:cfoust/genanki.git

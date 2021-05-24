@@ -1,16 +1,17 @@
 """The Deck class either contains subdecks or a card type. The Deck does not generate cards itself, but passes
 generation calls down to its CardType (if it has one) and thus to the FieldTypes. Offers properties that control how
 the deck will be studied in Anki, how frequently, etc."""
-import string
 import copy
 import functools
 import genanki
-import tempfile
-import zipfile
-import time
+import itertools
+import json
 import os
 import sqlite3
-import json
+import string
+import tempfile
+import time
+import zipfile
 
 from typing import List, Optional, Generic, TypeVar, Tuple
 
@@ -128,7 +129,9 @@ class Deck(Generic[Data]):
         conn = sqlite3.connect(dbfilename)
         cursor = conn.cursor()
 
-        now_ts = int(time.time())
+        timestamp = time.time()
+
+        id_gen = itertools.count(int(timestamp * 1000))
 
         results = self.to_genanki()
         decks: List[genanki.Deck] = []
@@ -142,7 +145,7 @@ class Deck(Generic[Data]):
         cursor.executescript(genanki.apkg_col.APKG_COL)
 
         for deck in decks:
-            deck.write_to_db(cursor, now_ts)
+            deck.write_to_db(cursor, timestamp, id_gen)
 
         conn.commit()
         conn.close()
