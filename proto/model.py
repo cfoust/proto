@@ -65,12 +65,15 @@ class Model(Generic[Data]):
         guid: Callable[[Data], str],
         fields: Optional[List[Field[Data]]] = None,
         templates: Optional[List[Template]] = None,
+        css: Optional[str] = None,
     ):
         self.id = _id
         self.name = name
         self.guid = guid
         self.fields = fields or []
         self.templates = templates or []
+        self.css = css
+
 
     def build(self, data: List[Data]) -> Optional[List[List[FieldResult]]]:
         fields = self.fields
@@ -82,6 +85,7 @@ class Model(Generic[Data]):
             result.append(list(map(lambda field: field.run(row), fields or [])))
 
         return result
+
 
     def to_genanki(
         self, data: List[Data], discard_none: bool = False
@@ -125,6 +129,9 @@ class Model(Generic[Data]):
                 )
             ),
         )
+
+        if self.css:
+            model.css = self.css
 
         notes: List[genanki.Note] = list(
             map(lambda v: genanki.Note(model=model, fields=v), stringified)

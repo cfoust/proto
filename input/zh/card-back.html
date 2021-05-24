@@ -1,0 +1,92 @@
+<div class="headword" id="stroke">{{Headword}}</div>
+<div class="headword" id="head" style="display:none"></div>
+
+<div class="redbutton" style="float: left" ontouchstart="switchStroke()" onclick="switchStroke()">筆順</div>
+
+<div style="display: none" id="data">{{Data}}</div>
+<div>{{Sound}}</div>
+
+<div class="content" id="def">asddasd</div>
+
+<script>
+
+
+if (!window.proto) {
+	window.proto = {
+		renderDefinition: function(data) {
+      const defs = data[14].split('/');
+
+			var text = "";
+
+      text += `<a href="plecoapi://x-callback-url/s?q=${data[0]}">Pleco</a>`;
+
+			// Parse over each definition
+			for (let j = 0; j < defs.length; j++) {
+				let definition = defs[j], meaning = "";
+
+				meaning += "<span class='meaning-number'>" + (j + 1) + ".</span>";
+				meaning += "<span class='meaning-meaning'>" + definition;
+				meaning += "</span>";
+
+				text += "<div class='meaning-definition'>" + meaning + "</div>";
+			}
+
+			return text;
+		},
+
+		renderPinYin: function(data) {
+      const original = data[0];
+      const pinyin = data[2];
+
+			const rubify = function(character, reading) {
+				return "<ruby><rb>" + character + "</rb><rp>(</rp><rt>" + reading + "</rt><rp>)</rp></ruby>";
+			};
+
+      // Sometimes there are pronunciation variations.
+      // Just take the first one.
+      if (pinyin.includes('/')) {
+        return rubify(original, pinyin.split('/')[0]);
+      }
+
+      const parts = pinyin.split(' ');
+      return original
+        .split('')
+        .map((v, i) => rubify(v, parts[i]))
+        .join('');
+		},
+
+		/**
+		 * Renders information on a word to the DOM, prioritizing the most
+		 * common reading.
+		 * @param  {String} data    JSON array.
+		 * @return {None}           Just modifies the DOM; no return value.
+		 */
+		render: function(headword, dataString) {
+			const head   = document.getElementById("head");
+			const stroke = document.getElementById("stroke");
+		  const def    = document.getElementById("def");
+			const data   = JSON.parse(dataString);
+
+      head.innerHTML = this.renderPinYin(data);
+      stroke.innerHTML = data[0];
+			def.innerHTML = this.renderDefinition(data);;
+		}
+	};
+
+	function switchStroke() {
+		var head   = document.getElementById("head"),
+			stroke = document.getElementById("stroke");
+
+		if (head.style.display == "none") {
+			stroke.style.display = "none";
+			head.style.display = "block";
+		} else {
+			head.style.display = "none";
+			stroke.style.display = "block";
+		}
+	}
+}
+
+proto.render('{{Headword}}', document.getElementById("data").innerHTML);
+
+</script>

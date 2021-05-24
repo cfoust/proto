@@ -92,3 +92,16 @@ def get_file_lines(path: str) -> List[str]:
     lines = op.readlines()
     op.close()
     return [x.rstrip() for x in lines]
+
+
+def get_file_contents(path: str) -> str:
+    """
+    Get the full contents of a file as a string.
+    """
+    if not os.path.isfile(path):
+        return None
+
+    op = open(path, "r")
+    contents = op.read()
+    op.close()
+    return contents

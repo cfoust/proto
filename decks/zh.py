@@ -2,7 +2,7 @@ from typing import Tuple, List
 
 import proto
 
-from proto.building import PathHelper, get_file_lines
+from proto.building import PathHelper, get_file_lines, get_file_contents
 from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priority
 from proto.model import use_first_guid, default_guid
 from proto.anki import AnkiDeck, use_cached_guid, use_cached_field
@@ -12,9 +12,9 @@ import datetime
 # Headword, POS
 WordData = Tuple[str, str]
 
-def get_word_data(filename):
+def get_word_data(filename, pos):
     lines = get_file_lines(filename)
-    return list(map(lambda a: a.split("\t"), lines))
+    return list(map(lambda a: a.split("\t") + [pos], lines))
 
 def get_headword(data: WordData) -> str:
     return data[0]
@@ -66,19 +66,24 @@ def generate_main() -> None:
                         pipe((get_headword, use_cached_field(anki, WORD_MID, 2))),
                         pipe((get_headword, forvo)),
                     ],
-                    None,
+                    "",
                 ),
             ),
             proto.Field("POS", lambda data: data[-1],),
         ],
         templates=[
-            {"name": "Card 1", "front": "{{Headword}}", "back": "{{Definition}}",}
+            {
+                "name": "Card 1",
+                "front": get_file_contents(ph.input('card-front.html')),
+                "back": get_file_contents(ph.input('card-back.html')),
+            }
         ],
+        css=get_file_contents(ph.input('card-styles.css'))
     )
 
-    verbs = get_word_data(ph.input("verbs"))[:8000]
-    nouns = get_word_data(ph.input("nouns"))[:10000]
-    adjectives = get_word_data(ph.input("adjectives"))
+    verbs = get_word_data(ph.input("verbs"), 'verb')[:8000]
+    nouns = get_word_data(ph.input("nouns"), 'noun')[:10000]
+    adjectives = get_word_data(ph.input("adjectives"), 'adj')
 
     deck = proto.Deck[WordData](
         1555986714664,
