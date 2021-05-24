@@ -9,16 +9,17 @@
 }
 
 .content {
+  position: 'relative';
   width: 100%;
+  height: 100%;
   padding-top: 5%;
   margin-top: 2%;
   margin-bottom: 2%;
   text-align: left;
   color: #0c0201;
   font-size: 20px;
-  display: block;
-  content: "";
-  clear: both;
+  display: 'flex';
+  flex-direction: column;
 }
 
 @font-face {
@@ -63,17 +64,14 @@
 .meaning-definition {
   display: block;
 }
+
 .meaning-number {
   color: #999;
   margin-right: 15px;
 }
-.meaning-meaning {
 
-}
-.meaning-info {
-  margin-left: 20px;
-  font-size: 18px;
-  color: #999;
+.meaning-pos {
+  margin-top: 15px
 }
 
 .playButton {

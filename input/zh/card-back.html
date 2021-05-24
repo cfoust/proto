@@ -1,7 +1,7 @@
 <div class="headword" id="stroke">{{Headword}}</div>
 <div class="headword" id="head" style="display:none"></div>
 
-<div class="redbutton" style="float: left" ontouchstart="switchStroke()" onclick="switchStroke()">筆順</div>
+<div class="redbutton" style="float: left" ontouchstart="switchStroke()" onclick="switchStroke()">拼音</div>
 
 <div style="display: none" id="data">{{Data}}</div>
 <div>{{Sound}}</div>
@@ -9,9 +9,12 @@
 <div class="content" id="def">asddasd</div>
 
 <script>
-
-
 if (!window.proto) {
+	const POS_MAP = {
+			'adj': 'Adjective',
+			'noun': 'Noun',
+			'verb': 'Verb',
+	}
 	window.proto = {
 		renderDefinition: function(data) {
       const defs = data[14].split('/');
@@ -25,11 +28,13 @@ if (!window.proto) {
 				let definition = defs[j], meaning = "";
 
 				meaning += "<span class='meaning-number'>" + (j + 1) + ".</span>";
-				meaning += "<span class='meaning-meaning'>" + definition;
+				meaning += "<span>" + definition;
 				meaning += "</span>";
 
 				text += "<div class='meaning-definition'>" + meaning + "</div>";
 			}
+
+			text += `<div class='meaning-number meaning-pos'>${POS_MAP[data[data.length - 1]]}</div>`;
 
 			return text;
 		},
