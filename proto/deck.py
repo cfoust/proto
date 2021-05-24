@@ -141,6 +141,9 @@ class Deck(Generic[Data]):
             decks.append(deck)
             media = media + files
 
+        if not include_media:
+            media = []
+
         cursor.executescript(genanki.apkg_schema.APKG_SCHEMA)
         cursor.executescript(genanki.apkg_col.APKG_COL)
 
