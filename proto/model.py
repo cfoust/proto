@@ -53,6 +53,8 @@ def stringify_rows(rows: List[List[Optional[str]]]) -> List[List[str]]:
     )
 
 
+ModelReport = List[Tuple[Field[Data], int]]
+
 class Model(Generic[Data]):
     """
     Represents an individual Anki card model.
@@ -74,44 +76,62 @@ class Model(Generic[Data]):
         self.templates = templates or []
         self.css = css
 
-
-    def build(self, data: List[Data]) -> Optional[List[List[FieldResult]]]:
-        fields = self.fields
-        if not fields:
-            return None
-
+    def build(self, data: List[Data]) -> List[List[Tuple[FieldResult, bool]]]:
+        """
+        Calculate the values of each field for each row of data.
+        """
+        fields = self.fields or []
         result = []
+
         for row in progressbar.progressbar(data):
-            result.append(list(map(lambda field: field.run(row), fields or [])))
+            result.append(list(map(lambda field: field.run(row), fields)))
 
         return result
 
 
     def to_genanki(
-        self, data: List[Data], discard_none: bool = False
-    ) -> Tuple[List[genanki.Note], List[Media]]:
-        results = self.build(data)
+        self, data: List[Data], discard_empty: bool = False
+    ) -> Tuple[List[genanki.Note], List[Media], ModelReport]:
+        """
+        Build this model's cards for the data and translate it into genanki's
+        structures.
 
-        if not results:
-            return ([], [])
+        Return a list of:
+        * genanki.Notes
+        * Media files
+        * A zipped list of fields and the number of their values that were empty
+        """
+        results = self.build(data)
 
         # Need to transform all Media to their normal, string format
         normalized: List[List[Optional[str]]] = []
         media: List[Media] = []
+
+        # Also collect information on empty fields
+        nones = [0 for field in self.fields]
+
         for note in results:
-            fixed_note = list(map(normalize, note))
+            note_data = [data for data, is_empty in note]
+            fixed_note = list(map(normalize, note_data))
             normalized.append(fixed_note)
 
+            nones = [
+                a + b
+                for a, b in zip(nones, [1 if is_empty else 0 for _, is_empty in note])
+            ]
+
             # Grab all the media
-            for field in note:
+            for field in note_data:
                 if field is None or isinstance(field, str):
                     continue
                 media.append(field)
 
+        report = list(zip(self.fields, nones))
+
         # Coerce all fields to strings, filtering out any that came back None
-        # (if `discard_none` is true)
+        # (if `discard_empty` is true)
         stringified: List[List[str]] = pipe(
-            (filter_rows(discard_none), stringify_rows,)
+            (filter_rows(discard_empty), stringify_rows,)
         )(normalized)
 
         model = genanki.Model(
@@ -134,7 +154,8 @@ class Model(Generic[Data]):
             model.css = self.css
 
         notes: List[genanki.Note] = [
-            genanki.Note(model=model, fields=v, due=i) for i, v in enumerate(stringified)
+            genanki.Note(model=model, fields=v, due=i)
+            for i, v in enumerate(stringified)
         ]
 
         # To keep guids stable
@@ -144,4 +165,5 @@ class Model(Generic[Data]):
         return (
             notes,
             media,
+            report,
         )

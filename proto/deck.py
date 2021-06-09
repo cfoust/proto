@@ -16,7 +16,7 @@ import zipfile
 from typing import List, Optional, Generic, TypeVar, Tuple
 
 from proto.field import Media
-from proto.model import Model
+from proto.model import Model, ModelReport
 
 # This is directly taken from Anki's database.
 defaultStudyConf = {
@@ -74,6 +74,9 @@ def prefix_deck(name: str, deck: genanki.Deck) -> genanki.Deck:
     return deck
 
 
+# Allows for documenting how many fields are empty
+DeckReport = List[Tuple[Model, ModelReport]]
+
 class Deck(Generic[Data]):
     """
     Representation of an Anki deck which can either contain cards or subdecks.
@@ -94,30 +97,35 @@ class Deck(Generic[Data]):
         self.conf = copy.deepcopy(defaultStudyConf)
         self.data = data or []
 
-    def to_genanki(self) -> List[Tuple[genanki.Deck, List[Media]]]:
+
+    def to_genanki(self) -> List[Tuple[genanki.Deck, List[Media], DeckReport]]:
         """
         Recursively build the Deck and create input to genanki.
         """
-        main = genanki.Deck(self.id, self.name,)
+        main = genanki.Deck(self.id, self.name)
 
         model = self.model
         media: List[Media] = []
+        reports: List[Tuple[Model, ModelReport]] = []
+
         if model is not None:
-            notes, files = model.to_genanki(self.data)
+            notes, files, report = model.to_genanki(self.data)
 
             for note in notes:
                 main.add_note(note)
 
+            reports = reports + [(model, report)]
             media = media + files
 
         return functools.reduce(
             lambda a, v: a
-            + list(map(lambda b: (prefix_deck(self.name, b[0]), b[1]), v.to_genanki())),
+            + list(map(lambda b: (prefix_deck(self.name, b[0]), b[1], b[2]), v.to_genanki())),
             self.subdecks,
-            [(main, media)],
+            [(main, media, reports)],
         )
 
-    def build(self, file: str, include_media: bool = True):
+
+    def build(self, file: str, include_media: bool = True) -> DeckReport:
         """
         This partially reimplements the apkg export from genanki because we
         don't want to keep our files on the disk itself, rather they come from
@@ -136,10 +144,12 @@ class Deck(Generic[Data]):
         results = self.to_genanki()
         decks: List[genanki.Deck] = []
         media: List[Media] = []
+        report: DeckReport = []
 
-        for deck, files in results:
+        for deck, files, reports in results:
             decks.append(deck)
             media = media + files
+            report = report + reports
 
         if not include_media:
             media = []
@@ -162,3 +172,5 @@ class Deck(Generic[Data]):
 
             for idx, obj in media_file_idx.items():
                 outzip.writestr(str(idx), obj["data"])
+
+        return report

@@ -94,7 +94,7 @@ def get_file_lines(path: str) -> List[str]:
     return [x.rstrip() for x in lines]
 
 
-def get_file_contents(path: str) -> str:
+def get_file_contents(path: str) -> Optional[str]:
     """
     Get the full contents of a file as a string.
     """

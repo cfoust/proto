@@ -12,35 +12,32 @@ import datetime
 # Headword, POS
 WordData = Tuple[str, str]
 
+
 def get_word_data(filename, pos):
     lines = get_file_lines(filename)
     return list(map(lambda a: a.split("\t") + [pos], lines))
 
+
 def get_headword(data: WordData) -> str:
     return data[0]
 
+
 CODE = "zh"
-FORVO = wrap_class(
-    Forvo(
-        CODE,
-        limit_countries=["China", "Taiwan", "United States"]
-    )
-)
+FORVO = wrap_class(Forvo(CODE, limit_countries=["China", "Taiwan", "United States"]))
 
 identity = lambda a: a
 
 WORD_MID = 1556075006702
 
+
 def generate_main() -> None:
     ph = PathHelper("zh")
 
-    forvo = wrap_class(CachedTransformer[str](
-        ph.db,
-        "forvo",
-        FORVO,
-        identity,
-        retry_timeout=datetime.timedelta(weeks=8)
-    ))
+    forvo = wrap_class(
+        CachedTransformer[str](
+            ph.db, "forvo", FORVO, identity, retry_timeout=datetime.timedelta(weeks=8)
+        )
+    )
 
     anki = AnkiDeck(ph.input("original.apkg", ignore=True))
 
@@ -55,10 +52,7 @@ def generate_main() -> None:
         ),
         fields=[
             proto.Field("Headword", get_headword),
-            proto.Field(
-                "Data",
-                lambda data: json.dumps(data),
-            ),
+            proto.Field("Data", lambda data: json.dumps(data),),
             proto.Field(
                 "Sound",
                 priority(
@@ -74,16 +68,16 @@ def generate_main() -> None:
         templates=[
             {
                 "name": "Card 1",
-                "front": get_file_contents(ph.input('card-front.html')),
-                "back": get_file_contents(ph.input('card-back.html')),
+                "front": get_file_contents(ph.input("card-front.html")),
+                "back": get_file_contents(ph.input("card-back.html")),
             }
         ],
-        css=get_file_contents(ph.input('card-styles.css'))
+        css=get_file_contents(ph.input("card-styles.css")),
     )
 
-    verbs = get_word_data(ph.input("verbs"), 'verb')[:8000]
-    nouns = get_word_data(ph.input("nouns"), 'noun')[:10000]
-    adjectives = get_word_data(ph.input("adjectives"), 'adj')
+    verbs = get_word_data(ph.input("verbs"), "verb")[:8000]
+    nouns = get_word_data(ph.input("nouns"), "noun")[:10000]
+    adjectives = get_word_data(ph.input("adjectives"), "adj")
 
     deck = proto.Deck[WordData](
         1555986714664,
@@ -96,10 +90,10 @@ def generate_main() -> None:
     )
 
     if ph.target("zh.apkg"):
-        deck.build("zh.apkg")
+        report = deck.build(ph.output("zh.apkg"))
 
     if ph.target("zh-nomedia.apkg"):
-        deck.build("zh-nomedia.apkg", include_media=False)
+        deck.build(ph.output("zh-nomedia.apkg"), include_media=False)
 
 
 if __name__ == "__main__":
