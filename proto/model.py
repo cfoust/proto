@@ -55,6 +55,7 @@ def stringify_rows(rows: List[List[Optional[str]]]) -> List[List[str]]:
 
 ModelReport = List[Tuple[Field[Data], int]]
 
+
 class Model(Generic[Data]):
     """
     Represents an individual Anki card model.
@@ -87,7 +88,6 @@ class Model(Generic[Data]):
             result.append(list(map(lambda field: field.run(row), fields)))
 
         return result
-
 
     def to_genanki(
         self, data: List[Data], discard_empty: bool = False

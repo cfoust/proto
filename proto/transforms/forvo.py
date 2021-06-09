@@ -60,7 +60,7 @@ def get_text_from_url(url_in: str) -> Optional[str]:
     return None
 
 
-def get_data_from_url(url_in: str) -> Optional[str]:
+def get_data_from_url(url_in: str) -> Optional[bytes]:
     response = get_response_from_url(url_in)
 
     if response is not None:

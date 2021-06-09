@@ -1,7 +1,8 @@
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import proto
 
+from proto.field import FieldResult, default_empty_check
 from proto.building import PathHelper, get_file_lines, get_file_contents
 from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priority
 from proto.model import use_first_guid, default_guid
@@ -30,6 +31,31 @@ identity = lambda a: a
 WORD_MID = 1556075006702
 
 
+def is_empty_definition(data: Optional[FieldResult]) -> bool:
+    """
+    Check whether the definition of a word is actually empty.
+    Sometimes we get false positives with the '#' character.
+    """
+    if default_empty_check(data):
+        return True
+
+    if isinstance(data, str):
+        try:
+            value = json.loads(data)
+
+            if len(value) < 15:
+                return True
+
+            definition = value[14]
+
+            if definition == "#":
+                return True
+        except:
+            return True
+
+    return False
+
+
 def generate_main() -> None:
     ph = PathHelper("zh")
 
@@ -52,7 +78,9 @@ def generate_main() -> None:
         ),
         fields=[
             proto.Field("Headword", get_headword),
-            proto.Field("Data", lambda data: json.dumps(data),),
+            proto.Field(
+                "Data", lambda data: json.dumps(data), is_empty=is_empty_definition
+            ),
             proto.Field(
                 "Sound",
                 priority(
@@ -79,6 +107,10 @@ def generate_main() -> None:
     nouns = get_word_data(ph.input("nouns"), "noun")[:10000]
     adjectives = get_word_data(ph.input("adjectives"), "adj")
 
+    # verbs = verbs[:200]
+    # nouns = nouns[:200]
+    # adjectives = adjectives[:200]
+
     deck = proto.Deck[WordData](
         1555986714664,
         "Mandarin",
@@ -89,8 +121,8 @@ def generate_main() -> None:
         ],
     )
 
-    if ph.target("zh.apkg"):
-        report = deck.build(ph.output("zh.apkg"))
+    # if ph.target("zh.apkg"):
+    deck.build(ph.output("zh.apkg"))
 
     if ph.target("zh-nomedia.apkg"):
         deck.build(ph.output("zh-nomedia.apkg"), include_media=False)

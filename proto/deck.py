@@ -75,7 +75,8 @@ def prefix_deck(name: str, deck: genanki.Deck) -> genanki.Deck:
 
 
 # Allows for documenting how many fields are empty
-DeckReport = List[Tuple[Model, ModelReport]]
+DeckReport = List[Tuple[Model, ModelReport, int]]
+
 
 class Deck(Generic[Data]):
     """
@@ -97,7 +98,6 @@ class Deck(Generic[Data]):
         self.conf = copy.deepcopy(defaultStudyConf)
         self.data = data or []
 
-
     def to_genanki(self) -> List[Tuple[genanki.Deck, List[Media], DeckReport]]:
         """
         Recursively build the Deck and create input to genanki.
@@ -106,7 +106,7 @@ class Deck(Generic[Data]):
 
         model = self.model
         media: List[Media] = []
-        reports: List[Tuple[Model, ModelReport]] = []
+        reports: DeckReport = []
 
         if model is not None:
             notes, files, report = model.to_genanki(self.data)
@@ -114,18 +114,21 @@ class Deck(Generic[Data]):
             for note in notes:
                 main.add_note(note)
 
-            reports = reports + [(model, report)]
+            reports = reports + [(model, report, len(notes))]
             media = media + files
 
         return functools.reduce(
             lambda a, v: a
-            + list(map(lambda b: (prefix_deck(self.name, b[0]), b[1], b[2]), v.to_genanki())),
+            + list(
+                map(
+                    lambda b: (prefix_deck(self.name, b[0]), b[1], b[2]), v.to_genanki()
+                )
+            ),
             self.subdecks,
             [(main, media, reports)],
         )
 
-
-    def build(self, file: str, include_media: bool = True) -> DeckReport:
+    def build(self, file: str, include_media: bool = True):
         """
         This partially reimplements the apkg export from genanki because we
         don't want to keep our files on the disk itself, rather they come from
@@ -144,12 +147,12 @@ class Deck(Generic[Data]):
         results = self.to_genanki()
         decks: List[genanki.Deck] = []
         media: List[Media] = []
-        report: DeckReport = []
+        build_report: List[Tuple[str, DeckReport]] = []
 
         for deck, files, reports in results:
             decks.append(deck)
             media = media + files
-            report = report + reports
+            build_report = build_report + [(deck.name, reports)]
 
         if not include_media:
             media = []
@@ -173,4 +176,24 @@ class Deck(Generic[Data]):
             for idx, obj in media_file_idx.items():
                 outzip.writestr(str(idx), obj["data"])
 
-        return report
+        # Print report of empty fields
+        for deck, report in build_report:
+            print("{} -> empty report".format(deck))
+            for model, model_report, num_notes in report:
+                empty_fields = list(filter(lambda a: a[1] > 0, model_report))
+                print(
+                    "{}: {}".format(
+                        model.name,
+                        ", ".join(
+                            [
+                                "{} -> {}/{} ({}%)".format(
+                                    field.name,
+                                    num_empty,
+                                    num_notes,
+                                    round((num_empty / num_notes) * 100, 2),
+                                )
+                                for field, num_empty in empty_fields
+                            ]
+                        ),
+                    )
+                )
