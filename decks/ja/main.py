@@ -2,7 +2,7 @@ from typing import Tuple, List
 
 import proto
 
-from proto.building import PathHelper, get_file_lines
+from proto.building import PathHelper, get_file_lines, get_file_contents
 from proto.transforms import wrap_class, Forvo, pipe, CachedTransformer, priority
 from proto.model import use_first_guid, default_guid
 from proto.anki import AnkiDeck, use_cached_guid, use_cached_field
@@ -89,7 +89,10 @@ def generate_main() -> None:
             proto.Field("POS", lambda data: data[-1],),
         ],
         templates=[
-            {"name": "Card 1", "front": "{{Headword}}", "back": "{{Definition}}",}
+            {"name": "Card 1",
+             "front": get_file_contents(ph.input("card-front.html")),
+             "back": get_file_contents(ph.input("card-back.html")),
+             }
         ],
     )
 

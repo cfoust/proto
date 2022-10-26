@@ -6,6 +6,7 @@ output/**
 **.db
 **.csv
 **.pyc
+**.apkg
 
 test.py
 ruimport.py

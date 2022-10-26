@@ -1,10 +1,14 @@
 <div class="headword" id="stroke">{{Headword}}</div>
 <div class="headword" id="head" style="display:none"></div>
 
-<div class="redbutton" style="float: left" ontouchstart="switchStroke()" onclick="switchStroke()">拼音</div>
 
 <div style="display: none" id="data">{{Data}}</div>
+
+<div class="bar">
+<div class="redbutton" style="float: left" ontouchstart="switchStroke()" onclick="switchStroke()">拼音</div>
 <div>{{Sound}}</div>
+</div>
+
 
 <div class="content" id="def">asddasd</div>
 
@@ -18,6 +22,7 @@ if (!window.proto) {
 	window.proto = {
 		renderDefinition: function(data) {
       const defs = data[14].split('/');
+			const pos = data[data.length - 1];
 
 			var text = "";
 
@@ -34,7 +39,7 @@ if (!window.proto) {
 				text += "<div class='meaning-definition'>" + meaning + "</div>";
 			}
 
-			text += `<div class='meaning-number meaning-pos'>${POS_MAP[data[data.length - 1]]}</div>`;
+			text += `<div class='meaning-number meaning-pos'>(${POS_MAP[data[data.length - 1]]})</div>`;
 
 			return text;
 		},
@@ -95,3 +100,4 @@ if (!window.proto) {
 proto.render('{{Headword}}', document.getElementById("data").innerHTML);
 
 </script>
+

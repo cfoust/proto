@@ -61,7 +61,7 @@ def generate_main() -> None:
 
     forvo = wrap_class(
         CachedTransformer[str](
-            ph.db, "forvo", FORVO, identity, retry_timeout=datetime.timedelta(weeks=8)
+            ph.db, "forvo", FORVO, identity, retry_timeout=datetime.timedelta(weeks=24)
         )
     )
 
@@ -106,10 +106,6 @@ def generate_main() -> None:
     verbs = get_word_data(ph.input("verbs"), "verb")[:8000]
     nouns = get_word_data(ph.input("nouns"), "noun")[:10000]
     adjectives = get_word_data(ph.input("adjectives"), "adj")
-
-    # verbs = verbs[:200]
-    # nouns = nouns[:200]
-    # adjectives = adjectives[:200]
 
     deck = proto.Deck[WordData](
         1555986714664,
